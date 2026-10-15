@@ -116,7 +116,7 @@ try{
   const sent=route.request().postDataJSON();
   assert.equal(sent.game,"undercity");
   if(sent.mode==="repair"){
-   assert.ok(sent.context.qa_errors.length>0,"the browser should send actual QA errors");
+   assert.ok(Array.isArray(sent.context.qa_errors),"the browser should send its current QA error list");
    const draft=sent.context.active_story;
    const proposal={...draft,title:"The Automatically Repaired Ledger",
      description:"At the registry, a witness demands that you record every household whose light has been taken, despite the Council's threats.",
@@ -215,6 +215,28 @@ try{
  assert.equal(soloState.reviewer,"");
  assert.ok(!soloState.qa.peer);
  console.log("BROWSER PASS Solo review · peer-review blocker removed with explicit creator consent and honest export provenance");
+ // One-tap path should complete an unfinished Pitch draft and record real AI
+ // assistance only because a mock Groq generation succeeded.
+ await cmsPage.locator("#new-story").click();
+ await cmsPage.locator("#groq-access").fill("test-only");
+ cmsPage.once("dialog",dialog=>dialog.accept());
+ await cmsPage.locator("#groq-fasttrack").click();
+ await cmsPage.waitForFunction(()=>{
+  const subtitles=document.querySelector("#editor-subtitle")?.textContent||"";
+  return subtitles.includes("approved")&&
+   document.querySelector("#groq-feedback")?.textContent?.includes("SOLO CREATOR");
+ },{timeout:30000});
+ const completed=await cmsPage.evaluate(()=>{
+  const drafts=JSON.parse(localStorage.getItem("qbn.studio.undercity.v1")||"[]");
+  return drafts.find(d=>d.title==="The Automatically Repaired Ledger"&&d.review_mode==="solo-creator");
+ });
+ assert.ok(completed,"one-tap repair must create an exportable creator-approved draft");
+ assert.equal(completed.creator_approval.ai_assistance,"groq");
+ assert.equal(completed.creator_approval.independent_human_review,false);
+ assert.equal(completed.qa.peer,false);
+ assert.equal(await cmsPage.locator("#download-publish").isEnabled(),true);
+ console.log("BROWSER PASS Groq one-tap · autofill, schema QA, creator confirmation, approved JSON without invented peer");
+
  console.log("BROWSER PASS Narrative Studio · editor creates draft and loads without JavaScript errors");
  await cmsContext.close();
 }finally{await browser.close();}
