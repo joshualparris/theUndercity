@@ -6,11 +6,11 @@ Date: **15 October 2026**. Scope: the uploaded 64-page Undercity RPG design docu
 
 The [generated full content tracker](CONTENT_TRACKER.md) enumerates:
 
-- **214 playable storylets** in the authored source (including penalty-hub stories).
-- **437 choice branches** and **18 opportunity cards**.
+- **286 playable storylets** in the authored source (including penalty-hub stories).
+- **653 choice branches** and **18 opportunity cards**.
 - **34 professions** (10 Tier 1, eight each Tier 2, 3 and 4).
 - **20 enumerated equipment slots**, each with at least one purchasable item; 20 general Bazaar goods.
-- Four ambitions: **The Debt of the Moth King has 32 chapters** (8 prior + 24 new); the three other ambitions currently have 8 each.
+- Four ambitions: **each has 32 chapters** (eight original plus 24 late-act chapters). The new Moth chapters are versioned JSON; the other late arcs are currently in `content/late-ambitions.js`.
 - Four seven-stage Making Your Name arcs; 20 destinies; nine quirks; three exceptional stories; six seasonal events.
 
 Counts represent authored data and test-reachable engine integration, **not** an assertion of a complete human playthrough of every branch.
@@ -19,7 +19,7 @@ Counts represent authored data and test-reachable engine integration, **not** an
 
 | Requirement | Status | Verified implementation | Further work |
 | --- | --- | --- | --- |
-| 1. Ambition depth | **Partial** | Moth King now 32 connected stages. Chapters 9–32 in versioned `content/storylets/ambitions/moth.json`; new choices vary skills, outcomes, flags, faction relation and starting background. Final awards are deferred to chapter 32. | Tide, Mirror and Ember still have eight chapters each. Deepen each to 30–40. Expand NPC branching and dialogue beyond origin checks. |
+| 1. Ambition depth | **Complete for numerical chapter target; partial for story depth** | All four ambitions have 32 connected stages. Moth chapters 9–32 use versioned `content/storylets/ambitions/moth.json`; Tide, Mirror and Ember have 24 further chapters each in `content/late-ambitions.js`. Each has stat-tested branches, saved consequences and a true chapter-32 ending. | Deepen character-specific dialogue and long-lasting NPC relationships. Migrate the three other late arcs to JSON and review their narrative originality and branching density. |
 | 2. Quality taxonomy | **Implemented registry; partial full migration** | `content/world.js` declares 14 category definitions: primary ability, menace, quirk, affiliation, status, circumstance, accomplishment, route, living story, dream, metaquality, item, story and once-only marker. `src/game/rules.js` supports additive or pyramidal semantics. | Migrate every legacy story flag and counter into typed qualities; make schema the only rules source. |
 | 2. Four Menace hubs | **Implemented** | Suspicion → Watch House, Notoriety → Tribunal, Wounds → Ward and Delirium → Pale Rooms. Arrival is automatic at level eight and costs zero actions. Each hub offers three recoveries, with different action and penny requirements. The Record increments once per arrest, to seven. | More multi-stage hub content, persistent NPC recognition and specialised menace challenges. |
 | 3. Card rules | **Implemented and tested** | High-urgency cards bypass the normal weighted lottery, including zero-weight cards; unlock multiplicity multiplies draw weight; hand capped at six, timer resets/pauses when full. Automated seeded distribution test for 1:3 weighting. | Wider statistical and edge-case validation against reference observations; not proof that proprietary internals are identical. |
@@ -52,10 +52,10 @@ CI in `.github/workflows/ci.yml` and `test.yml` runs this validation on every pu
 
 ## Findings and remaining limitations
 
-1. **Ambitions are uneven in depth.** Thirty-two chapters for Moth King is a complete long arc, but Tide, Mirror and Ember remain short. Next authored milestone should be the river's legal/ethical storyline rather than indiscriminately cloning Moth King's structure.
+1. **Ambition length is no longer the bottleneck.** All four arcs now have 32 stages, but the Tide, Mirror and Ember late-act choices share a programmatic branch structure. Rewrite the most important dialogue, NPC scenes and divergent consequences so each arc feels distinct and consequential rather than merely meeting a chapter count.
 2. **Taxonomy is now explicit, but historical state remains mixed.** Core qualities, inventory, CP, menaces and affiliations are mediated through the rules engine. Some legacy flags, progression counters and seasonal conditions still use ordinary save properties for compatibility.
 3. **A JSON compiler is not yet a full CMS.** The authoring file is structured and validated; other content modules still contain in-code `when` functions. The editor and migration tools are not complete.
-4. **One meaningful menu choice is not necessarily one materially different story arc.** Branches change qualities and outcomes but many currently converge. Deep character-level consequences, NPC memory and location changes need further authored work.
+4. **A menu choice is not necessarily a separate materially different story arc.** Branches change qualities and outcomes but many currently converge. Deep character-level consequences, NPC memory and location changes need further authored work.
 5. **The economy is functional, not balanced.** Penalties, wages, item prices and bonuses have automated tests but need longitudinal playtesting. Paid currencies or monetisation have not been implemented.
 6. **Accessibility claims are deliberately limited.** Automated assertions verify UI semantics and saved preferences, not actual assistive technology effectiveness.
 7. **Saves are browser-local.** There is no account, server sync or cross-player delivery. JSON export/import is available before clearing browser storage.
