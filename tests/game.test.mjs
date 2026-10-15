@@ -4,7 +4,7 @@ import { readFileSync } from "node:fs";
 import vm from "node:vm";
 
 const html = readFileSync(new URL("../index.html", import.meta.url), "utf8");
-const filenames = ["content/ambitions.js","content/world.js","content/callings.js"];
+const filenames = ["content/ambitions.js","content/world.js","content/callings.js","content/systems.js"];
 const main = html.match(/<script>\s*([\s\S]*?)<\/script>/)?.[1];
 assert.ok(main, "the main browser script must exist");
 
@@ -40,6 +40,8 @@ test("the original UI starts, and full content is accessible to the same engine"
  assert.ok(d.cardCount>=16);
  assert.equal(d.professionCount,18);
  assert.equal(d.destinyCount,20);
+ assert.equal(d.equipmentSlots,18);
+ assert.equal(d.livingStoryCount,4);
  assert.match(app.nodes.get("main").innerHTML,/THE.*UNDERCITY/s);
 });
 
@@ -99,4 +101,36 @@ test("all new story locations, choices, effects and gates are internally valid",
  assert.equal(e.quirks.length,9);
  assert.equal(e.exceptionalStories.length,3);
  assert.equal(e.seasonalEvents.length,6);
+});
+
+test("equipping a real owned item raises effective challenge odds",()=>{
+ const a=launch();
+ a.act("intro");a.act("origin","scribe");a.act("faction","ledger");a.act("escape","observation");
+ const first=a.window.UndercityDiagnostics.broadCheck("observation",6);
+ a.act("equip","charcoal");
+ const second=a.window.UndercityDiagnostics.broadCheck("observation",6);
+ assert.ok(second>first,"equip bonus must affect odds");
+ const save=JSON.parse(a.storage.getItem("the-undercity-v1"));
+ assert.equal(save.equipment.tool,"charcoal");
+ a.act("equip","charcoal");
+ const unequipped=JSON.parse(a.storage.getItem("the-undercity-v1"));
+ assert.ok(!unequipped.equipment.tool);
+});
+
+test("a delayed Living Story resolves once and saves its message",()=>{
+ const past=Date.now()-3700000;
+ const saved={version:1,stage:"explore",tab:"messages",place:"court",
+  stats:{observation:10,guile:10,persuasion:10,resolve:10},actions:5,coin:5,ambition:1,clues:0,
+  lastTick:Date.now(),lastCard:Date.now(),hand:[],items:{},done:{},
+  relation:{ledger:0,wardens:0,choir:0,hands:0,dawn:0},
+  flags:{},journal:[],living:{"clockmaker-post":past},messages:[]};
+ const a=launch(saved),first=JSON.parse(a.storage.getItem("the-undercity-v1"));
+ assert.equal(first.flags["living:complete:clockmaker-post"],true);
+ assert.equal(first.coin,8);
+ assert.equal(first.clues,1);
+ assert.equal(first.messages.length,1);
+ assert.match(a.nodes.get("main").innerHTML,/note from the clockmaker/i);
+ const b=launch(first),again=JSON.parse(b.storage.getItem("the-undercity-v1"));
+ assert.equal(again.messages.length,1);
+ assert.equal(again.coin,8);
 });
