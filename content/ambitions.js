@@ -72,7 +72,7 @@ e.stories.push({
 });
 for(const p of paths){
  p.steps.forEach(([title,description,actA,actB,revelation],i)=>{
-   const done=i===p.steps.length-1&&p.id!=="moth";
+   const done=false; // Original chapter eight is an interlude; the new finale is chapter 32.
    const effects=(ending)=>Object.assign({pathProgress:1,coin:3,clues:(i===0||i===2||i===5)?1:0},
      done?{pathEnding:p.id+":"+ending,items:{[p.reward]:1},relation:{[p.id==="moth"?"wardens":p.id==="tide"?"hands":p.id==="mirror"?"choir":"dawn"]:2}}:{});
    e.stories.push({id:"path-"+p.id+"-"+(i+1),where:[p.places[i]],title:(i+1)+". "+title,description,
