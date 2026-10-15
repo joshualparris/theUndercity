@@ -12,6 +12,7 @@
     "studio:validate": "node scripts/narrative-studio.mjs",
     "studio:report": "node scripts/narrative-studio.mjs report",
     "cms:build": "node tools/cms/build.mjs",
-    "cms:check": "node tools/cms/build.mjs --check"
+    "cms:check": "node tools/cms/build.mjs --check",
+    "build:static": "npm test && npm run studio:validate && node scripts/build-content.mjs --check && node scripts/build-second-acts.mjs --check && node scripts/build-late-main.mjs --check && node scripts/validate-content.mjs && node scripts/content-tracker.mjs --check && node scripts/build-static.mjs"
   }
 }
