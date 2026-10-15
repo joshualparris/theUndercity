@@ -6,9 +6,11 @@ In a city beneath a sealed stone sky, memories can be traded, lamps burn on pecu
 
 ## Play now
 
-**https://the-undercity.vercel.app**
+**Current updated playtest: https://undercity-playtest.parris-neathaustralia.workers.dev/**
 
-The site is published from this repository on Vercel. No sign-in or payment is required. Saves are **local to the browser and device** you use, not synchronised across phones and computers. Export a JSON save from **Settings** before clearing browser data or switching devices.
+The original https://the-undercity.vercel.app deployment is currently behind GitHub because Vercel reached its daily Free-plan deployment limit. The Cloudflare alternative has passed an external HTTP smoke check on game HTML, rules JS, and new late-ambition content. The two sites use different browser-local save storage; export a JSON save before switching.
+
+The current tested game is published from this repository on Cloudflare Workers as a pinned GitHub-source snapshot. Vercel remains a secondary, older deployment. No sign-in or payment is required. Saves are **local to the browser and device** you use, not synchronised across phones and computers. Export a JSON save from **Settings** before clearing browser data or switching devices.
 
 ## Narrative production pipeline
 
@@ -27,13 +29,13 @@ The site is published from this repository on Vercel. No sign-in or payment is r
 - **34 professions** (10 Tier 1, eight Tier 2, eight Tier 3, eight Tier 4). Senior careers require in-world promotion storylets, relevant reputation and previous office; each has its own pay, shift stories and professional equipment.
 - **20 destinies** (9 ordinary, 11 greater), with eligibility gates and permanent selection.
 - **9 character quirks**, **3 three-stage exceptional stories**, and **6 rotating seasonal events**.
-- **352 storylets and 851 authored choice branches**, plus 18 opportunity cards, including multiple stat-gated and origin-dependent decisions. See the [full content tracker](docs/CONTENT_TRACKER.md).
+- **352 storylets and 854 authored choice branches**, plus 18 opportunity cards, including multiple stat-gated and origin-dependent decisions. See the [full content tracker](docs/CONTENT_TRACKER.md).
 - **20 equipment slots**, at least one purchasable item for each, additive skill bonuses, and a buy/sell Bazaar with 20 goods. Selling equipped gear removes its active bonus.
 - Four **Living Stories** using a persistent, author-defined event queue with quality triggers, hour delays, related story IDs, and visible countdowns in Messages.
 - Ten-minute action regeneration with a starting cap of 10 and an unlockable cap of 20; four-minute opportunity-card regeneration with six-card hand limit. **Settings → Playtest mode** removes waiting/paid card-draw costs for testing.
 - Four pyramidal Menaces (**Suspicion, Notoriety, Wounds, Delirium**) with zero-action arrival scenes, three recovery methods per hub, and a permanent arrest Record capped at seven. Fourteen quality categories are registered in the narrative schema. Card draw rules include urgent-card bypass, unlock-condition weighting and full-hand pause.
 
-The UI includes semantic navigation landmarks, a keyboard skip link, adjustable persistent text size, and a colorblind/high-contrast option. A formal assisted-technology and mobile-device audit remains unfinished.
+The UI includes semantic navigation landmarks, a keyboard skip link, adjustable persistent text size, and a colorblind/high-contrast option. Actual automated Chromium smoke and axe WCAG A/AA checks passed at 390px and 1280px. Manual TalkBack, VoiceOver, NVDA and real-device testing remain outstanding.
 
 ## How to playtest
 
@@ -47,8 +49,8 @@ The UI includes semantic navigation landmarks, a keyboard skip link, adjustable 
 
 ## Narrative authoring and checks
 
-- The **JSON-authored** late Moth chapters live in `content/storylets/ambitions/moth.json`. The three other late arcs are in `content/late-ambitions.js`, with another 66 optional investigations authored as versioned JSON in `content/storylets/ambitions/second-acts.v1.json` and compiled via `scripts/build-second-acts.mjs`.
-- `node scripts/build-content.mjs` and `node scripts/build-second-acts.mjs` compile both JSON browser bundles. Use `--check` to detect stale generated code.
+- The **JSON-authored** late Moth chapters live in `content/storylets/ambitions/moth.json`. The River, Mirror and Ember late-main arcs are authored in `content/storylets/ambitions/late-main.v1.json` and compiled to `content/late-ambitions.js` by `scripts/build-late-main.mjs`. Another 66 optional investigations use versioned JSON in `content/storylets/ambitions/second-acts.v1.json`, compiled by `scripts/build-second-acts.mjs`. The coalition conclusion in each arc requires earlier independent evidence and protected witnesses.
+- `node scripts/build-content.mjs`, `node scripts/build-second-acts.mjs` and `node scripts/build-late-main.mjs` compile the canonical JSON content. Use `--check` to catch out-of-date browser bundles.
 - `node scripts/validate-content.mjs` validates story references, locations, challenge qualities, item effects and chain gates.
 - `node scripts/content-tracker.mjs` updates `docs/CONTENT_TRACKER.md` with every story, choice, card, location and profession; use `--check` to detect drift.
 - GitHub Actions runs the checks and game tests on each push. Vercel's project build command is configured to run all three validation steps as well.
@@ -59,6 +61,6 @@ The game is dependency-free plain HTML/CSS/JavaScript. The canonical QBN engine 
 
 ## Specification scope and remaining work
 
-The supplied 64-page research PDF is much larger than a single release. **All four ambitions now meet the 30–40 chapter count target**, but further authored branching, character-specific dialogue and NPC consequences are still needed for the full depth requested. Legacy content still uses JavaScript predicates, and there is no web-based CMS, cross-player social system, cloud account/save service, or fully developed crafting economy. The story and mechanics remain independently authored.
+The supplied 64-page research PDF is much larger than a single release. **All four ambitions now meet the 30–40 chapter count target**, but further authored branching, character-specific dialogue and NPC consequences are still needed for the full depth requested. Early-stage stories and some other content still use JavaScript predicates, and there is no web-based CMS, cross-player social system, cloud account/save service, or fully developed crafting economy. The story and mechanics remain independently authored.
 
 See [Specification coverage and roadmap](docs/SPEC_PROGRESS.md) for explicit implemented/partial/not-yet-built status and the next planned systems. The setting, characters and prose are independently authored rather than copied from other games.
