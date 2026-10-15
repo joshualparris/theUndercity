@@ -27,7 +27,7 @@ const paths=[
  ["The shop of discarded vows","A woman sells promises their owners would rather forget. The Moth King's first oath lies inside a velvet case, still warm.","Buy the oath's true wording for three pennies","Trade a truthful confession for the oath","The promise is painfully simple: nobody beneath the stone roof will be left in darkness alone."],
  ["A garden of luminous eggs","Among the Moss Choir's flowering lamps lie seven eggs. Their caretaker says each is a street the King was promised but never given.","Guard the eggs from the Council's collectors","Translate the nursery's whispered lullaby","The eggs will hatch into lights if someone takes responsibility for them. The monster's hunger may be grief."],
  ["The staircase of discarded crowns","At a landing carved from black stone, the King waits in a skin of ash and silver. The bounty notice curls in your pocket.","Face the King's watchers","Study the oath carved on its crown","It offers you its last possession: the names of households the Council abandoned."],
- ["A sovereign without a throne","The Moth King kneels above the Listening Edge. It will surrender the stolen light only if the promises are fulfilled. The Wardens expect you to kill it.","Strike the King and claim the bounty","Bind the King to a new oath of protection","Your verdict is carried down every street by a thousand small lamps."]
+ ["A sovereign without a throne","The Moth King kneels above the Listening Edge and offers you the names of the families whose lamps were stolen. The Wardens expect you to kill it today. Yet no bargain is possible until the witnesses are safe and the records restored.","Demand the names of the abandoned households","Ask the King to postpone judgement until the witnesses can speak","The King gives you a list of people the Council erased. Its hunger is not yet ended; first you must establish what the living are owed."]
  ]},
  {id:"tide",name:"The River's Unfinished Testament",description:"Find the author of a will written by the river itself, and decide who inherits the city's stolen shores.",stat:"observation",other:"persuasion",reward:"quiet-bell",places:["court","quays","ink","market","soot","choir","stairs","edge"],
  steps:[
@@ -72,7 +72,7 @@ e.stories.push({
 });
 for(const p of paths){
  p.steps.forEach(([title,description,actA,actB,revelation],i)=>{
-   const done=i===p.steps.length-1;
+   const done=i===p.steps.length-1&&p.id!=="moth";
    const effects=(ending)=>Object.assign({pathProgress:1,coin:3,clues:(i===0||i===2||i===5)?1:0},
      done?{pathEnding:p.id+":"+ending,items:{[p.reward]:1},relation:{[p.id==="moth"?"wardens":p.id==="tide"?"hands":p.id==="mirror"?"choir":"dawn"]:2}}:{});
    e.stories.push({id:"path-"+p.id+"-"+(i+1),where:[p.places[i]],title:(i+1)+". "+title,description,
