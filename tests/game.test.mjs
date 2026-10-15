@@ -4,7 +4,7 @@ import { readFileSync } from "node:fs";
 import vm from "node:vm";
 
 const html = readFileSync(new URL("../index.html", import.meta.url), "utf8");
-const filenames = ["content/ambitions.js","content/moth.generated.js","content/second-acts.generated.js","content/late-ambitions.js","content/world.js","content/penalties.js","content/callings.js","content/systems.js","src/game/rules.global.js"];
+const filenames = ["content/ambitions.js","content/moth.generated.js","content/second-acts.generated.js","content/late-ambitions.js","content/cms-published.js","content/world.js","content/penalties.js","content/callings.js","content/systems.js","src/game/rules.global.js"];
 const main = html.match(/<script>\s*([\s\S]*?)<\/script>/)?.[1];
 assert.ok(main, "the main browser script must exist");
 
