@@ -1,65 +1,71 @@
-# PDF specification coverage and current build
+# The Undercity — specification coverage and phase-two implementation audit
 
-Updated: 15 October 2026. Source: the uploaded 64-page Undercity/Neathbound technical-and-content blueprint. This is an **implementation audit**, not a claim of full PDF completion.
+Date: **15 October 2026**. Scope: the uploaded 64-page Undercity RPG design document and subsequent eight-system phase-two instructions. This report differentiates **working implementations**, **partial implementation** and **not yet verified**. It is not a claim to have reproduced any proprietary game.
 
-## Playable, implemented
+## Current verified inventory
 
-| PDF system | Current implementation |
-| --- | --- |
-| Browser RPG and local persistence | Dependency-free HTML/CSS/JS; autosaved version-1 character with validation and JSON import/export |
-| Opening | Welcome/tutorial choice, past/faction selection, Bell-Cage with four ability-related exits |
-| Four abilities and CP | Observation, Guile, Persuasion, Resolve; piecewise CP costs flatten at 70 CP per level from level 70, with CP awards determined by challenge outcome |
-| Action regeneration | 10 minutes; 10 actions initially, earn a 20-action cap through reputations |
-| Opportunity cards | Location-aware weighted random draws; 4-minute regeneration, up to six in hand; repeat/discard paths |
-| World and travel | Map with explicit connections, two clue-gated remote districts, contextual routes, recovery wards |
-| Base city mystery | Four stages including irreversible remember-or-silence conclusion |
-| Personal ambitions | Four original ambitions, eight continuous chapters and alternative final approaches each |
-| Making Your Name | Four parallel seven-stage reputations, stat-appropriate challenges, final keepsakes |
-| Careers | Ten Tier 1 and eight Tier 2, work stories, gated promotion and weekly wages |
-| Destinies | Nine ordinary and eleven greater, exclusive saved-life selection |
-| Quirks | Nine character traits earned by story decisions |
-| Exceptional stories | Three independent three-chapter investigations |
-| Seasonal encounters | Six themed events rotating in two-month windows |
-| Equipment | Twenty equipment slots in the current build (the PDF's earlier slot list names eighteen), metadata for supported items and additive stat-check bonuses |
-| Living stories | Four time-triggered delayed messages and rewards, persisted across reloads |
-| Journal/condition/economy | Four pyramidal Menaces with distinct level-8 recovery hubs, permanent Record consequences, journal, pennies and shop |
-| Testing/deployment | Node regression tests in GitHub Actions, Vercel Git deployment at https://the-undercity.vercel.app |
+The [generated full content tracker](CONTENT_TRACKER.md) enumerates:
 
-## Partial compared with the PDF's complete scope
+- **214 playable storylets** in the authored source (including penalty-hub stories).
+- **437 choice branches** and **18 opportunity cards**.
+- **34 professions** (10 Tier 1, eight each Tier 2, 3 and 4).
+- **20 enumerated equipment slots**, each with at least one purchasable item; 20 general Bazaar goods.
+- Four ambitions: **The Debt of the Moth King has 32 chapters** (8 prior + 24 new); the three other ambitions currently have 8 each.
+- Four seven-stage Making Your Name arcs; 20 destinies; nine quirks; three exceptional stories; six seasonal events.
 
-- **Ambition length.** The PDF proposes 30–40 unique storylets per ambition; each of the four ambitions currently has eight authored stages. The major plot structures work, but the deeper middle sections and character-dependent dialogue remain to be written.
-- **Qualities and menaces.** The canonical engine enumerates fourteen quality categories and powers primary CP, dispositions, equipment, affiliations and four Menaces. Remaining work: route every legacy story flag, progression counter and timed event through the shared Quality schema, and add more varied penalty-hub narratives.
-- **Narrative content.** The build includes more than 140 playable storylets, but does not yet offer the hundreds/thousands of bespoke storylets, unique branches, NPC arcs and completion-proof coverage described in the PDF.
-- **Professions.** Tier 1 and Tier 2 are playable. Tier 3–4 professional progression, exhaustive specialised equipment and every income variant remain to be designed.
-- **Card logic.** Draw weight, hand exclusions and local gates work. The full documented high-urgency bypass and every multiplicative-unlock edge case still need acceptance tests and implementation.
-- **Items.** Twenty slots are exposed but not every slot has an available equipable item. Inventory, bonuses and choice rewards work; a full trading/crafting economy does not.
-- **Living Stories.** Four timed letters are available; a general authoring scheduler covering arbitrarily defined temporal quality triggers remains a future system.
-- **UI and accessibility.** Responsive layouts and keyboard-focused controls exist. Formal screen-reader, contrast, screen-size and low-bandwidth audits remain outstanding.
-- **Content architecture.** Authored content is modular JavaScript with tests. The PDF's authoring CMS, versioned JSON schema/content tracker and bulk validation/editor workflows remain a priority.
+Counts represent authored data and test-reachable engine integration, **not** an assertion of a complete human playthrough of every branch.
 
-## Not implemented / intentionally excluded
+## Phase-two requirements
 
-- Cross-player multiplayer social messages, trades and shared-world events.
-- Cloud-based accounts and cross-device save synchronisation; browser saves are local by design.
-- Paid premium purchases, premium action upgrades or commercial Fate processing. The playtest is free with optional no-wait testing.
-- Complete, fully authored encyclopaedia of NPC histories, faction relationships, setting lore and an endgame spanning hundreds of hours.
-- Studio-equivalent live operations, authoring infrastructure or exact reproduction of any proprietary game.
+| Requirement | Status | Verified implementation | Further work |
+| --- | --- | --- | --- |
+| 1. Ambition depth | **Partial** | Moth King now 32 connected stages. Chapters 9–32 in versioned `content/storylets/ambitions/moth.json`; new choices vary skills, outcomes, flags, faction relation and starting background. Final awards are deferred to chapter 32. | Tide, Mirror and Ember still have eight chapters each. Deepen each to 30–40. Expand NPC branching and dialogue beyond origin checks. |
+| 2. Quality taxonomy | **Implemented registry; partial full migration** | `content/world.js` declares 14 category definitions: primary ability, menace, quirk, affiliation, status, circumstance, accomplishment, route, living story, dream, metaquality, item, story and once-only marker. `src/game/rules.js` supports additive or pyramidal semantics. | Migrate every legacy story flag and counter into typed qualities; make schema the only rules source. |
+| 2. Four Menace hubs | **Implemented** | Suspicion → Watch House, Notoriety → Tribunal, Wounds → Ward and Delirium → Pale Rooms. Arrival is automatic at level eight and costs zero actions. Each hub offers three recoveries, with different action and penny requirements. The Record increments once per arrest, to seven. | More multi-stage hub content, persistent NPC recognition and specialised menace challenges. |
+| 3. Card rules | **Implemented and tested** | High-urgency cards bypass the normal weighted lottery, including zero-weight cards; unlock multiplicity multiplies draw weight; hand capped at six, timer resets/pauses when full. Automated seeded distribution test for 1:3 weighting. | Wider statistical and edge-case validation against reference observations; not proof that proprietary internals are identical. |
+| 4. Content pipeline | **Partial structured migration, functioning validation** | Deterministic JSON compilation (`scripts/build-content.mjs`), cross-reference and quality/item validator (`scripts/validate-content.mjs`), and generator (`scripts/content-tracker.mjs`). CI and Vercel build configured to validate prior to serving new code. | Convert the remaining JavaScript-authored stories into versioned JSON, add an author/editor GUI, schema evolution rules and tracked review workflow. |
+| 5. Tier 3–4 professions | **Implemented** | Eight promotions at Tier 3 and eight at Tier 4, gated by previous office and Making Your Name reputation. Each has its own work story, wage and equipment. Promotion requires an in-world challenge, not an unlocked shortcut button. | Unique professional politics and long quests, more income variants, rebalancing after playtesting. |
+| 6. Equipment/shop | **Implemented basic economy** | At least one item in each of 20 slots; goods have meaningful additive stat bonuses, costs and resale prices. Buy/sell works with pennies; unequipping occurs automatically when selling the last copy. | Crafting, markets in different districts, trade routes, detailed price balance. |
+| 7. Living Stories | **Implemented baseline general scheduler** | `living_stories` array saved per character, each event with `trigger_quality`, `delay_hours`, `message`, `storylet_id`, and `trigger_time`. `tickLivingStories()` resolves triggers at load and during play, adds Messages, and provides countdowns. Four events are currently authored. | Author additional temporal storylines and complex chained triggers, test long-term event migration. |
+| 8. Accessibility | **Partially implemented** | Semantic navigation, skip-to-content link, screen-readable names/status, keyboard-driven native buttons, reduced-motion CSS, persistent reading size, colorblind patterned indicators. Responsive breakpoints exist. | Formal NVDA/VoiceOver/TalkBack, mobile touch, WCAG colour contrast and keyboard-only manual checks. |
+| 8. Social | **Not implemented (optional)** | Local saves and story acquaintances are supported, but there is no real cross-player messaging. | If desired, offer exportable letters or local NPC social scenes without pretending messages can reach another user without a service. |
 
-## Development priorities
+## Authoring workflow
 
-1. Expand the four personal ambitions toward the PDF's target length, with substantive consequences at each branch, not filler content.
-2. Add server-independent data contracts and a readable content tracker: all storylet IDs, locations, gates, rewards, authorship and quest progression.
-3. Upgrade encounter cards to cover high urgency, unlock multiplicity and urgency timing; confirm probability distribution in automated tests.
-4. Expand the four new penalty locations with multi-step recovery choices and support more named NPC relationship outcomes.
-5. Fill unused equipment slots with meaningful items and differentiate elite professions mechanically.
-6. Run end-to-end mobile/browser, keyboard and screen-reader audits before calling this a complete release.
+```bash
+node scripts/build-content.mjs
+node scripts/validate-content.mjs
+node scripts/content-tracker.mjs
+node --test tests/*.test.mjs
+```
 
-## Acceptance checks
+The checked-in browser bundle and content tracker can be verified without modifying them:
 
-- Test an existing version-1 save after every migration, including exports and corrupt-save recovery.
-- Every navigable district must have a return route; hidden districts must not be bypassed.
-- Every story, choice and item ID must resolve; each story gate must have a reachable path.
-- Both outcomes of ambition and city-wide ending branches must persist.
-- No silent online-save claims: all progress currently belongs to the local browser until a backend is actually tested.
+```bash
+node scripts/build-content.mjs --check
+node scripts/validate-content.mjs
+node scripts/content-tracker.mjs --check
+node --test tests/*.test.mjs
+```
 
-**Status:** playable substantial prototype; **not** 100% implementation of the entire research specification.
+CI in `.github/workflows/ci.yml` and `test.yml` runs this validation on every push. The connected Vercel project build command is also configured to run the three source and tracker checks before producing a deployment; verify the status of the resulting deployment for each release.
+
+## Findings and remaining limitations
+
+1. **Ambitions are uneven in depth.** Thirty-two chapters for Moth King is a complete long arc, but Tide, Mirror and Ember remain short. Next authored milestone should be the river's legal/ethical storyline rather than indiscriminately cloning Moth King's structure.
+2. **Taxonomy is now explicit, but historical state remains mixed.** Core qualities, inventory, CP, menaces and affiliations are mediated through the rules engine. Some legacy flags, progression counters and seasonal conditions still use ordinary save properties for compatibility.
+3. **A JSON compiler is not yet a full CMS.** The authoring file is structured and validated; other content modules still contain in-code `when` functions. The editor and migration tools are not complete.
+4. **One meaningful menu choice is not necessarily one materially different story arc.** Branches change qualities and outcomes but many currently converge. Deep character-level consequences, NPC memory and location changes need further authored work.
+5. **The economy is functional, not balanced.** Penalties, wages, item prices and bonuses have automated tests but need longitudinal playtesting. Paid currencies or monetisation have not been implemented.
+6. **Accessibility claims are deliberately limited.** Automated assertions verify UI semantics and saved preferences, not actual assistive technology effectiveness.
+7. **Saves are browser-local.** There is no account, server sync or cross-player delivery. JSON export/import is available before clearing browser storage.
+
+## Test acceptance and deployment
+
+- Node smoke tests cover onboarding, city navigation, the full-length Moth chain, old-save migrations, four menace hubs, progression, shop and equipment, timed letters and accessibility preferences.
+- Card tests cover high-urgency bypass (including zero weight), illegal cards and a reproducible 20,000-draw probability sample.
+- Content validator rejects missing story locations, duplicate IDs, unknown items or challenge qualities, broken `next_storylet` links, invalid JSON simple-chain gates and unsupported item slots.
+- Generated tracker lists every authored storylet, its location, number of choices, content source and links.
+- Vercel production entry point: **https://the-undercity.vercel.app**.
+
+**Current status: expanded, playable, and tested phase-two game. It does not yet fulfil every part of the original 64-page specification.**
