@@ -14,6 +14,7 @@ function section(first,last){
  return script.slice(start,end);
 }
 const env=vm.createContext({console,window:{UndercityExpansions:{stories:[],cards:[],items:{},professions:[],destinies:[],ambitions:[]}}});
+vm.runInContext(readFileSync(new URL("../src/game/rules.global.js",import.meta.url),"utf8"),env);
 vm.runInContext(section("const SAVE=","let state;"),env,{timeout:2000});
 vm.runInContext(section("function normaliseSave(","try{state="),env,{timeout:2000});
 vm.runInContext(section("function cityRoute(","function beginOrigin("),env,{timeout:2000});
@@ -22,7 +23,7 @@ const query=(js)=>vm.runInContext(js,env,{timeout:2000});
 test("the shipped script parses cleanly",()=>assert.doesNotThrow(()=>new vm.Script(script)));
 
 test("all ordinary districts can be reached after collecting four investigation leads",()=>{
- const routes=query("Object.keys(PLACES).filter(k=>!['cell','watch','ward','tribunal'].includes(k)).map(k=>[k,cityRoute('court',k,{clues:4})])");
+ const routes=query("Object.keys(PLACES).filter(k=>!['cell','watch','ward','tribunal','the_watch_house','the_tribunal','the_ward','the_pale_rooms'].includes(k)).map(k=>[k,cityRoute('court',k,{clues:4})])");
  for(const [id,path] of routes){
   assert.ok(path,"Route to "+id+" should exist");
   assert.equal(path[0],"court");
@@ -64,7 +65,7 @@ test("imports cannot create bogus possessions or negative coins",()=>{
 });
 
 test("all opportunity card districts are real and ordinary",()=>{
- const valid=query("CARDS.every(c=>!c.where||c.where.every(id=>PLACES[id]&&!['cell','watch','ward','tribunal'].includes(id)))");
+ const valid=query("CARDS.every(c=>!c.where||c.where.every(id=>PLACES[id]&&!['cell','watch','ward','tribunal','the_watch_house','the_tribunal','the_ward','the_pale_rooms'].includes(id)))");
  assert.equal(valid,true);
  assert.equal(query("CARDS.filter(c=>c.where.includes('choir')).length"),2);
 });
