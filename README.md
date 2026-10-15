@@ -37,3 +37,16 @@ This is a focused vertical slice, **not** the full multi-thousand-storylet game 
 For development, no install or build is required. Serve this directory with \`python -m http.server 8000\` and open http://localhost:8000. In the browser console, inspect \`UndercityDiagnostics\` to see testable engine information.
 
 Future improvements: external JSON storylet validation; better QBN gates and content indexing; more ambitions, faction consequences and hand-crafted art; automated browser E2E tests; cloud saves by opt-in; comprehensive automated content coverage.
+
+## Engineering improvements — 15 October 2026
+
+Following the independent [Failbetter Games quality-based-narrative research](https://github.com/joshualparris/FailbetterGames/tree/main/fallen-london/build), The Undercity now has:
+
+- **Calculated city routes**: the map displays each intermediate district and lets you travel the next connected road, never teleporting through locked routes. The current investigation now includes directions.
+- **Neighbourhood-specific opportunity cards**: the eight original card encounters belong to plausible areas; already held cards remain playable after moving.
+- **More robust v1 saves**: deduplicated opportunity hand; validated item IDs, currency and skills; action-cap calculation no longer depends on an uninitialised global state.
+- **Automated regression checks**: `tests/logic.test.mjs` tests actual shipped inline code for route reachability, locked routes, save loading, card locations and syntax. GitHub Actions run these alongside the existing game tests.
+
+These improvements preserve the expanded four personal ambitions, careers, faction consequences and destiny systems added to the existing prototype. They do not import proprietary Fallen London source, stories or artwork.
+
+**Open limitations:** no online account/save synchronisation, no exhaustive multi-character playtest or external accessibility audit. The original game is a playable prototype, not yet a fully authored long-running online RPG.
