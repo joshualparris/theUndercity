@@ -53,6 +53,24 @@ try{
   assert.match(await firstResult.innerText(),/What changed/i,"quality and action deltas shown");
   await page.locator('[data-act="dismiss"]').first().click();
   assert.equal(await page.locator("#action-result").count(),0);
+  // A Read card tap from the bottom of the mobile page must present the
+  // actual selected opportunity, not merely scroll to the district hero.
+  const handCard=page.locator('aside.aside-right button[data-act="card"]').first();
+  assert.ok(await handCard.count()>0,"opening hand has opportunity cards");
+  await handCard.click();
+  const openCard=page.locator("#open-storylet");
+  await openCard.waitFor({state:"visible"});
+  const cardView=await page.evaluate(()=>{
+   const el=document.querySelector("#open-storylet");
+   return {top:el.getBoundingClientRect().top,headerBottom:document.querySelector("header").getBoundingClientRect().bottom,
+    focus:document.activeElement?.id,viewport:innerHeight};
+  });
+  assert.equal(cardView.focus,"open-storylet","Read card moves keyboard focus to actual card");
+  assert.ok(cardView.top>=cardView.headerBottom-4,"open card clears header: "+JSON.stringify(cardView));
+  assert.ok(cardView.top<cardView.viewport*.8,"selected card is visible: "+JSON.stringify(cardView));
+  assert.match(await openCard.innerText(),/Opportunity card/i);
+  await page.locator('#open-storylet button[data-act="dismiss"]').click();
+  assert.equal(await openCard.count(),0,"putting card away restores the district");
   if(width===390){
    const dims=await page.evaluate(()=>({w:document.documentElement.scrollWidth,viewport:innerWidth}));
    assert.ok(dims.w<=dims.viewport+2,"mobile horizontal overflow: "+JSON.stringify(dims));
@@ -62,7 +80,7 @@ try{
   for(const v of axe.violations)console.log("AXE "+width+"px "+v.impact+" "+v.id+" ("+v.nodes.length+" nodes): "+v.help);
   assert.equal(severe.length,0,"serious accessibility violations at "+width+"px");
   assert.deepEqual(errors,[],"runtime JavaScript errors at "+width+"px");
-  console.log("BROWSER PASS "+width+"px · outcomes, auto-scroll, keyboard focus, continue, 0 JS errors, WCAG A/AA");
+  console.log("BROWSER PASS "+width+"px · outcomes, opportunity cards, auto-scroll, keyboard focus, continue, 0 JS errors, WCAG A/AA");
   await context.close();
  }
  const cmsContext=await browser.newContext({viewport:{width:1280,height:820}});
