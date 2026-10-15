@@ -69,3 +69,14 @@ test("all opportunity card districts are real and ordinary",()=>{
  assert.equal(valid,true);
  assert.equal(query("CARDS.filter(c=>c.where.includes('choir')).length"),2);
 });
+
+
+test("missing or invalid save clocks recover without disabling regeneration",()=>{
+ for(const clock of [undefined,null,"broken",1e30]){
+  const s=query("normaliseSave("+JSON.stringify({version:1,stage:"explore",place:"court",stats:{},lastTick:clock,lastCard:clock,lastWage:clock})+")");
+  for(const key of ["lastTick","lastCard","lastWage"]){assert.ok(Number.isFinite(s[key]));assert.ok(s[key]>0&&s[key]<=Date.now());}
+  assert.equal(s.actions,10);
+ }
+ const zero=query("normaliseSave({version:1,place:'court',stats:{},actions:0})");
+ assert.equal(zero.actions,0,"a deliberately empty action pool stays empty");
+});
