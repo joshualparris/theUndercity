@@ -17,7 +17,7 @@ The site is published from this repository on Vercel. No sign-in or payment is r
 - A four-stage city investigation about the Council's sealed sky, with different world outcomes.
 - **Four original personal ambitions**, each with eight consecutive, fully playable chapters and competing endings.
 - **Four seven-stage Making Your Name reputations**, one for each ability, with distinct progress and end rewards.
-- The four abilities **Observation, Guile, Persuasion and Resolve**, with change points, broad-chance rolls and rewards even when a check fails.
+- The four abilities **Observation, Guile, Persuasion and Resolve**, using the level-70 CP pyramid, parameterised Broad and fixed Narrow checks, rare-success rolls, and 1–2 CP awards.
 - **18 professions** (10 starter, 8 advanced), location-based work, recurring wages and qualifying reputation requirements.
 - **20 destinies** (9 ordinary, 11 greater), with eligibility gates and permanent selection.
 - **9 character quirks**, **3 three-stage exceptional stories**, and **6 rotating seasonal events**.
@@ -25,7 +25,7 @@ The site is published from this repository on Vercel. No sign-in or payment is r
 - **20 equipment slots**, inventory items and stat-boosting equipment. The number of equipped items depends on what you have found.
 - Four **Living Stories**: letters/rewards delivered after real-time delays, even if you close the browser.
 - Ten-minute action regeneration with a starting cap of 10 and an unlockable cap of 20; four-minute opportunity-card regeneration with six-card hand limit. **Settings → Playtest mode** removes waiting/paid card-draw costs for testing.
-- Persistent consequences, a journal, delayed messages, recoverable injury/scandal/custody detours, a shop, local autosave, JSON import/export and adjustable reading size.
+- Four pyramidal Menaces (**Suspicion, Notoriety, Wounds, Delirium**) with distinct level-8 penalty hubs (The Watch House, The Tribunal, The Ward, The Pale Rooms), a capped Record, recoverable detours, a journal, delayed messages, a shop and save import/export.
 
 ## How to playtest
 
@@ -39,7 +39,7 @@ The site is published from this repository on Vercel. No sign-in or payment is r
 
 ## Repository and checks
 
-The game is dependency-free plain HTML/CSS/JavaScript. Narrative data is in `content/`. Tests in `tests/` run through GitHub Actions on each push. Run locally with `node --test tests/*.test.mjs` (Node 22+) and serve the repository with `python -m http.server 8000` if you want to test it on a local server.
+The game is dependency-free plain HTML/CSS/JavaScript. The canonical QBN engine lives in `src/game/rules.js` (ES module); `rules.global.js` is its byte-verified classic-script build loaded by the browser. Existing v1 local saves are migrated into the richer qualities schema without resetting progress. Narrative data is in `content/`. Tests in `tests/` run through GitHub Actions on each push. Run locally with `node --test tests/*.test.mjs` (Node 22+) and serve the repository with `python -m http.server 8000` if you want to test it on a local server.
 
 ## Specification scope and remaining work
 
