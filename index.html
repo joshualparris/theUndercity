@@ -80,16 +80,16 @@ Object.assign(ITEMS,EXT.items||{});STORIES.push(...(EXT.stories||[]));CARDS.push
 const PROFESSIONS=EXT.professions||[],DESTINIES=EXT.destinies||[],WEEK=604800000;
 const SYSTEMS=window.UndercitySystems||{slots:[],gear:{},living:[]};
 const SLOTS=SYSTEMS.slots,GEAR=SYSTEMS.gear,LIVING=SYSTEMS.living;
-function effectiveLevel(k){return lv(state.stats[k]||0)+Object.values(state.equipment||{}).reduce((v,item)=>v+(GEAR[item]?.[1]===k?GEAR[item][2]:0),0)}
+function effectiveLevel(k){return lv(state.stats[k]||0)+Object.values(state.equipment||{}).reduce((v,item)=>v+(GEAR[item]?.[1]===k?GEAR[item][2]:0),0)+Number(state.destinyBonuses?.[k]||0)}
 function actionCap(character=state){return Object.values(character?.renown||{}).reduce((n,v)=>n+(Number(v)||0),0)>=14?20:MAXA;}
-function fresh(){return{version:1,stage:"welcome",tab:"story",name:"Stranger",background:"",faction:"",place:"cell",actions:MAXA,lastTick:Date.now(),lastCard:Date.now(),playtest:false,coin:8,stats:{observation:10,guile:10,persuasion:10,resolve:10},suspicion:0,notoriety:0,health:10,sanity:10,clues:0,ambition:0,items:{},relation:{ledger:0,wardens:0,choir:0,hands:0,dawn:0},flags:{},done:{},hand:["card_bell","card_courier"],journal:[],result:null,selectedCard:null,originChoice:"",path:"",pathProgress:0,pathEnding:"",equipment:{},living:{},messages:[],renown:{observation:0,guile:0,persuasion:0,resolve:0},quirks:{},extras:{},profession:"",lastWage:Date.now(),destiny:""}}
+function fresh(){return{version:1,stage:"welcome",tab:"story",name:"Stranger",background:"",faction:"",place:"cell",actions:MAXA,lastTick:Date.now(),lastCard:Date.now(),playtest:false,coin:8,stats:{observation:10,guile:10,persuasion:10,resolve:10},suspicion:0,notoriety:0,health:10,sanity:10,clues:0,ambition:0,items:{},relation:{ledger:0,wardens:0,choir:0,hands:0,dawn:0},flags:{},done:{},hand:["card_bell","card_courier"],journal:[],result:null,selectedCard:null,originChoice:"",path:"",pathProgress:0,pathEnding:"",equipment:{},living:{},messages:[],renown:{observation:0,guile:0,persuasion:0,resolve:0},quirks:{},extras:{},profession:"",lastWage:Date.now(),destiny:"",destinyBonuses:{},criminalRecord:0}}
 let state;
 function normaliseSave(v){
  const b=fresh();if(!v||v.version!==1||!v.stats||!PLACES[v.place])return b;
  Object.assign(b,v);
  b.stats={...fresh().stats,...(v.stats||{})};
  b.renown={observation:0,guile:0,persuasion:0,resolve:0,...(v.renown||{})};
- b.quirks={...(v.quirks||{})};b.extras={...(v.extras||{})};
+ b.quirks={...(v.quirks||{})};b.extras={...(v.extras||{})};b.destinyBonuses={...(v.destinyBonuses||{})};b.criminalRecord=Math.max(0,Math.min(7,Number(v.criminalRecord)||0));
  b.living={...(v.living||{})};b.messages=Array.isArray(v.messages)?v.messages.slice(0,60):[];
  b.equipment=Object.fromEntries(Object.entries(v.equipment||{}).filter(([slot,item])=>SLOTS.includes(slot)&&GEAR[item]?.[0]===slot&&(v.items?.[item]||0)>0));
  b.flags={...(v.flags||{})};b.relation={...fresh().relation,...(v.relation||{})};
@@ -108,8 +108,18 @@ function normaliseSave(v){
 try{state=normaliseSave(JSON.parse(localStorage.getItem(SAVE)))}catch(e){state=fresh()}
 const $=id=>document.getElementById(id);
 function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,x=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[x]))}
-function lv(cp){return Math.floor((Math.sqrt(8*Math.max(0,cp||0)+1)-1)/2)}
-function odds(stat,d){const v=effectiveLevel(stat);return d<=0?100:Math.min(100,Math.max(10,Math.floor(.60*v/d*100)))}
+const CP_AT_70=2485;
+function lv(cp){
+ cp=Math.max(0,Math.floor(Number(cp)||0));
+ return cp<CP_AT_70 ? Math.floor((Math.sqrt(8*cp+1)-1)/2) : 70+Math.floor((cp-CP_AT_70)/70);
+}
+function cpForLevel(n){n=Math.max(0,Math.floor(n));return n<=70?n*(n+1)/2:CP_AT_70+(n-70)*70}
+const FREQUENCY={very_rare:.05,rare:.2,infrequent:.8,standard:1,frequent:2,abundant:5,ubiquitous:10,unique:1};
+const OPPOSITES={merciful:["ruthless"],ruthless:["merciful","generous"],honest:["subtle"],subtle:["honest","proud"],generous:["ruthless"],proud:["subtle"],curious:["cautious"],cautious:["curious"],steadfast:["cautious"]};
+function cardWeight(c){return Math.max(0,Number(c.weight??1))*10*(FREQUENCY[c.frequency??"standard"]??1)*Math.max(1,c.unlock_conditions?.length??1)}
+function eligibleCard(c){return !state.hand.includes(c.id)&&(!c.where||c.where.includes(state.place))&&(!c.unlock_conditions||c.unlock_conditions.every(test=>typeof test==="function"?test(state):test?.flag?Boolean(state.flags[test.flag]):true))}
+
+function odds(stat,d,scaler=.60){const v=effectiveLevel(stat);return d<=0?100:Math.min(100,Math.max(10,Math.floor(Number(scaler)*v/d*100)))}
 function labelStat(stat){return STATS[stat]||stat}
 function addJournal(t){state.journal.unshift({text:t,date:new Date().toISOString(),place:state.place});state.journal=state.journal.slice(0,80)}
 function tick(){
@@ -118,9 +128,9 @@ function tick(){
  if(state.actions>=cap)state.lastTick=now;
  else {const n=Math.max(0,Math.floor((now-state.lastTick)/REGEN));
    if(n>0){state.actions=Math.min(cap,state.actions+n);state.lastTick+=n*REGEN;}}
- if(now<state.lastCard)state.lastCard=now;
+ if(now<state.lastCard||state.hand.length>=6)state.lastCard=now;
  const draws=Math.max(0,Math.floor((now-state.lastCard)/CARDRATE));
- if(draws>0){state.lastCard+=draws*CARDRATE;for(let i=0;i<Math.min(6,draws);i++)drawCard();}
+ if(draws>0){state.lastCard+=draws*CARDRATE;for(let i=0;i<Math.min(6,draws)&&state.hand.length<6;i++)drawCard();}
  for(const event of LIVING){
   if(!event.trigger(state)||state.flags["living:complete:"+event.id])continue;
   if(!state.living[event.id]){state.living[event.id]=now;continue;}
@@ -137,7 +147,20 @@ function tick(){
     if(n>0){state.coin+=n*job.wage;state.lastWage+=n*WEEK;addJournal("Earned "+(n*job.wage)+" pennies for "+n+" week(s) as "+job.name+".");}}}
 }
 function canPlay(c){if((c.cost==null?1:c.cost)>state.actions&&!state.playtest)return false;if(c.need){if(c.need.coin!=null&&state.coin<c.need.coin)return false;if(c.need.item&&!state.items[c.need.item])return false}return true}
-function drawCard(){if(state.stage!=="explore"||state.hand.length>=6)return false;let list=CARDS.filter(c=>!state.hand.includes(c.id)&&(!c.where||c.where.includes(state.place)));if(!list.length)return false;let weight=list.reduce((a,c)=>a+c.weight,0);let r=Math.random()*weight;let chosen=list.find(c=>(r-=c.weight)<=0)||list[0];state.hand.push(chosen.id);return true}
+function drawCard(){
+ if(state.stage!=="explore"||state.hand.length>=6)return false;
+ let list=CARDS.filter(eligibleCard);
+ if(!list.length)return false;
+ const urgent=list.filter(c=>c.urgency==="high"||c.high_urgency);
+ if(urgent.length)list=urgent;
+ const weight=list.reduce((a,c)=>a+cardWeight(c),0);
+ if(weight<=0)return false;
+ let r=Math.random()*weight;
+ const chosen=list.find(c=>(r-=cardWeight(c))<=0)||list[list.length-1];
+ state.hand.push(chosen.id);
+ if(state.hand.length===6)state.lastCard=Date.now();
+ return true;
+}
 function apply(e){
  if(!e)return;if(e.coin)state.coin=Math.max(0,state.coin+Number(e.coin));
  for(const k of ["suspicion","notoriety","health","sanity","clues","ambition","pathProgress"])
@@ -147,18 +170,25 @@ function apply(e){
  if(e.items)for(const k in e.items)state.items[k]=Math.max(0,(state.items[k]||0)+e.items[k]);
  if(e.relation)for(const k in e.relation)state.relation[k]=(state.relation[k]||0)+e.relation[k];
  if(e.renown)for(const k in e.renown)state.renown[k]=(state.renown[k]||0)+e.renown[k];
- if(e.quirks)for(const k in e.quirks)state.quirks[k]=(state.quirks[k]||0)+e.quirks[k];
+ if(e.quirks)for(const k in e.quirks){
+  const delta=Number(e.quirks[k])||0;
+  state.quirks[k]=Math.min(15,Math.max(0,(state.quirks[k]||0)+delta));
+  if(delta>0)for(const other of OPPOSITES[k]||[])state.quirks[other]=Math.max(0,(state.quirks[other]||0)-delta);
+ }
  if(e.extras)for(const k in e.extras)state.extras[k]=(state.extras[k]||0)+e.extras[k];
  if(e.path&&!state.path)state.path=e.path;
  if(e.pathEnding)state.pathEnding=e.pathEnding;
  if(e.flag)state.flags[e.flag]=true;
 }
-function penalty(){if(["ward","watch","tribunal"].includes(state.place))return;if(state.suspicion>=8){state.recoveryFrom=state.place;state.place="watch";addJournal("The night office has arrested you for excessive curiosity.")}else if(state.notoriety>=8){state.recoveryFrom=state.place;state.place="tribunal";addJournal("The Unspoken Tribunal has summoned you.")}else if(state.health<=0||state.sanity<=0){state.recoveryFrom=state.place;state.place="ward";addJournal("You wake in the Quiet Ward. Recovery is possible, though it has a price.")}}
+function penalty(){if(["ward","watch","tribunal"].includes(state.place))return;if(state.suspicion>=8){state.recoveryFrom=state.place;state.place="watch";state.criminalRecord=Math.min(7,(state.criminalRecord||0)+1);addJournal("The night office has arrested you. Your criminal record increases.")}else if(state.notoriety>=8){state.recoveryFrom=state.place;state.place="tribunal";addJournal("The Unspoken Tribunal has summoned you.")}else if(state.health<=0||state.sanity<=0){state.recoveryFrom=state.place;state.place="ward";addJournal("You wake in the Quiet Ward. Recovery is possible, though it has a price.")}}
 function recover(which){if(!spend(1))return;let old=state.place;if(old==="watch"){state.suspicion=Math.max(0,state.suspicion-3);state.coin=Math.max(0,state.coin-1)}else if(old==="tribunal"){state.notoriety=Math.max(0,state.notoriety-3);state.coin=Math.max(0,state.coin-2)}else{state.health=Math.max(4,state.health);state.sanity=Math.max(4,state.sanity);state.coin=Math.max(0,state.coin-2)}state.place=PLACES[state.recoveryFrom]?state.recoveryFrom:"court";state.result={title:"A costly return",text:"You return to the streets. Your absence was noticed. No-one seems surprised.",note:"The ward was a detour, not a game over."};addJournal("Recovered from "+PLACES[old].name);done()}
 function spend(n){tick();if(!state.playtest&&state.actions<n)return false;if(!state.playtest)state.actions-=n;return true}
 function completed(id){return !!state.done[id]}
 function isVisible(st){return st.where.includes(state.place)&&(!st.when||st.when(state))&&(!st.once||!completed(st.id))}
-function choose(id,ix,card){tick();let st=(card?CARDS:STORIES).find(s=>s.id===id);if(!st)return;if(card){if(!state.hand.includes(id)||state.stage!=="explore")return}else if(!isVisible(st))return;let c=st.choices[ix];if(!c||!canPlay(c))return;let cost=c.cost==null?1:c.cost;if(!spend(cost))return;let success=true,chance=null;if(c.stat){chance=odds(c.stat,c.difficulty);success=Math.random()*100<chance;state.stats[c.stat]=(state.stats[c.stat]||0)+(success?(chance<80?2:1):1)}let effects=success?c.effects:c.fail;apply(effects);if(success&&c.rare&&Math.random()<.04)apply(c.rare);if(card){state.hand=state.hand.filter(x=>x!==id);state.selectedCard=null}else if(success||!c.stat)state.done[id]=true;let outcome=success?(c.success||"The city accepts your choice, though not without recording it."):(c.failure||"The city will allow you to try again. It is less generous about the price.");state.result={title:st.title,text:outcome,note:(success?"SUCCESS":"SETBACK")+(chance!==null?" · "+chance+"% chance":"")+(c.stat?" · +experience in "+labelStat(c.stat):"")};addJournal(st.title+": "+outcome);penalty();state.tab="story";done()}
+function choose(id,ix,card){tick();let st=(card?CARDS:STORIES).find(s=>s.id===id);if(!st)return;if(card){if(!state.hand.includes(id)||state.stage!=="explore")return}else if(!isVisible(st))return;let c=st.choices[ix];if(!c||!canPlay(c))return;let cost=c.cost==null?1:c.cost;if(!spend(cost))return;let success=true,chance=null;if(c.stat){chance=odds(c.stat,c.difficulty,c.scaler??.60);success=Math.random()*100<chance;state.stats[c.stat]=(state.stats[c.stat]||0)+(success?(chance>=90?1:chance<40?4:chance<60?3:2):(chance<30?3:chance<40?2:1))}
+ const rare=success&&c.rare&&Math.random()<Math.max(0,Math.min(1,Number(c.rare_success_chance??.04)));
+ const effects=rare?c.rare:(success?c.effects:c.fail);
+ apply(effects);if(card){state.hand=state.hand.filter(x=>x!==id);state.selectedCard=null}else if(success||!c.stat)state.done[id]=true;let outcome=rare?(c.rare_success||"An extraordinary turn of fortune changes the result."):(success?(c.success||"The city accepts your choice, though not without recording it.")):(c.failure||"The city will allow you to try again. It is less generous about the price.");state.result={title:st.title,text:outcome,note:(rare?"RARE SUCCESS":success?"SUCCESS":"SETBACK")+(chance!==null?" · "+chance+"% chance":"")+(c.stat?" · +experience in "+labelStat(c.stat):"")};addJournal(st.title+": "+outcome);penalty();state.tab="story";done()}
 function done(){save();render()}
 function save(){try{localStorage.setItem(SAVE,JSON.stringify(state))}catch(e){console.warn("Local save unavailable",e)}}
 function setTab(t){state.tab=t;state.result=null;state.selectedCard=null;done()}
@@ -237,7 +267,7 @@ function equipItem(id){
  state.tab="possessions";addJournal("Changed equipment: "+ITEMS[id]);done();
 }
 function renderMessages(){
- return '<div class="hero"><div class="eyebrow">The city writes back</div><h1>Messages</h1>'+
+ return '<div class="hero"><div class="eyebrow">The city writes back</div><h1>Messages</h1>+
  '<p>Some stories arrive after real time passes, including while the game is closed. Rewards arrive when you next open the game.</p></div>'+
  (state.messages.length?state.messages.map(m=>'<article class="story"><div class="eyebrow">'+esc(new Date(m.date).toLocaleString())+
  '</div><h2>'+esc(m.title)+'</h2><p>'+esc(m.text)+'</p></article>').join(''):
@@ -281,6 +311,8 @@ function claimDestiny(id){
  const d=DESTINIES.find(x=>x.id===id);
  if(!d||state.destiny||state.stage!=="explore"||state.ambition<4||(d.tier==="greater"&&state.pathProgress<8))return;
  state.destiny=id;state.coin+=d.bonus;state.relation[d.faction]=(state.relation[d.faction]||0)+3;
+ state.destinyBonuses=d.stat_bonus||{};
+
  state.result={title:"Your destiny: "+d.name,text:d.description+" The choice remains with this character.",note:"A destiny chosen"};
  addJournal("Chose destiny: "+d.name);state.tab="story";done();
 }
