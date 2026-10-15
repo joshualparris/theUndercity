@@ -48,6 +48,9 @@ jobs:
           grep -q '"online":true' /tmp/undercity-groq-health
           curl -fsSL --retry 4 --retry-all-errors --retry-delay 4 --max-time 30 -o /tmp/undercity-auto "$URL/tools/cms/auto-repair.js"
           grep -q 'fullAutoMerge' /tmp/undercity-auto
+          grep -q 'pitch: built a usable outline' /tmp/undercity-auto
+          grep -q 'Missing story pitch' /tmp/undercity-cms-core
+          grep -q 'Your story pitch is empty' /tmp/undercity-cms-core
           grep -q 'groq-fixall' /tmp/undercity-groq-ui
           grep -q 'groq-qa-fix' /tmp/undercity-groq-ui
           grep -q 'Undo autofix' /tmp/undercity-groq-ui
