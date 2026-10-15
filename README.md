@@ -15,17 +15,19 @@ The site is published from this repository on Vercel. No sign-in or payment is r
 - Story-driven onboarding: four backgrounds, five factions, four ability-based escape routes leading to distinct districts.
 - A connected city map with clear roads and unlock requirements. Collect **2 leads** for the Forgotten Stairs and **4 leads** for the Listening Edge.
 - A four-stage city investigation about the Council's sealed sky, with different world outcomes.
-- **Four original personal ambitions**, each with eight consecutive, fully playable chapters and competing endings.
+- **Four original personal ambitions**: The Debt of the Moth King now has **32 connected chapters** and three conditional end approaches; the other three ambitions retain eight chapters each.
 - **Four seven-stage Making Your Name reputations**, one for each ability, with distinct progress and end rewards.
 - The four abilities **Observation, Guile, Persuasion and Resolve**, using the level-70 CP pyramid, parameterised Broad and fixed Narrow checks, rare-success rolls, and 1–2 CP awards.
-- **18 professions** (10 starter, 8 advanced), location-based work, recurring wages and qualifying reputation requirements.
+- **34 professions** (10 Tier 1, eight Tier 2, eight Tier 3, eight Tier 4). Senior careers require in-world promotion storylets, relevant reputation and previous office; each has its own pay, shift stories and professional equipment.
 - **20 destinies** (9 ordinary, 11 greater), with eligibility gates and permanent selection.
 - **9 character quirks**, **3 three-stage exceptional stories**, and **6 rotating seasonal events**.
-- More than **140 storylets** in the playable narrative corpus and **18 opportunity cards**.
-- **20 equipment slots**, inventory items and stat-boosting equipment. The number of equipped items depends on what you have found.
-- Four **Living Stories**: letters/rewards delivered after real-time delays, even if you close the browser.
+- **214 storylets and 437 authored choice branches**, plus 18 opportunity cards, including multiple stat-gated and origin-dependent decisions. See the [full content tracker](docs/CONTENT_TRACKER.md).
+- **20 equipment slots**, at least one purchasable item for each, additive skill bonuses, and a buy/sell Bazaar with 20 goods. Selling equipped gear removes its active bonus.
+- Four **Living Stories** using a persistent, author-defined event queue with quality triggers, hour delays, related story IDs, and visible countdowns in Messages.
 - Ten-minute action regeneration with a starting cap of 10 and an unlockable cap of 20; four-minute opportunity-card regeneration with six-card hand limit. **Settings → Playtest mode** removes waiting/paid card-draw costs for testing.
-- Four pyramidal Menaces (**Suspicion, Notoriety, Wounds, Delirium**) with distinct level-8 penalty hubs (The Watch House, The Tribunal, The Ward, The Pale Rooms), a capped Record, recoverable detours, a journal, delayed messages, a shop and save import/export.
+- Four pyramidal Menaces (**Suspicion, Notoriety, Wounds, Delirium**) with zero-action arrival scenes, three recovery methods per hub, and a permanent arrest Record capped at seven. Fourteen quality categories are registered in the narrative schema. Card draw rules include urgent-card bypass, unlock-condition weighting and full-hand pause.
+
+The UI includes semantic navigation landmarks, a keyboard skip link, adjustable persistent text size, and a colorblind/high-contrast option. A formal assisted-technology and mobile-device audit remains unfinished.
 
 ## How to playtest
 
@@ -37,12 +39,20 @@ The site is published from this repository on Vercel. No sign-in or payment is r
 6. Test success and failure, a full opportunity hand and a menace-triggered recovery detour. Use **Settings → Playtest mode** if you want to inspect content without waiting.
 7. Export your save JSON before restarting or switching browsers.
 
+## Narrative authoring and checks
+
+- The **JSON-authored** Moth chapters live in `content/storylets/ambitions/moth.json`.
+- `node scripts/build-content.mjs` compiles their browser bundle. Use `--check` to detect stale generated code.
+- `node scripts/validate-content.mjs` validates story references, locations, challenge qualities, item effects and chain gates.
+- `node scripts/content-tracker.mjs` updates `docs/CONTENT_TRACKER.md` with every story, choice, card, location and profession; use `--check` to detect drift.
+- GitHub Actions runs the checks and game tests on each push. Vercel's project build command is configured to run all three validation steps as well.
+
 ## Repository and checks
 
 The game is dependency-free plain HTML/CSS/JavaScript. The canonical QBN engine lives in `src/game/rules.js` (ES module); `rules.global.js` is its byte-verified classic-script build loaded by the browser. Existing v1 local saves are migrated into the richer qualities schema without resetting progress. Narrative data is in `content/`. Tests in `tests/` run through GitHub Actions on each push. Run locally with `node --test tests/*.test.mjs` (Node 22+) and serve the repository with `python -m http.server 8000` if you want to test it on a local server.
 
 ## Specification scope and remaining work
 
-The supplied 64-page research PDF is a **much larger specification**, not merely a small initial build. This release implements an integrated playable game and a substantial content foundation. It **does not yet** contain 30–40 chapters for each personal ambition, thousands of unique scenes, full multiplayer social features, every tier of profession, a server-side account/cloud-save system, complete content authoring CMS, or every proposed economy/paid-Fate mechanic.
+The supplied 64-page research PDF is much larger than a single release. **Only the Moth King ambition currently meets the 30–40 chapter target**; the other three need further authored arcs. Legacy content still uses JavaScript predicates, and there is no web-based CMS, cross-player social system, cloud account/save service, or fully developed crafting economy. The story and mechanics remain independently authored.
 
 See [Specification coverage and roadmap](docs/SPEC_PROGRESS.md) for explicit implemented/partial/not-yet-built status and the next planned systems. The setting, characters and prose are independently authored rather than copied from other games.
