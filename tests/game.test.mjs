@@ -265,3 +265,22 @@ test("all four personal ambitions have 32 sequential, playable stages and a true
   assert.ok(finale.choices.some(c=>c.effects?.pathEnding),id+" ending must persist");
  }
 });
+
+
+test("all three negotiated coalition endings require choices made during earlier chapters",()=>{
+ const baseline={version:1,stage:"explore",tab:"story",place:"edge",background:"scribe",faction:"ledger",
+ stats:{observation:1000,guile:1000,persuasion:1000,resolve:1000},playtest:true,
+ actions:10,lastTick:Date.now(),lastCard:Date.now(),coin:50,clues:12,ambition:4,
+ hand:[],items:{},flags:{},done:{},journal:[],pathProgress:31};
+ for(const id of ["tide","mirror","ember"]){
+  const blocked=launch({...baseline,path:id,extras:{}});
+  blocked.act("choose","path-"+id+"-32",3);
+  const blockedState=JSON.parse(blocked.storage.getItem("the-undercity-v1"));
+  assert.equal(blockedState.pathProgress,31,id+" coalition must be gated");
+  const earned=launch({...baseline,path:id,extras:{[id+"Evidence"]:8,[id+"Witnesses"]:8}});
+  earned.act("choose","path-"+id+"-32",3);
+  const result=JSON.parse(earned.storage.getItem("the-undercity-v1"));
+  assert.equal(result.pathProgress,32,id+" coalition must finish the ambition");
+  assert.equal(result.pathEnding,id+":coalition");
+ }
+});
