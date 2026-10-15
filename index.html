@@ -16,6 +16,7 @@ header{position:sticky;top:0;z-index:10;background:#10171deb;border-bottom:1px s
 <script src="./content/ambitions.js?v=20261015a"></script>
 <script src="./content/moth.generated.js?v=20261015-phase2a"></script>
 <script src="./content/world.js?v=20261015a"></script>
+<script src="./content/penalties.js?v=20261015-phase2a"></script>
 <script src="./content/callings.js?v=20261015a"></script>
 <script src="./content/systems.js?v=20261015a"></script>
 <script src="./src/game/rules.global.js?v=20261015b"></script>
@@ -89,6 +90,7 @@ const SLOTS=SYSTEMS.slots,GEAR=SYSTEMS.gear,LIVING=SYSTEMS.living;
 const Rules=window.UndercityRules;
 if(!Rules)throw new Error("The Undercity rules engine did not load");
 const PENALTY_PLACES=new Set(Object.values(Rules.MENACE_PENALTY_HUBS));
+const PENALTIES=window.UndercityPenalties||{};
 const OPPOSITES={merciful:["ruthless"],ruthless:["merciful","generous"],honest:["subtle"],subtle:["honest","proud"],generous:["ruthless"],proud:["subtle"],curious:["cautious"],cautious:["curious"],steadfast:["cautious"]};
 const QUALITY_DEFS={};
 // Registry of the fourteen authored quality categories is declared in content/world.js.
@@ -154,14 +156,14 @@ function effectiveLevel(k){
  return Rules.getEffectiveStat({qualities:state.qualities,equipped:state.equipment,inventory:state.items},k,QUALITY_DEFS)+Number(state.destinyBonuses?.[k]||0);
 }
 function actionCap(character=state){return Object.values(character?.renown||{}).reduce((n,v)=>n+(Number(v)||0),0)>=14?20:MAXA;}
-function fresh(){return{version:1,stage:"welcome",tab:"story",name:"Stranger",background:"",faction:"",place:"cell",actions:MAXA,lastTick:Date.now(),lastCard:Date.now(),playtest:false,coin:8,stats:{observation:10,guile:10,persuasion:10,resolve:10},suspicion:0,notoriety:0,health:10,sanity:10,clues:0,ambition:0,items:{},relation:{ledger:0,wardens:0,choir:0,hands:0,dawn:0},flags:{},done:{},hand:["card_bell","card_courier"],journal:[],result:null,selectedCard:null,originChoice:"",path:"",pathProgress:0,pathEnding:"",equipment:{},living:{},messages:[],renown:{observation:0,guile:0,persuasion:0,resolve:0},quirks:{},extras:{},profession:"",lastWage:Date.now(),destiny:"",destinyBonuses:{},criminalRecord:0}}
+function fresh(){return{version:1,stage:"welcome",tab:"story",name:"Stranger",background:"",faction:"",place:"cell",actions:MAXA,lastTick:Date.now(),lastCard:Date.now(),playtest:false,coin:8,stats:{observation:10,guile:10,persuasion:10,resolve:10},suspicion:0,notoriety:0,health:10,sanity:10,clues:0,ambition:0,items:{},relation:{ledger:0,wardens:0,choir:0,hands:0,dawn:0},flags:{},done:{},hand:["card_bell","card_courier"],journal:[],result:null,selectedCard:null,originChoice:"",path:"",pathProgress:0,pathEnding:"",penaltyVisits:{},equipment:{},living:{},messages:[],renown:{observation:0,guile:0,persuasion:0,resolve:0},quirks:{},extras:{},profession:"",lastWage:Date.now(),destiny:"",destinyBonuses:{},criminalRecord:0}}
 let state;
 function normaliseSave(v){
  const b=fresh();if(!v||v.version!==1||!v.stats||!PLACES[v.place])return b;
  Object.assign(b,v);
  b.stats={...fresh().stats,...(v.stats||{})};
  b.renown={observation:0,guile:0,persuasion:0,resolve:0,...(v.renown||{})};
- b.quirks={...(v.quirks||{})};b.extras={...(v.extras||{})};b.destinyBonuses={...(v.destinyBonuses||{})};b.criminalRecord=Math.max(0,Math.min(7,Number(v.criminalRecord)||0));
+ b.quirks={...(v.quirks||{})};b.extras={...(v.extras||{})};b.penaltyVisits={...(v.penaltyVisits||{})};b.destinyBonuses={...(v.destinyBonuses||{})};b.criminalRecord=Math.max(0,Math.min(7,Number(v.criminalRecord)||0));
  b.living={...(v.living||{})};b.messages=Array.isArray(v.messages)?v.messages.slice(0,60):[];
  b.equipment=Object.fromEntries(Object.entries(v.equipment||{}).filter(([slot,item])=>SLOTS.includes(slot)&&GEAR[item]?.[0]===slot&&(v.items?.[item]||0)>0));
  b.flags={...(v.flags||{})};b.relation={...fresh().relation,...(v.relation||{})};
@@ -266,24 +268,36 @@ function penalty(){
  const hub=Rules.checkMenaceThreshold(state);
  if(!hub)return;
  const cause=Object.keys(Rules.MENACE_PENALTY_HUBS).find(k=>Rules.MENACE_PENALTY_HUBS[k]===hub);
+ const data=PENALTIES[cause];
  state.recoveryFrom=state.place;
  const holder={qualities:state.qualities,current_location:state.place};
  Rules.sendToPenaltyHub(holder,cause);
  state.place=holder.current_location;
+ state.penaltyVisits??={};state.penaltyVisits[cause]=(state.penaltyVisits[cause]||0)+1;
  syncLegacy(state);
- addJournal("Your "+cause+" reached level 8. You were sent to "+PLACES[hub].name+(cause==="suspicion"?" and your Record increased.":"."));
+ state.result={title:(data?.title||PLACES[hub].name)+": Arrival",
+  text:data?.arrival||"You have been taken to a place of recovery and consequence.",
+  note:"AUTOFIRE · 0 actions · "+cause+" reached level 8"+
+   (cause==="suspicion"?" · The Record +1 (maximum 7)":"")};
+ addJournal("Your "+cause+" reached level eight; arrived at "+PLACES[hub].name+
+  (cause==="suspicion"?". Your permanent Record increased.":"."));
 }
-function recover(){
+function recover(index=0){
  const menace=Object.keys(Rules.MENACE_PENALTY_HUBS).find(k=>Rules.MENACE_PENALTY_HUBS[k]===state.place);
- if(!menace||!spend(1))return;
- const old=state.place;
- const current=state.qualities[menace]?.level??8;
- qualitySet(menace,Math.min(7,Math.max(0,current-3)));
- state.coin=Math.max(0,state.coin-(menace==="suspicion"?1:2));
+ const option=PENALTIES[menace]?.options?.[index];
+ if(!menace||!option||state.stage!=="explore"||state.coin<option.fee||!spend(option.cost))return;
+ const old=state.place,current=state.qualities?.[menace]?.level||8;
+ if(option.fee)state.coin-=option.fee;
+ qualitySet(menace,Math.max(0,current-option.reduce));
  syncLegacy(state);
- state.place=PLACES[state.recoveryFrom]&&!PENALTY_PLACES.has(state.recoveryFrom)?state.recoveryFrom:"court";
- state.result={title:"A costly return",text:"You return to the streets. Your absence was noticed. "+PLACES[old].name+" has released you.",note:"Your "+menace+" is now below the penalty threshold."};
- addJournal("Recovered from "+PLACES[old].name);done();
+ const lower=state.qualities?.[menace]?.level||0;
+ if(lower<8){
+  state.place=PLACES[state.recoveryFrom]&&!PENALTY_PLACES.has(state.recoveryFrom)?state.recoveryFrom:"court";
+ }
+ state.result={title:option.label,text:option.outcome+
+  (lower>=8?" Your "+menace+" is still too high to leave.":" You return to "+PLACES[state.place].name+"."),
+  note:"Recovery · "+option.cost+" action(s) · "+option.reduce+" menace levels"};
+ addJournal("Recovered in "+PLACES[old].name+" by "+option.reduce+" "+menace+" levels");done();
 }
 function spend(n){
  tick();
@@ -372,7 +386,17 @@ if(state.stage==="escape")return '<div class="intro"><div class="eyebrow">Charac
 return ""}
 function choiceHTML(st,card){return st.choices.map((c,i)=>{if(c.when&&!c.when(state))return "";let success=c.narrow!==undefined?Math.max(0,Math.min(100,c.narrow)):c.stat?odds(c.stat,c.difficulty,c.scaler??.60):null,can=canPlay(c),cost=c.cost==null?1:c.cost;let needs=c.need?(c.need.coin!=null?" · Requires "+c.need.coin+" pennies":c.need.item?" · Requires "+ITEMS[c.need.item]:""):"";return '<button class="choice" data-act="choose" data-target="'+st.id+'" data-index="'+i+'" data-card="'+(card?"1":"0")+'" '+(!can?"disabled":"")+'><b>'+esc(c.label)+'</b><span class="detail">'+(c.desc?esc(c.desc)+' · ':"")+(success!==null?'<span class="odds">'+(c.stat?labelStat(c.stat):"Narrow check")+' · '+success+'% success</span> · ':'')+(cost===0?"Free":cost+" action")+(needs?esc(needs):"")+(can?"":" · Unavailable")+'</span></button>'}).join("")}
 function renderStory(){if(state.stage!=="explore")return sceneIntro();let p=PLACES[state.place];let hero='<div class="hero"><div class="eyebrow">The Undercity / '+esc(p.subtitle)+'</div><h1>'+esc(p.name)+'</h1><p>'+esc(p.desc)+'</p><button class="btn outline tiny" data-act="tab" data-target="map">Explore the city map ↗</button></div>';if(state.result){let r=state.result;return hero+'<article class="story" role="status"><div class="tag">'+esc(r.note||"A consequence")+'</div><h2>'+esc(r.title)+'</h2><p>'+esc(r.text)+'</p><button class="btn" data-act="dismiss">Continue exploring →</button></article>'}
-if(PENALTY_PLACES.has(state.place))return hero+'<div class="story"><h2>Leave this place, changed</h2><p>You cannot explore other districts until you have endured the consequences. Recovery costs one action and some pennies. There is no permanent game over.</p><button class="choice" data-act="recover"><b>Accept your costly release</b><span class="detail">1 action · Reduce the menace and return to your previous district.</span></button></div>';
+if(PENALTY_PLACES.has(state.place)){
+ const cause=Object.keys(Rules.MENACE_PENALTY_HUBS).find(k=>Rules.MENACE_PENALTY_HUBS[k]===state.place),
+  hub=PENALTIES[cause],level=state.qualities?.[cause]?.level||8;
+ return hero+'<section class="story"><div class="eyebrow">Penalty location · '+esc(cause)+'</div><h2>'+esc(hub?.title||"A recovery ward")+'</h2>'+
+ '<p>You arrived when this menace reached level eight. The arrival required no actions. Your current level is '+level+'.'+
+ (cause==="suspicion"?' The Record: '+(state.qualities?.the_record?.level||0)+'/7 (permanent).':'')+
+ '</p><p>The following recovery storylets offer different costs and consequences. You may leave once your menace falls below eight.</p>'+
+ (hub?.options||[]).map((opt,i)=>'<button class="choice" data-act="recover" data-index="'+i+'" '+
+ ((state.coin<opt.fee||(!state.playtest&&state.actions<opt.cost))?'disabled':'')+'><b>'+esc(opt.label)+'</b>'+
+ '<span class="detail">'+esc(opt.description)+'</span></button>').join('')+'</section>';
+}
 if(state.selectedCard){let c=CARDS.find(x=>x.id===state.selectedCard);if(c)return hero+'<div class="story"><div class="tag">Opportunity card</div><h2>'+esc(c.title)+'</h2><p>'+esc(c.desc)+'</p>'+choiceHTML(c,true)+'<button class="smallbtn" data-act="dismiss">← Keep this card for later</button></div>'}
 let stories=STORIES.filter(isVisible),amb=stories.filter(x=>x.id.startsWith("ambition")),others=stories.filter(x=>!x.id.startsWith("ambition"));
 let guidance=state.ambition===0?"Begin at Lantern Court: speak to the clockmaker.":state.ambition===1?"Follow the handless clock to the Inkward.":state.ambition===2?"Investigate two leads to open the Forgotten Stairs.":state.ambition===3?"Find four leads and descend to the Listening Edge.":"Your first ambition has reached a conclusion. The city still has secrets.";
@@ -459,7 +483,7 @@ function claimDestiny(id){
 }
 function renderSettings(){return '<div class="hero"><div class="eyebrow">The experimental machinery</div><h1>Settings</h1><p>This is a local-save game. Saves remain on this device unless you export the JSON file yourself.</p></div><div class="story"><h2>Playtest mode</h2><p>When enabled, actions and paid card draws are free so you can inspect every branch and location without waiting. Story costs, risks and rewards remain visible. Return to normal mode at any time.</p><button class="btn '+(state.playtest?"":"outline")+'" data-act="playtest">'+(state.playtest?"Disable playtest mode":"Enable playtest mode")+'</button><div class="rule"></div><h2>Reading size</h2><div class="row"><button class="btn outline tiny" data-act="font" data-target="smaller">A−</button><button class="btn outline tiny" data-act="font" data-target="larger">A+</button></div><div class="rule"></div><h2>Back up or reset</h2><div class="row"><button class="btn outline tiny" data-act="export">Export save JSON</button><button class="btn outline tiny" data-act="import">Import save JSON</button><button class="btn outline tiny" data-act="reset">Restart game</button></div><input id="savefile" type="file" accept="application/json,.json" style="display:none"></div>'}
 function render(){tick();renderTop();renderNav();renderMenaces();renderHand();const fn={story:renderStory,map:renderMap,myself:renderMyself,paths:renderPaths,possessions:renderPossessions,journal:renderJournal,messages:renderMessages,bazaar:renderBazaar,help:renderHelp,settings:renderSettings}[state.tab]||renderStory;$("main").innerHTML=fn()}
-document.addEventListener("click",e=>{const b=e.target.closest("button[data-act]");if(!b)return;let a=b.dataset.act,v=b.dataset.target;switch(a){case"intro":state.stage="origin";state.tutorial=true;done();break;case"skip":state.stage="origin";state.tutorial=false;done();break;case"origin":beginOrigin(v);break;case"faction":beginFaction(v);break;case"escape":escapeCell(v);break;case"tab":setTab(v);break;case"travel":travel(v);break;case"choose":choose(b.dataset.target,+b.dataset.index,b.dataset.card==="1");break;case"card":chooseCard(v);break;case"dismiss":state.result=null;state.selectedCard=null;done();break;case"recover":recover();break;case"equip":equipItem(v);break;case"profession":hireProfession(v);break;case"destiny":claimDestiny(v);break;case"shop":shop(+b.dataset.index);break;case"draw":buyDraw();break;case"playtest":state.playtest=!state.playtest;done();break;case"menu":{let open=$("left").classList.toggle("mobile-open");b.setAttribute("aria-expanded",String(open));break}case"font":{let size=parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--font"))||1;size=Math.max(.85,Math.min(1.35,size+(v==="larger"?.1:-.1)));document.documentElement.style.setProperty("--font",size+"rem");break}case"export":{let blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"}),url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download="undercity-save.json";a.click();setTimeout(()=>URL.revokeObjectURL(url),2000);break}case"import":$("savefile").click();break;case"reset":if(confirm("Restart The Undercity? Your current local progress will be erased. Export a save first if you want to keep it.")){state=fresh();done()}break}});
+document.addEventListener("click",e=>{const b=e.target.closest("button[data-act]");if(!b)return;let a=b.dataset.act,v=b.dataset.target;switch(a){case"intro":state.stage="origin";state.tutorial=true;done();break;case"skip":state.stage="origin";state.tutorial=false;done();break;case"origin":beginOrigin(v);break;case"faction":beginFaction(v);break;case"escape":escapeCell(v);break;case"tab":setTab(v);break;case"travel":travel(v);break;case"choose":choose(b.dataset.target,+b.dataset.index,b.dataset.card==="1");break;case"card":chooseCard(v);break;case"dismiss":state.result=null;state.selectedCard=null;done();break;case"recover":recover(+b.dataset.index||0);break;case"equip":equipItem(v);break;case"profession":hireProfession(v);break;case"destiny":claimDestiny(v);break;case"shop":shop(+b.dataset.index);break;case"draw":buyDraw();break;case"playtest":state.playtest=!state.playtest;done();break;case"menu":{let open=$("left").classList.toggle("mobile-open");b.setAttribute("aria-expanded",String(open));break}case"font":{let size=parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--font"))||1;size=Math.max(.85,Math.min(1.35,size+(v==="larger"?.1:-.1)));document.documentElement.style.setProperty("--font",size+"rem");break}case"export":{let blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"}),url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download="undercity-save.json";a.click();setTimeout(()=>URL.revokeObjectURL(url),2000);break}case"import":$("savefile").click();break;case"reset":if(confirm("Restart The Undercity? Your current local progress will be erased. Export a save first if you want to keep it.")){state=fresh();done()}break}});
 document.addEventListener("change",e=>{if(e.target.id!=="savefile")return;let file=e.target.files[0];if(!file)return;file.text().then(t=>{let data=JSON.parse(t);if(data.version!==1||!data.stats||!PLACES[data.place]||!Array.isArray(data.hand))throw Error("Unrecognised save format");if(confirm("Replace your current local save with this imported journey?")){state=normaliseSave(data);state.result=null;done()}}).catch(err=>alert("Could not import save: "+err.message));e.target.value=""});
 tick();save();render();setInterval(()=>{let a=state.actions,h=state.hand.length;tick();if(a!==state.actions||h!==state.hand.length){save();render()}else{let el=$("countdown");if(el){let r=Math.max(0,REGEN-(Date.now()-state.lastTick));el.textContent="+"+String(Math.floor(r/60000)).padStart(2,"0")+":"+String(Math.floor(r%60000/1000)).padStart(2,"0")}}},1000);
 window.UndercityDiagnostics={statLevel:lv,broadCheck:odds,locations:()=>Object.keys(PLACES),route:(from,to)=>cityRoute(from,to),availableCards:()=>CARDS.filter(c=>!c.where||c.where.includes(state.place)).map(c=>c.id),storyCount:STORIES.length,cardCount:CARDS.length,equipmentSlots:SLOTS.length,livingStoryCount:LIVING.length,professionCount:PROFESSIONS.length,destinyCount:DESTINIES.length,saveVersion:1,
