@@ -57,7 +57,7 @@ for(const ambition of ["moth","tide","mirror","ember"]){
    }
    app.act("dismiss");
    const scene=app.nodes.get("main").innerHTML;
-   assert.ok(scene.includes(st.title.replaceAll("&","&amp;").replaceAll("<","&lt;")),ambition+" chapter "+n+" missing from gameplay view");
+   assert.ok(scene.includes('data-target="'+st.id+'"'),ambition+" chapter "+n+" has no actionable choice in the gameplay view");
    app.act("choose",st.id,n%2); // exercise both standard branch types, not just the same choice
    const after=app.get();
    assert.equal(after.pathProgress,n,ambition+" chapter "+n+" did not progress");
