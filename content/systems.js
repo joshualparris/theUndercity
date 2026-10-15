@@ -1,0 +1,32 @@
+/* Supporting systems for The Undercity: no external dependencies. */
+(function(){
+"use strict";
+const slots=["hat","clothing","gloves","weapon","boots","companion","affiliation","home comfort","transport","spouse","club","ship","destiny","burden","tool","possession","menace","route"];
+const gear={
+charcoal:["tool","observation",1],hook:["weapon","guile",1],silk:["gloves","persuasion",1],
+badge:["affiliation","resolve",1],lure:["companion","observation",1],map:["route","observation",1],
+"moth-lance":["weapon","resolve",4],"quiet-bell":["tool","observation",3],
+"mirror-key":["possession","guile",3],"ember-crown":["hat","persuasion",3],
+"reader-lens":["hat","observation",4],"runner-token":["transport","guile",4],
+"warden-scar":["clothing","resolve",4],"speaker-song":["affiliation","persuasion",4],
+"silver-flame":["tool","resolve",1],"margin-pen":["tool","observation",1],
+"runner-boots":["boots","guile",1],"songbook":["possession","persuasion",1],
+"roof-whistle":["tool","resolve",1],"surveyor-lens":["hat","observation",2],
+"new-charter":["possession","persuasion",2]
+};
+const living=[
+ {id:"clockmaker-post",delay:3600000,title:"A note from the clockmaker",
+ text:"Eda found a fingerprint inside the handless clock that belongs to nobody on the city register. She encloses three pennies for your investigation.",
+ trigger:s=>s.ambition>=1,effects:{coin:3,clues:1}},
+ {id:"personal-warning",delay:14400000,title:"A warning for your private undertaking",
+ text:"A stranger has written down the cause you chose. The signature is missing, but the warning is clear: the Council is listening.",
+ trigger:s=>s.pathProgress>=2,effects:{coin:4}},
+ {id:"choir-reply",delay:86400000,title:"The Choir remembers",
+ text:"The Moss Choir has composed a verse for somebody you helped. They invite you back to hear it among the flowers.",
+ trigger:s=>(s.renown?.persuasion||0)>=2||(s.relation?.choir||0)>=4,effects:{relation:{choir:1},sanity:1}},
+ {id:"watch-response",delay:604800000,title:"A letter from the Ash Wardens",
+ text:"A place has been prepared beside the Wardens' watch fires. The sealed letter is an invitation rather than a summons.",
+ trigger:s=>s.clues>=4,effects:{relation:{wardens:2},coin:5}}
+];
+window.UndercitySystems={slots,gear,living};
+})();
