@@ -86,7 +86,7 @@ const EXT=window.UndercityExpansions||{stories:[],cards:[],items:{},professions:
 Object.assign(ITEMS,EXT.items||{});STORIES.push(...(EXT.stories||[]));CARDS.push(...(EXT.cards||[]));
 const PROFESSIONS=EXT.professions||[],DESTINIES=EXT.destinies||[],WEEK=604800000;
 const SYSTEMS=window.UndercitySystems||{slots:[],gear:{},living:[]};
-const SLOTS=SYSTEMS.slots,GEAR=SYSTEMS.gear,LIVING=SYSTEMS.living;
+const SLOTS=SYSTEMS.slots,GEAR=SYSTEMS.gear,LIVING=SYSTEMS.living,SHOP_CATALOG=SYSTEMS.shopCatalog||[];
 const Rules=window.UndercityRules;
 if(!Rules)throw new Error("The Undercity rules engine did not load");
 const PENALTY_PLACES=new Set(Object.values(Rules.MENACE_PENALTY_HUBS));
@@ -258,6 +258,16 @@ function apply(e){
  if(e.quirks)for(const [k,delta] of Object.entries(e.quirks))
   if(QUALITY_DEFS[k])qualityAdd(k,delta);
  if(e.extras)for(const k in e.extras)state.extras[k]=(state.extras[k]||0)+e.extras[k];
+ if(e.profession){
+  const career=PROFESSIONS.find(p=>p.id===e.profession);
+  if(career&&career.tier>=3&&career.requires===state.profession&&
+   (state.renown?.[career.stat]||0)>=career.renown){
+    state.profession=career.id;state.lastWage=Date.now();
+    qualityAdd("item:"+career.item,1);
+    state.items[career.item]=state.qualities["item:"+career.item]?.level||1;
+    addJournal("Promoted to "+career.name+" (Tier "+career.tier+")");
+  }
+ }
  if(e.path&&!state.path)state.path=e.path;
  if(e.pathEnding)state.pathEnding=e.pathEnding;
  if(e.flag)state.flags[e.flag]=true;
@@ -439,8 +449,39 @@ function renderMessages(){
  '<div class="empty">Your letterbox is quiet. Advance the city investigation or your reputation to invite correspondence.</div>');
 }
 function renderJournal(){return '<div class="hero"><div class="eyebrow">The chronicle</div><h1>Your journal</h1><p>Choices have consequences, even when the city would prefer you to forget. Your most recent 80 entries are stored locally.</p></div>'+(state.journal.length?state.journal.map(l=>'<div class="log">'+esc(l.text)+'<small>'+esc(PLACES[l.place]?.name||"Undercity")+' · '+new Date(l.date).toLocaleString()+'</small></div>').join(""):'<div class="empty">No entries yet. Your first decision will be remembered.</div>')}
-function renderBazaar(){return '<div class="hero"><div class="eyebrow">The strange economy</div><h1>Bazaar</h1><p>Spend pennies for useful goods, or earn them through stories. There is no premium currency.</p></div><div class="story"><h2>The travelling stall</h2><p>You need not stand in the Glass Arcade to buy basics. More curious bargains await in its storylets.</p>'+[["A proper meal",3,"health",2],["A calming infusion",4,"sanity",2],["A discreet favour",6,"suspicion",-2],["A clean reputation",6,"notoriety",-2]].map((x,i)=>'<button class="choice" data-act="shop" data-index="'+i+'" '+(state.coin<x[1]?"disabled":"")+'><b>'+x[0]+' · '+x[1]+' pennies</b><span class="detail">'+(x[3]>0?"+":"")+x[3]+" "+x[2]+'</span></button>').join("")+'</div>'}
+function renderBazaar(){
+ const supplies=SHOP_CATALOG.map(item=>{
+  const owned=state.items[item.id]||0,canBuy=state.coin>=item.price;
+  return '<div class="story"><h2>'+esc(item.name)+'</h2><p>Slot: '+esc(item.slot)+' · +'+item.bonus+' '+esc(labelStat(item.stat))+
+   '. You own '+owned+'.</p><div class="row">'+
+   '<button class="btn outline tiny" data-act="buy-item" data-target="'+esc(item.id)+'" '+(!canBuy?'disabled':'')+
+    '>Buy · '+item.price+' pennies</button>'+
+   '<button class="btn outline tiny" data-act="sell-item" data-target="'+esc(item.id)+'" '+(!owned?'disabled':'')+
+    '>Sell · '+item.sell+' pennies</button></div></div>';
+ }).join('');
+ return '<div class="hero"><div class="eyebrow">The strange economy</div><h1>Bazaar</h1>'+
+ '<p>Buy and sell equipment for pennies. Items grant additive bonuses when equipped under Possessions. Selling an equipped item automatically removes it from its slot. There is no premium currency.</p>'+
+ '<p><strong>Your purse: '+state.coin+' pennies.</strong></p></div>'+
+ '<section class="story"><h2>Food, comfort and discretion</h2>'+
+ [["A proper meal",3,"health",2],["A calming infusion",4,"sanity",2],["A discreet favour",6,"suspicion",-2],["A clean reputation",6,"notoriety",-2]]
+ .map((x,i)=>'<button class="choice" data-act="shop" data-index="'+i+'" '+(state.coin<x[1]?'disabled':'')+'><b>'+x[0]+' · '+x[1]+' pennies</b><span class="detail">'+(x[3]>0?'+':'')+x[3]+' '+x[2]+'</span></button>').join('')+'</section>'+
+ '<h2>Equippable goods</h2><div class="two">'+supplies+'</div>';
+}
 function shop(i){let stuff=[["A proper meal",3,"health",2],["A calming infusion",4,"sanity",2],["A discreet favour",6,"suspicion",-2],["A clean reputation",6,"notoriety",-2]][i];if(!stuff||state.coin<stuff[1])return;state.coin-=stuff[1];apply({[stuff[2]]:stuff[3]});state.result={title:stuff[0],text:"The merchant exchanges a short nod with a less-than-short receipt.",note:"Purchased for "+stuff[1]+" pennies"};state.tab="story";addJournal("Bought "+stuff[0]);penalty();done()}
+function tradeItem(id,sell=false){
+ const item=SHOP_CATALOG.find(x=>x.id===id);
+ if(!item||state.stage!=="explore")return;
+ const owned=state.items[id]||0;
+ if(sell){if(owned<=0)return;
+  apply({items:{[id]:-1},coin:item.sell});
+  if(state.equipment?.[item.slot]===id&&!state.items[id])delete state.equipment[item.slot];
+  addJournal("Sold "+item.name+" for "+item.sell+" pennies.");
+ }else{if(state.coin<item.price)return;
+  apply({coin:-item.price,items:{[id]:1}});
+  addJournal("Bought "+item.name+" for "+item.price+" pennies.");
+ }
+ state.tab="bazaar";state.result=null;done();
+}
 function renderHelp(){return '<div class="hero"><div class="eyebrow">A traveller’s guide</div><h1>How to play</h1><p>Your first journey is about getting somewhere, finding things to do there, and understanding why the city has concealed its past.</p></div><section class="story"><h2>1. Find your way</h2><p>Use the city map to see every district and its connections. The sidebar shows roads leading directly from your current location. Lantern Court connects to five starting districts. The Forgotten Stairs unlock after two leads, and the Listening Edge after four.</p><h2>2. Make a choice</h2><p>Each story gives you several clear options. A choice usually costs one action. A challenge shows which skill it tests and your chance of success before you commit. Failure can hurt, but the story continues.</p><h2>3. Follow two kinds of story</h2><p>The city-wide mystery has four stages. Your separate personal ambition has eight chapters; four seven-stage Making Your Name arcs run alongside independent encounters; investigate them in any order to earn pennies, clues, items and allies.</p><h2>4. Use opportunity cards</h2><p>Cards offer unexpected stories. You begin with two, gain a free one every four minutes, and can hold up to six. You may also buy an extra draw.</p><h2>5. Watch your condition</h2><p>Suspicion, Notoriety, Wounds and Delirium rise through change points. Any one reaching level eight sends you to its own recovery location, never a permanent game over.</p><h2>6. Save your journey</h2><p>Progress saves automatically to your browser. Settings includes an export, import and optional playtest mode. No account is required.</p></section>'}
 function renderPaths(){
  const chosen=EXT.ambitions?.find(p=>p.id===state.path);
@@ -453,8 +494,10 @@ function renderPaths(){
  (EXT.makingNames||[]).map(a=>{const v=state.renown[a.stat]||0,n=STORIES.find(x=>x.id==="name-"+a.stat+"-"+(v+1));return '<div class="statline"><span>'+esc(a.name)+' <small>('+esc(labelStat(a.stat))+')</small>'+(n?'<small>Next: '+esc(PLACES[n.where[0]].name)+'</small>':'<small>Complete · keepsake earned</small>')+'</span><strong>'+v+'/7</strong></div>';}).join('')+'</section>';
  const job=PROFESSIONS.find(p=>p.id===state.profession);
  html+='<section class="story"><h2>Profession</h2><p>'+(job?'You work as a <strong>'+esc(job.name)+'</strong>, earning '+job.wage+' pennies each seven days. Work story at '+esc(PLACES[job.place]?.name)+'.':'Choose a Tier 1 profession. Work to earn extra pennies, then pursue four stages of the appropriate Making Your Name quest to qualify for Tier 2.')+'</p>';
- html+=PROFESSIONS.map(p=>{const can=p.tier===1?!state.profession:!!job&&(state.renown[p.stat]||0)>=4&&job.tier===1;
- return '<button class="choice" data-act="profession" data-target="'+esc(p.id)+'" '+(!can?'disabled':'')+'><b>'+esc(p.name)+(p.id===state.profession?' ✓':'')+' · Tier '+p.tier+'</b><span class="detail">'+esc(labelStat(p.stat))+' · '+p.wage+' pennies/week · '+esc(p.scene)+(p.tier===2?' · Requires stage 4 '+esc(labelStat(p.stat))+' reputation':'')+'</span></button>';}).join('')+'</section>';
+ html+=PROFESSIONS.map(p=>{const can=p.tier===1?!state.profession:
+   p.tier===2?!!job&&(state.renown[p.stat]||0)>=4&&job.tier===1:false;
+ return '<button class="choice" data-act="profession" data-target="'+esc(p.id)+'" '+(!can?'disabled':'')+'><b>'+esc(p.name)+(p.id===state.profession?' ✓':'')+' · Tier '+p.tier+'</b><span class="detail">'+esc(labelStat(p.stat))+' · '+p.wage+' pennies/week · '+esc(p.scene)+(p.tier===2?' · Requires stage 4 '+esc(labelStat(p.stat))+' reputation':
+ p.tier>=3?' · Requires '+esc(PROFESSIONS.find(x=>x.id===p.requires)?.name||p.requires)+' and stage '+p.renown+' reputation. Promote via a story in '+esc(PLACES[p.place].name):'')+'</span></button>';}).join('')+'</section>';
  html+='<section class="story"><h2>Destiny</h2><p>Choose one Ordinary Destiny after finishing the city investigation, or finish your personal ambition as well to qualify for Greater Destinies. Your decision is permanent.</p>';
  html+=DESTINIES.map(d=>{const can=!state.destiny&&state.ambition>=4&&(d.tier==='ordinary'||state.pathProgress>=(state.path==='moth'?32:8));
  return '<button class="choice" data-act="destiny" data-target="'+esc(d.id)+'" '+(!can?'disabled':'')+'><b>'+esc(d.name)+(d.id===state.destiny?' ✓':'')+' · '+esc(d.tier)+'</b><span class="detail">'+esc(d.description)+'</span></button>';}).join('')+'</section>';
@@ -466,7 +509,7 @@ function renderPaths(){
 }
 function hireProfession(id){
  const p=PROFESSIONS.find(x=>x.id===id),current=PROFESSIONS.find(x=>x.id===state.profession);
- if(!p||state.stage!=="explore"||(p.tier===1&&state.profession)||(p.tier===2&&(!current||current.tier!==1||(state.renown[p.stat]||0)<4)))return;
+ if(!p||p.tier>2||state.stage!=="explore"||(p.tier===1&&state.profession)||(p.tier===2&&(!current||current.tier!==1||(state.renown[p.stat]||0)<4)))return;
  state.profession=id;state.lastWage=Date.now();qualityAdd("item:"+p.item,1);state.items[p.item]=state.qualities["item:"+p.item]?.level??(state.items[p.item]||0)+1;
  qualityAdd("affiliation:"+p.faction,1);syncLegacy(state);
  state.result={title:"A new profession: "+p.name,text:"Your weekly pay is "+p.wage+" pennies. "+p.scene+" Find your repeatable work story in "+PLACES[p.place].name+".",note:"A lasting calling"};
@@ -483,7 +526,7 @@ function claimDestiny(id){
 }
 function renderSettings(){return '<div class="hero"><div class="eyebrow">The experimental machinery</div><h1>Settings</h1><p>This is a local-save game. Saves remain on this device unless you export the JSON file yourself.</p></div><div class="story"><h2>Playtest mode</h2><p>When enabled, actions and paid card draws are free so you can inspect every branch and location without waiting. Story costs, risks and rewards remain visible. Return to normal mode at any time.</p><button class="btn '+(state.playtest?"":"outline")+'" data-act="playtest">'+(state.playtest?"Disable playtest mode":"Enable playtest mode")+'</button><div class="rule"></div><h2>Reading size</h2><div class="row"><button class="btn outline tiny" data-act="font" data-target="smaller">A−</button><button class="btn outline tiny" data-act="font" data-target="larger">A+</button></div><div class="rule"></div><h2>Back up or reset</h2><div class="row"><button class="btn outline tiny" data-act="export">Export save JSON</button><button class="btn outline tiny" data-act="import">Import save JSON</button><button class="btn outline tiny" data-act="reset">Restart game</button></div><input id="savefile" type="file" accept="application/json,.json" style="display:none"></div>'}
 function render(){tick();renderTop();renderNav();renderMenaces();renderHand();const fn={story:renderStory,map:renderMap,myself:renderMyself,paths:renderPaths,possessions:renderPossessions,journal:renderJournal,messages:renderMessages,bazaar:renderBazaar,help:renderHelp,settings:renderSettings}[state.tab]||renderStory;$("main").innerHTML=fn()}
-document.addEventListener("click",e=>{const b=e.target.closest("button[data-act]");if(!b)return;let a=b.dataset.act,v=b.dataset.target;switch(a){case"intro":state.stage="origin";state.tutorial=true;done();break;case"skip":state.stage="origin";state.tutorial=false;done();break;case"origin":beginOrigin(v);break;case"faction":beginFaction(v);break;case"escape":escapeCell(v);break;case"tab":setTab(v);break;case"travel":travel(v);break;case"choose":choose(b.dataset.target,+b.dataset.index,b.dataset.card==="1");break;case"card":chooseCard(v);break;case"dismiss":state.result=null;state.selectedCard=null;done();break;case"recover":recover(+b.dataset.index||0);break;case"equip":equipItem(v);break;case"profession":hireProfession(v);break;case"destiny":claimDestiny(v);break;case"shop":shop(+b.dataset.index);break;case"draw":buyDraw();break;case"playtest":state.playtest=!state.playtest;done();break;case"menu":{let open=$("left").classList.toggle("mobile-open");b.setAttribute("aria-expanded",String(open));break}case"font":{let size=parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--font"))||1;size=Math.max(.85,Math.min(1.35,size+(v==="larger"?.1:-.1)));document.documentElement.style.setProperty("--font",size+"rem");break}case"export":{let blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"}),url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download="undercity-save.json";a.click();setTimeout(()=>URL.revokeObjectURL(url),2000);break}case"import":$("savefile").click();break;case"reset":if(confirm("Restart The Undercity? Your current local progress will be erased. Export a save first if you want to keep it.")){state=fresh();done()}break}});
+document.addEventListener("click",e=>{const b=e.target.closest("button[data-act]");if(!b)return;let a=b.dataset.act,v=b.dataset.target;switch(a){case"intro":state.stage="origin";state.tutorial=true;done();break;case"skip":state.stage="origin";state.tutorial=false;done();break;case"origin":beginOrigin(v);break;case"faction":beginFaction(v);break;case"escape":escapeCell(v);break;case"tab":setTab(v);break;case"travel":travel(v);break;case"choose":choose(b.dataset.target,+b.dataset.index,b.dataset.card==="1");break;case"card":chooseCard(v);break;case"dismiss":state.result=null;state.selectedCard=null;done();break;case"recover":recover(+b.dataset.index||0);break;case"equip":equipItem(v);break;case"profession":hireProfession(v);break;case"destiny":claimDestiny(v);break;case"shop":shop(+b.dataset.index);break;case"buy-item":tradeItem(v,false);break;case"sell-item":tradeItem(v,true);break;case"draw":buyDraw();break;case"playtest":state.playtest=!state.playtest;done();break;case"menu":{let open=$("left").classList.toggle("mobile-open");b.setAttribute("aria-expanded",String(open));break}case"font":{let size=parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--font"))||1;size=Math.max(.85,Math.min(1.35,size+(v==="larger"?.1:-.1)));document.documentElement.style.setProperty("--font",size+"rem");break}case"export":{let blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"}),url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download="undercity-save.json";a.click();setTimeout(()=>URL.revokeObjectURL(url),2000);break}case"import":$("savefile").click();break;case"reset":if(confirm("Restart The Undercity? Your current local progress will be erased. Export a save first if you want to keep it.")){state=fresh();done()}break}});
 document.addEventListener("change",e=>{if(e.target.id!=="savefile")return;let file=e.target.files[0];if(!file)return;file.text().then(t=>{let data=JSON.parse(t);if(data.version!==1||!data.stats||!PLACES[data.place]||!Array.isArray(data.hand))throw Error("Unrecognised save format");if(confirm("Replace your current local save with this imported journey?")){state=normaliseSave(data);state.result=null;done()}}).catch(err=>alert("Could not import save: "+err.message));e.target.value=""});
 tick();save();render();setInterval(()=>{let a=state.actions,h=state.hand.length;tick();if(a!==state.actions||h!==state.hand.length){save();render()}else{let el=$("countdown");if(el){let r=Math.max(0,REGEN-(Date.now()-state.lastTick));el.textContent="+"+String(Math.floor(r/60000)).padStart(2,"0")+":"+String(Math.floor(r%60000/1000)).padStart(2,"0")}}},1000);
 window.UndercityDiagnostics={statLevel:lv,broadCheck:odds,locations:()=>Object.keys(PLACES),route:(from,to)=>cityRoute(from,to),availableCards:()=>CARDS.filter(c=>!c.where||c.where.includes(state.place)).map(c=>c.id),storyCount:STORIES.length,cardCount:CARDS.length,equipmentSlots:SLOTS.length,livingStoryCount:LIVING.length,professionCount:PROFESSIONS.length,destinyCount:DESTINIES.length,saveVersion:1,
