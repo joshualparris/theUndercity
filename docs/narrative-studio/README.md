@@ -19,7 +19,7 @@ A **StoryNexus-inspired content process**, not a clone of proprietary StoryNexus
 Update the secrets ledger and bible whenever a canon fact ships. Check the last twenty shipped stories for each new revelation; weekly review all changed NPCs, props, districts and voice. Competing accounts are permitted only when tagged as character misdirection.
 
 ## Phase 4 — controlled generation
-**Fifty** individually approved storylets before any batch of ten; the reference document has conflicting thresholds of 20 and 50. Keep individual QA regardless of batch size. Monthly review *all* item sources/sinks, card economy, currency loops, menaces and profession income. Propose changes for humans to approve; do not silently rebalance the game.
+New batches contain **one to five** pitches under the exemplar-led workflow, superseding historical 20/50-story thresholds for larger batches. Keep individual QA regardless of batch size. Monthly review *all* item sources/sinks, card economy, currency loops, menaces and profession income. Propose changes for humans to approve; do not silently rebalance the game.
 
 ## Editor and CI
 - Open `tools/cms/index.html` as a local/browser tool to author a structured draft and download a review packet. It never overwrites player saves or GitHub content.
@@ -30,3 +30,7 @@ Update the secrets ledger and bible whenever a canon fact ships. Check the last 
 This does not automate a separate writer's taste or magically implement a large content library. It gives a reproducible gate that future AI tools can use without letting unapproved draft prose go live.
 ## Existing QBN Studio CMS and Groq Foundry
 The [no-code QBN Studio editor](../../tools/cms/index.html) has dropdowns for branches, qualities, outcomes and effects; its exports use `format: qbn-studio-export` with `stories[]`. Copy exported JSON to `content/narrative-studio/submissions/` for the editorial gate; the validator accepts either native editorial packets or this CMS bundle. The [Storylet Foundry](../../tools/storylet-generator.mjs) offers optional Groq-assisted drafting with separate review/publishing commands. **Neither CMS export nor AI generation is automatic player-content publication.** A CMS draft with `approved` status also needs `runtime_integration: verified` and actual tests before the editorial gate calls it shipped. Use the full `npm run release:check` (NeathBound) or `npm test` plus `npm run studio:validate` (Undercity).
+
+## Default small-batch prompts
+
+Use the [exemplar-led workflow](SMALL_BATCH_WORKFLOW.md), [writer prompt](writer-prompt.md) and [separate-context critic](critic-prompt.md) for new batches of no more than five. These add the user's lean editorial approach without replacing the existing CMS, approval flow or runtime validators.

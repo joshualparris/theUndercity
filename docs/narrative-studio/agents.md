@@ -30,7 +30,7 @@ Review new stories together with every touched recurring NPC and region, detect 
 Report each item's source/sink counts and repeatable Pennies/CP flows; name excesses and impossible crafting, propose bounded changes without auto-writing fixes.
 
 ## 10 — Batch writer
-Only after fifty individually reviewed & approved storylets: propose ten new chain links with three distinct stat checks, rare outcomes and one delayed event. All ten still pass individual QA and review.
+Use [writer-prompt.md](writer-prompt.md) with two or three selected exemplars and relevant canon. Produce one to five pitches, then stop for Josh’s explicit approval. Structure and prose follow their existing approval gates. Use [critic-prompt.md](critic-prompt.md) in a fresh context; do not self-grade or invent peer review. Each scene still receives individual QA and a human editorial decision.
 
 ## Other specialised roles
 - **Lore architect** updates the canonical bible with approved facts, not hallucinated history.
@@ -40,4 +40,4 @@ Only after fifty individually reviewed & approved storylets: propose ten new cha
 - **Accessibility reviewer** checks keyboard, screen reader, mobile and readable result messaging.
 - **Human lead** signs off stages and can reject polished but uninteresting story content.
 
-The reference PDF alternates between “batch after twenty” and “batch after fifty”. Enforce the safer fifty. These prompts are *roles*, not proof that independent background agents are running.
+The historical PDF thresholds are superseded by the current one-to-five-scene exemplar-led workflow. These prompts are *roles*, not proof that independent background agents are running.
