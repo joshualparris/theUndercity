@@ -15,6 +15,7 @@ html[data-colorblind="on"]{--blue:#ffdf90;--gold:#e9ddab;--red:#ffae76;--line:#c
 <footer class="footnote">THE UNDERCITY · Original independent narrative prototype · Saves only in this browser · No accounts, payments or tracking</footer>
 <script src="./content/ambitions.js?v=20261015a"></script>
 <script src="./content/moth.generated.js?v=20261015-phase2a"></script>
+<script src="./content/late-ambitions.js?v=20261015-phase3"></script>
 <script src="./content/world.js?v=20261015a"></script>
 <script src="./content/penalties.js?v=20261015-phase2a"></script>
 <script src="./content/callings.js?v=20261015a"></script>
@@ -175,7 +176,8 @@ function normaliseSave(v){
  b.hand=Array.isArray(v.hand)?[...new Set(v.hand.filter(k=>CARDS.some(c=>c.id===k)))].slice(0,6):fresh().hand;
  b.journal=Array.isArray(v.journal)?v.journal.slice(0,80):[];
  b.path=EXT.ambitions?.some(p=>p.id===v.path)?v.path:"";
- b.pathProgress=Math.max(0,Math.min(b.path==="moth"?32:8,Number(v.pathProgress)||0));
+ b.pathProgress=Math.max(0,Math.min(32,Number(v.pathProgress)||0));
+ if(b.path!=="moth" && b.pathProgress===8 && b.pathEnding){b.flags["legacy-ending:"+b.path]=b.pathEnding;b.pathEnding="";}
  b.actions=Math.max(0,Math.min(actionCap(b),Number(v.actions)||0));b.lastWage=Number(v.lastWage)||Date.now();
  b.coin=Math.max(0,Math.min(100000000,Number(v.coin)||0));
  for(const stat of Object.keys(STATS))b.stats[stat]=Math.max(0,Math.min(1000000,Number(b.stats[stat])||0));
@@ -434,8 +436,8 @@ if(state.selectedCard){let c=CARDS.find(x=>x.id===state.selectedCard);if(c)retur
 let stories=STORIES.filter(isVisible),amb=stories.filter(x=>x.id.startsWith("ambition")),others=stories.filter(x=>!x.id.startsWith("ambition"));
 let guidance=state.ambition===0?"Begin at Lantern Court: speak to the clockmaker.":state.ambition===1?"Follow the handless clock to the Inkward.":state.ambition===2?"Investigate two leads to open the Forgotten Stairs.":state.ambition===3?"Find four leads and descend to the Listening Edge.":"Your first ambition has reached a conclusion. The city still has secrets.";
 let personal=!state.path?'<div class="notice"><div class="eyebrow">Choose a personal ambition</div>In Lantern Court, choose <strong>A question no clerk can answer</strong>. <button class="smallbtn" data-act="tab" data-target="paths">See paths →</button></div>':
- state.pathProgress<(state.path==="moth"?32:8)?(()=>{const next=STORIES.find(x=>x.id==="path-"+state.path+"-"+(state.pathProgress+1)),which=EXT.ambitions?.find(a=>a.id===state.path);
-  return next?'<div class="notice"><div class="eyebrow">Personal ambition · '+(state.pathProgress+1)+'/'+(state.path==='moth'?32:8)+'</div>'+esc(which?.name||state.path)+': '+esc(next.title)+' at <strong>'+esc(PLACES[next.where[0]]?.name)+'</strong>. <button class="smallbtn" data-act="tab" data-target="map">Find the route →</button></div>':'';})():
+ state.pathProgress<(32)?(()=>{const next=STORIES.find(x=>x.id==="path-"+state.path+"-"+(state.pathProgress+1)),which=EXT.ambitions?.find(a=>a.id===state.path);
+  return next?'<div class="notice"><div class="eyebrow">Personal ambition · '+(state.pathProgress+1)+'/'+(32)+'</div>'+esc(which?.name||state.path)+': '+esc(next.title)+' at <strong>'+esc(PLACES[next.where[0]]?.name)+'</strong>. <button class="smallbtn" data-act="tab" data-target="map">Find the route →</button></div>':'';})():
  '<div class="notice"><div class="eyebrow">Personal ambition completed</div>'+esc(EXT.ambitions?.find(a=>a.id===state.path)?.name||state.path)+'</div>';
 const lead=["court","ink","stairs","edge"][state.ambition];
 return hero+'<div class="notice"><div class="eyebrow">The city-wide investigation</div>'+esc(guidance)+(lead?'<p class="small">'+esc(routeHint(lead))+'</p>':"")+' <button class="smallbtn" data-act="tab" data-target="map">See routes →</button></div>'+personal+'<div class="sectionhead"><h2 style="font-size:1.6rem">Stories here</h2><span class="small">'+stories.length+' available</span></div>'+amb.map(storyHTML).join("")+others.map(storyHTML).join("")+(!stories.length?'<div class="empty">You have heard the stories here for now. Travel to a neighbouring district, or draw an opportunity card.</div>':"")}
@@ -524,8 +526,8 @@ function renderPaths(){
  const chosen=EXT.ambitions?.find(p=>p.id===state.path);
  let html='<div class="hero"><div class="eyebrow">Lives, careers and possible futures</div><h1>Paths & callings</h1><p>Four parallel reputations can grow, but only one personal ambition, profession and destiny may be held in a saved life.</p></div>';
  html+='<section class="story"><h2>Your personal ambition</h2>'+(chosen?
- '<p><strong>'+esc(chosen.name)+'</strong> · '+state.pathProgress+'/'+(state.path==='moth'?32:8)+' chapters completed.</p><p>'+esc(chosen.description)+'</p>'+
- (state.pathProgress<(state.path==='moth'?32:8)?(()=>{const n=STORIES.find(x=>x.id==="path-"+chosen.id+"-"+(state.pathProgress+1));return n?'<p><strong>Next:</strong> '+esc(n.title)+' in <strong>'+esc(PLACES[n.where[0]]?.name)+'</strong>. Use the city map to travel there. Collect four leads to unlock the Edge.</p>':'';})():'<p>Ending: '+esc(state.pathEnding)+'. This choice is permanent in this saved life.</p>'):
+ '<p><strong>'+esc(chosen.name)+'</strong> · '+state.pathProgress+'/'+(32)+' chapters completed.</p><p>'+esc(chosen.description)+'</p>'+
+ (state.pathProgress<(32)?(()=>{const n=STORIES.find(x=>x.id==="path-"+chosen.id+"-"+(state.pathProgress+1));return n?'<p><strong>Next:</strong> '+esc(n.title)+' in <strong>'+esc(PLACES[n.where[0]]?.name)+'</strong>. Use the city map to travel there. Collect four leads to unlock the Edge.</p>':'';})():'<p>Ending: '+esc(state.pathEnding)+'. This choice is permanent in this saved life.</p>'):
  '<p>Choose one of four ambitions from <strong>A question no clerk can answer</strong> in Lantern Court. This is separate from your city-wide investigation.</p>')+'</section>';
  html+='<section class="story"><h2>Making Your Name</h2><p>Each ability has a seven-stage reputation storyline. You can follow all four, earning a different keepsake at the end.</p>'+
  (EXT.makingNames||[]).map(a=>{const v=state.renown[a.stat]||0,n=STORIES.find(x=>x.id==="name-"+a.stat+"-"+(v+1));return '<div class="statline"><span>'+esc(a.name)+' <small>('+esc(labelStat(a.stat))+')</small>'+(n?'<small>Next: '+esc(PLACES[n.where[0]].name)+'</small>':'<small>Complete · keepsake earned</small>')+'</span><strong>'+v+'/7</strong></div>';}).join('')+'</section>';
@@ -536,7 +538,7 @@ function renderPaths(){
  return '<button class="choice" data-act="profession" data-target="'+esc(p.id)+'" '+(!can?'disabled':'')+'><b>'+esc(p.name)+(p.id===state.profession?' ✓':'')+' · Tier '+p.tier+'</b><span class="detail">'+esc(labelStat(p.stat))+' · '+p.wage+' pennies/week · '+esc(p.scene)+(p.tier===2?' · Requires stage 4 '+esc(labelStat(p.stat))+' reputation':
  p.tier>=3?' · Requires '+esc(PROFESSIONS.find(x=>x.id===p.requires)?.name||p.requires)+' and stage '+p.renown+' reputation. Promote via a story in '+esc(PLACES[p.place].name):'')+'</span></button>';}).join('')+'</section>';
  html+='<section class="story"><h2>Destiny</h2><p>Choose one Ordinary Destiny after finishing the city investigation, or finish your personal ambition as well to qualify for Greater Destinies. Your decision is permanent.</p>';
- html+=DESTINIES.map(d=>{const can=!state.destiny&&state.ambition>=4&&(d.tier==='ordinary'||state.pathProgress>=(state.path==='moth'?32:8));
+ html+=DESTINIES.map(d=>{const can=!state.destiny&&state.ambition>=4&&(d.tier==='ordinary'||state.pathProgress>=(32));
  return '<button class="choice" data-act="destiny" data-target="'+esc(d.id)+'" '+(!can?'disabled':'')+'><b>'+esc(d.name)+(d.id===state.destiny?' ✓':'')+' · '+esc(d.tier)+'</b><span class="detail">'+esc(d.description)+'</span></button>';}).join('')+'</section>';
  html+='<section class="story"><h2>Character quirks</h2><p>Earn these through decisions in different districts.</p>'+
  (EXT.quirks||[]).map(q=>'<div class="statline"><span>'+esc(q.name)+'</span><strong>'+(state.quirks[q.id]||0)+'</strong></div>').join('')+'</section>';
@@ -554,7 +556,7 @@ function hireProfession(id){
 }
 function claimDestiny(id){
  const d=DESTINIES.find(x=>x.id===id);
- if(!d||state.destiny||state.stage!=="explore"||state.ambition<4||(d.tier==="greater"&&state.pathProgress<(state.path==='moth'?32:8)))return;
+ if(!d||state.destiny||state.stage!=="explore"||state.ambition<4||(d.tier==="greater"&&state.pathProgress<(32)))return;
  state.destiny=id;state.coin+=d.bonus;qualityAdd("affiliation:"+d.faction,3);syncLegacy(state);
  state.destinyBonuses=d.stat_bonus||{};
 
