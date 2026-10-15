@@ -8,6 +8,15 @@ import {fileURLToPath,pathToFileURL} from "node:url";
 const ROOT=path.resolve(path.dirname(fileURLToPath(import.meta.url)),"..");
 const GAME=JSON.parse(fs.readFileSync(path.join(ROOT,"package.json"),"utf8")).name==="neathbound"?"neathbound":"undercity";
 const DIR=path.join(ROOT,"content/storylet-generator");
+export function loadEditorialContext({includeSecrets=true}={}){
+ const dir=path.join(ROOT,"docs/narrative-studio");
+ return ["bible.md","style.md",...(includeSecrets?["secrets.md"]:[])].map(n=>{
+  const p=path.join(dir,n);
+  if(!fs.existsSync(p))throw Error("Missing editorial reference: "+n);
+  return "### "+n+"\\n"+fs.readFileSync(p,"utf8");
+ }).join("\\n\\n");
+}
+
 const STATS=GAME==="neathbound"?["nerve","insight","poise","shadow"]:["observation","guile","persuasion","resolve"];
 const MENACES=GAME==="neathbound"?["suspicion","dread","wounds","scandal"]:["suspicion","notoriety"];
 const RESOURCES=GAME==="neathbound"?["obols"]:["coin","clues","health","sanity"];
@@ -159,7 +168,9 @@ async function generate(){
  if(fs.existsSync(draftFile))die("Draft already exists: "+id);
  const model=opt("model",process.env.GROQ_MODEL||"llama-3.3-70b-versatile");
  const rounds=Math.max(1,Math.min(3,Number(opt("rounds","2"))||2));
+ const editorial=loadEditorialContext({includeSecrets:!flag("omit-secrets")});
  const system=[
+  "EDITORIAL REFERENCE: Proposed secrets are not canon; never reveal them before their approved story act.\\n"+editorial,
   "You write original dark, melancholy, wry, specific second-person narrative game scenes with clear concrete stakes, NPC motivations, meaningful choices and distinct consequences. Not a copy of another game. No generic filler.",
   "Produce ONLY JSON: {id,title,location,rarity,description,options:[{id,text,action_cost:1,challenge?:{stat,difficulty,rareChance?:0.04},success:{text,effects:[{type,id,delta} or {type:'flag',id,set:true}]},failure?:{text,effects:[]},rare_success?:{text,effects:[]}}]}. No markdown.",
   "ID "+id+"; location "+location+"; rarity "+kind+". 2–4 branches. Description 45–165 words. Every outcome at least 17–125 words. Make branches mechanically and narratively different.",
@@ -179,7 +190,7 @@ async function generate(){
   const obj=await groq([{role:"system",content:system},{role:"user",content:prompt}],model);
   s=obj.storylet||obj.story||obj;check=validate(s,ctx);
   review=check.ok?await groq([
-   {role:"system",content:"Be a strict developmental editor. JSON only: {scores:{voice:0-10,originality:0-10,clarity:0-10,continuity:0-10,agency:0-10,consequences:0-10},issues:[specific problems],recommendation:'revise'|'review'}. Never automatically approve. Scrutinise repetitive prose, hollow choices and lore contradictions."},
+   {role:"system",content:"Be a strict developmental editor. JSON only: {scores:{voice:0-10,originality:0-10,clarity:0-10,continuity:0-10,agency:0-10,consequences:0-10},issues:[specific problems],recommendation:'revise'|'review'}. Never automatically approve. Scrutinise repetitive prose, hollow choices and lore contradictions. Compare against the current story bible, style and proposed secrets:\\n"+editorial+""},
    {role:"user",content:JSON.stringify({brief,storylet:s})}
   ],model):{issues:check.errors,recommendation:"revise"};
   history.push({round:n+1,mechanical:check,editor:review});
