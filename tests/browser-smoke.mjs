@@ -108,6 +108,22 @@ try{
  await cmsPage.route("https://qbn-studio-ai.parris-neathaustralia.workers.dev/v1/assist",async route=>{
   const sent=route.request().postDataJSON();
   assert.equal(sent.game,"undercity");
+  if(sent.mode==="repair"){
+   assert.ok(sent.context.qa_errors.length>0,"the browser should send actual QA errors");
+   const draft=sent.context.active_story;
+   const proposal={...draft,title:"The Automatically Repaired Ledger",
+     description:"At the registry, a witness demands that you record every household whose light has been taken, despite the Council's threats.",
+     pitch:"A contested household record becomes a test of courage and civic duty.",
+     choices:draft.choices.map((c,i)=>({...c,
+       label:i===0?"Record the names before the officials arrive":"Protect the witnesses from the Council",
+       stat:i===0?"observation":"persuasion",difficulty:6,mode:"broad",action_cost:1,
+       success:{title:"A protected testimony",text:"The families' names survive in a record that the Council cannot quietly burn.",effects:[{type:"quality",id:"observation",amount:1}]},
+       failure:{title:"The seal closes",text:"The clerk seizes the register, but a frightened neighbour keeps a careful copy.",effects:[{type:"menace",id:"suspicion",amount:1}]}
+     }))};
+   await route.fulfill({status:200,contentType:"application/json",body:JSON.stringify({
+     summary:"Fixed all draft fields and valid effects",proposal,issues:[],notes:[],model:"openai/gpt-oss-120b"})});
+   return;
+  }
   assert.equal(sent.mode,"pitch");
   assert.equal(route.request().headers()["x-studio-access"],"test-only");
   await route.fulfill({status:200,contentType:"application/json",body:JSON.stringify({
@@ -125,6 +141,22 @@ try{
  await cmsPage.locator("#groq-apply").click();
  assert.match(await cmsPage.locator("#editor-title").textContent(),/Lantern of Absent Names/);
  console.log("BROWSER PASS Groq mock · request, preview, explicit confirmation, draft update without a live key");
+ assert.equal(await cmsPage.locator("#groq-qa-fix").count(),1);
+ await cmsPage.locator("#groq-qa-fix").click();
+ await cmsPage.waitForFunction(()=>document.querySelector("#groq-feedback")?.textContent?.includes("0 blocking issue(s)"),{timeout:30000});
+ assert.match(await cmsPage.locator("#editor-title").textContent(),/Automatically Repaired Ledger/);
+ const fixed=await cmsPage.evaluate(()=>{
+  const drafts=JSON.parse(localStorage.getItem("qbn.studio.undercity.v1")||"[]");
+  return drafts[0];
+ });
+ assert.equal(fixed.choices.length,2);
+ assert.equal(fixed.choices[0].success.effects[0].type,"quality");
+ assert.equal(fixed.choices[0].success.effects[0].amount,1);
+ assert.ok(Object.values(fixed.qa).every(v=>v===false),"AI must not self approve");
+ await cmsPage.locator("#groq-undo").click();
+ assert.match(await cmsPage.locator("#editor-title").textContent(),/Lantern of Absent Names/);
+ console.log("BROWSER PASS Groq Auto Fix · Quality Gates shortcut, schema repair, QA=0, local backup/undo");
+
 
  console.log("BROWSER PASS Narrative Studio · editor creates draft and loads without JavaScript errors");
  await cmsContext.close();
