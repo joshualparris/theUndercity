@@ -284,3 +284,12 @@ test("all three negotiated coalition endings require choices made during earlier
   assert.equal(result.pathEnding,id+":coalition");
  }
 });
+
+
+test("investigation guidance recognises roads that the player has already unlocked",()=>{
+ for(const [ambition,clues,message,old] of [[2,2,"The Forgotten Stairs are open","Investigate two leads to open"],[3,4,"The Listening Edge is open","Find four leads and descend"]]){
+  const app=launch({version:1,stage:"explore",tab:"story",place:"ink",ambition,clues,stats:{observation:10,guile:10,persuasion:10,resolve:10},hand:[],items:{},flags:{},done:{},journal:[]});
+  const view=app.nodes.get("main").innerHTML;
+  assert.ok(view.includes(message));assert.ok(!view.includes(old));
+ }
+});
