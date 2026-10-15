@@ -7,7 +7,8 @@ const base="http://127.0.0.1:8123";
 let failures=0;
 try{
  for(const width of [390,1280]){
-  const page=await browser.newPage({viewport:{width,height:820},deviceScaleFactor:1});
+  const context=await browser.newContext({viewport:{width,height:820},deviceScaleFactor:1});
+  const page=await context.newPage();
   const errors=[];
   page.on("pageerror",err=>errors.push(err.message));
   const response=await page.goto(base,{waitUntil:"networkidle"});
@@ -28,6 +29,6 @@ try{
   assert.equal(severe.length,0,"serious accessibility violations at "+width+"px");
   assert.deepEqual(errors,[],"runtime JavaScript errors at "+width+"px");
   console.log("BROWSER PASS "+width+"px · title, onboarding, escape, 0 JS errors, WCAG A/AA checks");
-  await page.close();
+  await context.close();
  }
 }finally{await browser.close();}
