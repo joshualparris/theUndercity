@@ -3,6 +3,45 @@
 (function(){
 "use strict";
 const e=window.UndercityExpansions ||= {stories:[],cards:[],items:{},professions:[],destinies:[]};
+
+/** Version 1 narrative quality taxonomy. The category tells the rules layer
+ * whether CP is pyramidal or whether levels are additive/flag-like.
+ * Internal aliases retain compatibility with existing saves and rule functions. */
+e.qualityTypes=Object.freeze({
+ primary_stat:{id:"primary_stat",pyramidal:true,label:"Primary ability"},
+ menace:{id:"menace",pyramidal:true,label:"Menace"},
+ quirk:{id:"disposition",pyramidal:true,label:"Quirk / disposition"},
+ affiliation:{id:"affiliation",pyramidal:true,label:"Affiliation / reputation"},
+ status:{id:"status",pyramidal:false,label:"Status"},
+ circumstance:{id:"circumstance",pyramidal:false,label:"Circumstance"},
+ accomplishment:{id:"accomplishment",pyramidal:false,label:"Accomplishment"},
+ route:{id:"route",pyramidal:false,label:"Route"},
+ living_story:{id:"living_story",pyramidal:false,label:"Living Story"},
+ dream:{id:"dream",pyramidal:true,label:"Dream"},
+ metaquality:{id:"metaquality",pyramidal:false,label:"Metaquality"},
+ item:{id:"item",pyramidal:false,label:"Item / possession"},
+ story:{id:"story",pyramidal:false,label:"Story progress"},
+ fate_marker:{id:"fate_marker",pyramidal:false,label:"Once-only marker"}
+});
+e.qualityDefs={
+ "status:resident":{type:"status",max:1,description:"Registered Undercity resident"},
+ "status:lampkeeper":{type:"status",max:1,description:"Recognised guardian of a civic lamp"},
+ "circumstance:under-surveillance":{type:"circumstance",max:5,description:"Attention from the Council"},
+ "circumstance:protecting-witness":{type:"circumstance",max:1,description:"Currently shielding a named witness"},
+ "accomplishment:found-royal-seal":{type:"accomplishment",max:1,description:"Recovered evidence of the King's oath"},
+ "accomplishment:moth-ledger":{type:"accomplishment",max:1,description:"Verified the abandoned households"},
+ "route:forgotten-stairs":{type:"route",max:1,description:"The lower foundations route"},
+ "route:listening-edge":{type:"route",max:1,description:"The last light before the cavern"},
+ "living_story:clockmaker-post":{type:"living_story",max:1,description:"The clockmaker's delayed letter"},
+ "living_story:moth-warning":{type:"living_story",max:1,description:"A warning about the royal debt"},
+ "dream:unsealed-sky":{type:"dream",max:20,description:"A dream of daylight above the stone roof"},
+ "dream:thirteenth-bell":{type:"dream",max:20,description:"A night-voice counting absent hours"},
+ "meta:criminal-record":{type:"metaquality",max:7,description:"Permanent record of arrests"},
+ "meta:historical-truth":{type:"metaquality",max:1,description:"World ending marker"},
+ "story:moth-oath":{type:"story",max:32,description:"Progress in the personal Moth King ambition"},
+ "fate:city-remembers":{type:"fate_marker",max:1,description:"Irreversible city-wide ending"}
+};
+
 Object.assign(e.items,{
 "spore-script":"A living script grown on moss","clock-key":"A key cut from a minute",
 "stolen-name":"A name wrapped in clean paper","wardens-whistle":"An Ash Warden's silver whistle",
