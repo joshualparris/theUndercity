@@ -38,6 +38,7 @@ try{
   assert.equal(await page.locator("#action-result").count(),0);
   const choices=page.locator('main button[data-act="choose"]:not([disabled])');
   assert.ok(await choices.count()>0,"starting district has playable story choices");
+  const playedId=await choices.first().locator("xpath=ancestor::article").getAttribute("data-story-id");
   await choices.first().scrollIntoViewIfNeeded();
   await choices.first().click();
   await firstResult.waitFor({state:"visible"});
@@ -53,6 +54,10 @@ try{
   assert.match(await firstResult.innerText(),/What changed/i,"quality and action deltas shown");
   await page.locator('[data-act="dismiss"]').first().click();
   assert.equal(await page.locator("#action-result").count(),0);
+  const returned=await page.evaluate(()=>({id:document.activeElement?.dataset.storyId,top:document.activeElement?.getBoundingClientRect().top,headerBottom:document.querySelector("header").getBoundingClientRect().bottom}));
+  assert.ok(returned.id,"Continue restores keyboard focus to a story, including after one-off stories disappear");
+  if(await page.locator('article[data-story-id="'+playedId+'"]').count())assert.equal(returned.id,playedId,"repeatable story remains the reading return point");
+  assert.ok(returned.top>=returned.headerBottom-4&&returned.top<820,"returned story is visible beneath header");
   // A Read card tap from the bottom of the mobile page must present the
   // actual selected opportunity, not merely scroll to the district hero.
   const handCard=page.locator('aside.aside-right button[data-act="card"]').first();
