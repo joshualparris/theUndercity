@@ -178,6 +178,7 @@ function normaliseSave(v){
 }
 try{state=normaliseSave(JSON.parse(localStorage.getItem(SAVE)))}catch(e){state=fresh()}
 ensureQualities(state);
+penalty();
 const $=id=>document.getElementById(id);
 function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,x=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[x]))}
 function lv(cp){return Rules.cpToLevel(Math.max(0,Math.floor(Number(cp)||0)));}
@@ -339,7 +340,7 @@ function routeHint(to){
  return "Roads: "+route.map(id=>PLACES[id].name).join(" → ")+".";
 }
 function beginOrigin(bg){state.background=bg;let stat={scribe:"observation",runner:"guile",speaker:"persuasion",sentinel:"resolve"}[bg];qualityAdd(stat,5);syncLegacy(state);state.stage="allegiance";done()}
-function beginFaction(f){if(!FACTIONS[f])return;state.faction=f;state.relation[f]=2;state.stage="escape";done()}
+function beginFaction(f){if(!FACTIONS[f])return;state.faction=f;qualitySet("affiliation:"+f,2);syncLegacy(state);state.stage="escape";done()}
 function escapeCell(path){let info={observation:["charcoal","ink"],guile:["hook","quays"],persuasion:["silk","choir"],resolve:["badge","soot"]}[path];if(!info)return;qualityAdd(path,4);qualityAdd("item:"+info[0],1);state.items[info[0]]=1;syncLegacy(state);state.stage="explore";state.place=info[1];state.result={title:"Beyond the Bell-Cage",text:"You take your freedom through the city's high maintenance galleries and arrive in "+PLACES[info[1]].name+". The Bell-Cage sounds once behind you. Nobody looks up.\n\nLantern Court is one connected road away. Go there to meet the clockmaker and begin your main mystery. The City map shows every district, the connecting roads and what is locked."+(state.tutorial?"\n\nTIP: Story choices display their cost and success odds. You can travel for free, and Settings offers a faster playtest mode.":""),note:"Escape route: "+labelStat(path)+" · Starting item: "+ITEMS[info[0]]};addJournal("You escaped the Bell-Cage by "+labelStat(path).toLowerCase()+".");done()}
 function chooseCard(id){if(state.hand.includes(id)){state.selectedCard=id;state.result=null;state.tab="story";done()}}
 function buyDraw(){tick();if(state.hand.length>=6)return;if(!state.playtest&&state.coin<2)return;if(!state.playtest)state.coin-=2;drawCard();done()}
@@ -434,14 +435,14 @@ function hireProfession(id){
  const p=PROFESSIONS.find(x=>x.id===id),current=PROFESSIONS.find(x=>x.id===state.profession);
  if(!p||state.stage!=="explore"||(p.tier===1&&state.profession)||(p.tier===2&&(!current||current.tier!==1||(state.renown[p.stat]||0)<4)))return;
  state.profession=id;state.lastWage=Date.now();qualityAdd("item:"+p.item,1);state.items[p.item]=state.qualities["item:"+p.item]?.level??(state.items[p.item]||0)+1;
- state.relation[p.faction]=(state.relation[p.faction]||0)+1;
+ qualityAdd("affiliation:"+p.faction,1);syncLegacy(state);
  state.result={title:"A new profession: "+p.name,text:"Your weekly pay is "+p.wage+" pennies. "+p.scene+" Find your repeatable work story in "+PLACES[p.place].name+".",note:"A lasting calling"};
  addJournal("Became "+p.name);state.tab="story";done();
 }
 function claimDestiny(id){
  const d=DESTINIES.find(x=>x.id===id);
  if(!d||state.destiny||state.stage!=="explore"||state.ambition<4||(d.tier==="greater"&&state.pathProgress<(state.path==='moth'?32:8)))return;
- state.destiny=id;state.coin+=d.bonus;state.relation[d.faction]=(state.relation[d.faction]||0)+3;
+ state.destiny=id;state.coin+=d.bonus;qualityAdd("affiliation:"+d.faction,3);syncLegacy(state);
  state.destinyBonuses=d.stat_bonus||{};
 
  state.result={title:"Your destiny: "+d.name,text:d.description+" The choice remains with this character.",note:"A destiny chosen"};
