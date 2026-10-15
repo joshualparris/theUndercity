@@ -99,6 +99,28 @@ try{
  assert.equal(await cmsPage.locator("#groq-apply").isDisabled(),true,"nothing may apply before preview");
  assert.ok((await cmsPage.locator("#groq-access").getAttribute("type"))==="password","do not show the access code");
  console.log("BROWSER PASS QBN Groq partner · 14 AI tasks, protected access-code field, preview-only default");
+ // This uses a test-only mock, never a real Groq API key or the live provider.
+ await cmsPage.route("https://qbn-studio-ai.parris-neathaustralia.workers.dev/v1/assist",async route=>{
+  const sent=route.request().postDataJSON();
+  assert.equal(sent.game,"undercity");
+  assert.equal(sent.mode,"pitch");
+  assert.equal(route.request().headers()["x-studio-access"],"test-only");
+  await route.fulfill({status:200,contentType:"application/json",body:JSON.stringify({
+   summary:"A witness must choose whom their testimony protects.",
+   proposal:{title:"The Lantern of Absent Names",description:"At the registry a witness fears her testimony will endanger every family whose lamp has gone dark.",pitch:"An original public-record mystery with consequences.",choices:[]},
+   issues:[],notes:["A later letter can acknowledge the witness."],model:"openai/gpt-oss-120b"
+  })});
+ });
+ await cmsPage.locator("#groq-access").fill("test-only");
+ await cmsPage.locator("#groq-generate").click();
+ await cmsPage.locator("#groq-review").waitFor({state:"visible"});
+ assert.match(await cmsPage.locator("#groq-summary").textContent(),/witness/);
+ assert.equal(await cmsPage.locator("#groq-apply").isEnabled(),true,"reviewed proposal becomes manually applicable");
+ cmsPage.once("dialog",dialog=>dialog.accept());
+ await cmsPage.locator("#groq-apply").click();
+ assert.match(await cmsPage.locator("#editor-title").textContent(),/Lantern of Absent Names/);
+ console.log("BROWSER PASS Groq mock · request, preview, explicit confirmation, draft update without a live key");
+
  console.log("BROWSER PASS Narrative Studio · editor creates draft and loads without JavaScript errors");
  await cmsContext.close();
 }finally{await browser.close();}
