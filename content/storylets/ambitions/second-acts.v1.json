@@ -1,12 +1,12 @@
 {
   "schema_version": 1,
-  "content_type": "ambition-collection",
-  "id": "three-final-acts",
-  "description": "Independent conclusions for Tide, Mirror and Ember. Each of three original ambitions advances from stage 9 to 30.",
+  "content_type": "ambition-support",
+  "id": "three-companion-investigations",
+  "description": "Sixty-six optional investigations which enrich the Tide, Mirror and Ember ambitions without advancing or duplicating their main chains.",
   "chapters": [
     {
-      "id": "path-tide-9",
-      "title": "9/30: An inheritance with wet edges",
+      "id": "side-tide-9",
+      "title": "Companion inquiry: An inheritance with wet edges",
       "description": "A funeral procession carries a coffin full of tide marks. Nobody will admit who died.",
       "where": [
         "quays"
@@ -16,14 +16,13 @@
         "path": "tide",
         "ambition_progress": 8
       },
-      "next_storylet": "path-tide-10",
+      "next_storylet": null,
       "choices": [
         {
           "label": "Establish the evidence through careful research",
           "stat": "observation",
           "difficulty": 5,
           "effects": {
-            "pathProgress": 1,
             "clues": 1,
             "coin": 3,
             "flag": "tide-proof-9"
@@ -39,7 +38,6 @@
           "stat": "persuasion",
           "difficulty": 5,
           "effects": {
-            "pathProgress": 1,
             "clues": 1,
             "relation": {
               "hands": 2
@@ -63,7 +61,6 @@
             "faction": "wardens"
           },
           "effects": {
-            "pathProgress": 1,
             "clues": 1,
             "relation": {
               "wardens": 1
@@ -79,8 +76,8 @@
       ]
     },
     {
-      "id": "path-tide-10",
-      "title": "10/30: The ferryman's unsigned oath",
+      "id": "side-tide-10",
+      "title": "Companion inquiry: The ferryman's unsigned oath",
       "description": "At the quays a ferryman presents a licence valid only for passengers who have been forgotten.",
       "where": [
         "ink"
@@ -90,14 +87,13 @@
         "path": "tide",
         "ambition_progress": 9
       },
-      "next_storylet": "path-tide-11",
+      "next_storylet": null,
       "choices": [
         {
           "label": "Establish the evidence through careful research",
           "stat": "observation",
           "difficulty": 5,
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "coin": 3,
             "flag": "tide-proof-10"
@@ -113,7 +109,6 @@
           "stat": "persuasion",
           "difficulty": 5,
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "relation": {
               "hands": 2
@@ -137,7 +132,6 @@
             "faction": "wardens"
           },
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "relation": {
               "wardens": 1
@@ -153,8 +147,8 @@
       ]
     },
     {
-      "id": "path-tide-11",
-      "title": "11/30: A cadastral map in salt",
+      "id": "side-tide-11",
+      "title": "Companion inquiry: A cadastral map in salt",
       "description": "The archive's oldest survey preserves shorelines in salt that dissolves under lamplight.",
       "where": [
         "market"
@@ -164,14 +158,13 @@
         "path": "tide",
         "ambition_progress": 10
       },
-      "next_storylet": "path-tide-12",
+      "next_storylet": null,
       "choices": [
         {
           "label": "Establish the evidence through careful research",
           "stat": "observation",
           "difficulty": 5,
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "coin": 3,
             "flag": "tide-proof-11"
@@ -187,7 +180,6 @@
           "stat": "persuasion",
           "difficulty": 5,
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "relation": {
               "hands": 2
@@ -211,7 +203,6 @@
             "faction": "wardens"
           },
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "relation": {
               "wardens": 1
@@ -227,8 +218,8 @@
       ]
     },
     {
-      "id": "path-tide-12",
-      "title": "12/30: Rent paid to water",
+      "id": "side-tide-12",
+      "title": "Companion inquiry: Rent paid to water",
       "description": "Merchants have collected rent from houses built on a vanished bank.",
       "where": [
         "soot"
@@ -238,14 +229,13 @@
         "path": "tide",
         "ambition_progress": 11
       },
-      "next_storylet": "path-tide-13",
+      "next_storylet": null,
       "choices": [
         {
           "label": "Establish the evidence through careful research",
           "stat": "observation",
           "difficulty": 5,
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "coin": 3,
             "flag": "tide-proof-12"
@@ -261,7 +251,6 @@
           "stat": "persuasion",
           "difficulty": 5,
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "relation": {
               "hands": 2
@@ -285,7 +274,6 @@
             "faction": "wardens"
           },
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "relation": {
               "wardens": 1
@@ -301,8 +289,8 @@
       ]
     },
     {
-      "id": "path-tide-13",
-      "title": "13/30: The lock that opens downstream",
+      "id": "side-tide-13",
+      "title": "Companion inquiry: The lock that opens downstream",
       "description": "The drainage authority maintains a gate whose key turns against the current.",
       "where": [
         "choir"
@@ -312,14 +300,13 @@
         "path": "tide",
         "ambition_progress": 12
       },
-      "next_storylet": "path-tide-14",
+      "next_storylet": null,
       "choices": [
         {
           "label": "Establish the evidence through careful research",
           "stat": "observation",
           "difficulty": 5,
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "coin": 3,
             "flag": "tide-proof-13"
@@ -335,7 +322,6 @@
           "stat": "persuasion",
           "difficulty": 5,
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "relation": {
               "hands": 2
@@ -359,7 +345,6 @@
             "faction": "wardens"
           },
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "relation": {
               "wardens": 1
@@ -375,8 +360,8 @@
       ]
     },
     {
-      "id": "path-tide-14",
-      "title": "14/30: An injunction sung at dusk",
+      "id": "side-tide-14",
+      "title": "Companion inquiry: An injunction sung at dusk",
       "description": "The Moss Choir remembers a ban on naming a district aloud.",
       "where": [
         "stairs"
@@ -386,14 +371,13 @@
         "path": "tide",
         "ambition_progress": 13
       },
-      "next_storylet": "path-tide-15",
+      "next_storylet": null,
       "choices": [
         {
           "label": "Establish the evidence through careful research",
           "stat": "observation",
           "difficulty": 6,
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "coin": 3,
             "flag": "tide-proof-14"
@@ -409,7 +393,6 @@
           "stat": "persuasion",
           "difficulty": 5,
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "relation": {
               "hands": 2
@@ -433,7 +416,6 @@
             "faction": "wardens"
           },
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "relation": {
               "wardens": 1
@@ -449,8 +431,8 @@
       ]
     },
     {
-      "id": "path-tide-15",
-      "title": "15/30: The drowned surveyor",
+      "id": "side-tide-15",
+      "title": "Companion inquiry: The drowned surveyor",
       "description": "A surveyor's voice arrives through the pipes, still trying to finish their report.",
       "where": [
         "edge"
@@ -460,14 +442,13 @@
         "path": "tide",
         "ambition_progress": 14
       },
-      "next_storylet": "path-tide-16",
+      "next_storylet": null,
       "choices": [
         {
           "label": "Establish the evidence through careful research",
           "stat": "observation",
           "difficulty": 6,
           "effects": {
-            "pathProgress": 1,
             "clues": 1,
             "coin": 3,
             "flag": "tide-proof-15"
@@ -483,7 +464,6 @@
           "stat": "persuasion",
           "difficulty": 6,
           "effects": {
-            "pathProgress": 1,
             "clues": 1,
             "relation": {
               "hands": 2
@@ -507,7 +487,6 @@
             "faction": "wardens"
           },
           "effects": {
-            "pathProgress": 1,
             "clues": 1,
             "relation": {
               "wardens": 1
@@ -523,8 +502,8 @@
       ]
     },
     {
-      "id": "path-tide-16",
-      "title": "16/30: The ledger of dry land",
+      "id": "side-tide-16",
+      "title": "Companion inquiry: The ledger of dry land",
       "description": "A registrar insists the river cannot own anything and therefore cannot inherit.",
       "where": [
         "court"
@@ -534,14 +513,13 @@
         "path": "tide",
         "ambition_progress": 15
       },
-      "next_storylet": "path-tide-17",
+      "next_storylet": null,
       "choices": [
         {
           "label": "Establish the evidence through careful research",
           "stat": "observation",
           "difficulty": 6,
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "coin": 3,
             "flag": "tide-proof-16"
@@ -557,7 +535,6 @@
           "stat": "persuasion",
           "difficulty": 6,
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "relation": {
               "hands": 2
@@ -581,7 +558,6 @@
             "faction": "wardens"
           },
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "relation": {
               "wardens": 1
@@ -597,8 +573,8 @@
       ]
     },
     {
-      "id": "path-tide-17",
-      "title": "17/30: A crossing at low bell",
+      "id": "side-tide-17",
+      "title": "Companion inquiry: A crossing at low bell",
       "description": "The Siltway withdraws beneath a bridge for exactly three minutes.",
       "where": [
         "quays"
@@ -608,14 +584,13 @@
         "path": "tide",
         "ambition_progress": 16
       },
-      "next_storylet": "path-tide-18",
+      "next_storylet": null,
       "choices": [
         {
           "label": "Establish the evidence through careful research",
           "stat": "observation",
           "difficulty": 6,
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "coin": 3,
             "flag": "tide-proof-17"
@@ -631,7 +606,6 @@
           "stat": "persuasion",
           "difficulty": 6,
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "relation": {
               "hands": 2
@@ -655,7 +629,6 @@
             "faction": "wardens"
           },
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "relation": {
               "wardens": 1
@@ -671,8 +644,8 @@
       ]
     },
     {
-      "id": "path-tide-18",
-      "title": "18/30: The widow of a lost street",
+      "id": "side-tide-18",
+      "title": "Companion inquiry: The widow of a lost street",
       "description": "A woman calls herself the widow of a street demolished before her birth.",
       "where": [
         "ink"
@@ -682,14 +655,13 @@
         "path": "tide",
         "ambition_progress": 17
       },
-      "next_storylet": "path-tide-19",
+      "next_storylet": null,
       "choices": [
         {
           "label": "Establish the evidence through careful research",
           "stat": "observation",
           "difficulty": 6,
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "coin": 3,
             "flag": "tide-proof-18"
@@ -705,7 +677,6 @@
           "stat": "persuasion",
           "difficulty": 6,
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "relation": {
               "hands": 2
@@ -729,7 +700,6 @@
             "faction": "wardens"
           },
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "relation": {
               "wardens": 1
@@ -745,8 +715,8 @@
       ]
     },
     {
-      "id": "path-tide-19",
-      "title": "19/30: The measure of a current",
+      "id": "side-tide-19",
+      "title": "Companion inquiry: The measure of a current",
       "description": "A Council engineer offers to establish a permanent water gauge, but only under a false name.",
       "where": [
         "market"
@@ -756,14 +726,13 @@
         "path": "tide",
         "ambition_progress": 18
       },
-      "next_storylet": "path-tide-20",
+      "next_storylet": null,
       "choices": [
         {
           "label": "Establish the evidence through careful research",
           "stat": "observation",
           "difficulty": 7,
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "coin": 3,
             "flag": "tide-proof-19"
@@ -779,7 +748,6 @@
           "stat": "persuasion",
           "difficulty": 6,
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "relation": {
               "hands": 2
@@ -803,7 +771,6 @@
             "faction": "wardens"
           },
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "relation": {
               "wardens": 1
@@ -819,8 +786,8 @@
       ]
     },
     {
-      "id": "path-tide-20",
-      "title": "20/30: An island made of promises",
+      "id": "side-tide-20",
+      "title": "Companion inquiry: An island made of promises",
       "description": "At the Listening Edge, a small island appears when witnesses speak in turn.",
       "where": [
         "soot"
@@ -830,14 +797,13 @@
         "path": "tide",
         "ambition_progress": 19
       },
-      "next_storylet": "path-tide-21",
+      "next_storylet": null,
       "choices": [
         {
           "label": "Establish the evidence through careful research",
           "stat": "observation",
           "difficulty": 7,
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "coin": 3,
             "flag": "tide-proof-20"
@@ -853,7 +819,6 @@
           "stat": "persuasion",
           "difficulty": 6,
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "relation": {
               "hands": 2
@@ -877,7 +842,6 @@
             "faction": "wardens"
           },
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "relation": {
               "wardens": 1
@@ -893,8 +857,8 @@
       ]
     },
     {
-      "id": "path-tide-21",
-      "title": "21/30: The missing solicitor",
+      "id": "side-tide-21",
+      "title": "Companion inquiry: The missing solicitor",
       "description": "The lawyer who delivered the will disappears after refusing a secret amendment.",
       "where": [
         "choir"
@@ -904,14 +868,13 @@
         "path": "tide",
         "ambition_progress": 20
       },
-      "next_storylet": "path-tide-22",
+      "next_storylet": null,
       "choices": [
         {
           "label": "Establish the evidence through careful research",
           "stat": "observation",
           "difficulty": 7,
           "effects": {
-            "pathProgress": 1,
             "clues": 1,
             "coin": 3,
             "flag": "tide-proof-21"
@@ -927,7 +890,6 @@
           "stat": "persuasion",
           "difficulty": 7,
           "effects": {
-            "pathProgress": 1,
             "clues": 1,
             "relation": {
               "hands": 2
@@ -951,7 +913,6 @@
             "faction": "wardens"
           },
           "effects": {
-            "pathProgress": 1,
             "clues": 1,
             "relation": {
               "wardens": 1
@@ -967,8 +928,8 @@
       ]
     },
     {
-      "id": "path-tide-22",
-      "title": "22/30: Two incompatible claims",
+      "id": "side-tide-22",
+      "title": "Companion inquiry: Two incompatible claims",
       "description": "The Council and the ferrymen each produce a valid deed to the same bank.",
       "where": [
         "stairs"
@@ -978,14 +939,13 @@
         "path": "tide",
         "ambition_progress": 21
       },
-      "next_storylet": "path-tide-23",
+      "next_storylet": null,
       "choices": [
         {
           "label": "Establish the evidence through careful research",
           "stat": "observation",
           "difficulty": 7,
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "coin": 3,
             "flag": "tide-proof-22"
@@ -1001,7 +961,6 @@
           "stat": "persuasion",
           "difficulty": 7,
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "relation": {
               "hands": 2
@@ -1025,7 +984,6 @@
             "faction": "wardens"
           },
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "relation": {
               "wardens": 1
@@ -1041,8 +999,8 @@
       ]
     },
     {
-      "id": "path-tide-23",
-      "title": "23/30: The public hearing",
+      "id": "side-tide-23",
+      "title": "Companion inquiry: The public hearing",
       "description": "Council clerks hold a hearing in a room with no doors for ordinary citizens.",
       "where": [
         "edge"
@@ -1052,14 +1010,13 @@
         "path": "tide",
         "ambition_progress": 22
       },
-      "next_storylet": "path-tide-24",
+      "next_storylet": null,
       "choices": [
         {
           "label": "Establish the evidence through careful research",
           "stat": "observation",
           "difficulty": 7,
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "coin": 3,
             "flag": "tide-proof-23"
@@ -1075,7 +1032,6 @@
           "stat": "persuasion",
           "difficulty": 7,
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "relation": {
               "hands": 2
@@ -1099,7 +1055,6 @@
             "faction": "wardens"
           },
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "relation": {
               "wardens": 1
@@ -1115,8 +1070,8 @@
       ]
     },
     {
-      "id": "path-tide-24",
-      "title": "24/30: The flood that was ordered",
+      "id": "side-tide-24",
+      "title": "Companion inquiry: The flood that was ordered",
       "description": "A retired sluice-keeper admits the flood began with a signed instruction.",
       "where": [
         "court"
@@ -1126,14 +1081,13 @@
         "path": "tide",
         "ambition_progress": 23
       },
-      "next_storylet": "path-tide-25",
+      "next_storylet": null,
       "choices": [
         {
           "label": "Establish the evidence through careful research",
           "stat": "observation",
           "difficulty": 8,
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "coin": 3,
             "flag": "tide-proof-24"
@@ -1149,7 +1103,6 @@
           "stat": "persuasion",
           "difficulty": 7,
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "relation": {
               "hands": 2
@@ -1173,7 +1126,6 @@
             "faction": "wardens"
           },
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "relation": {
               "wardens": 1
@@ -1189,8 +1141,8 @@
       ]
     },
     {
-      "id": "path-tide-25",
-      "title": "25/30: A debt without a debtor",
+      "id": "side-tide-25",
+      "title": "Companion inquiry: A debt without a debtor",
       "description": "The original agreement names no person who can be compelled to repay the river.",
       "where": [
         "quays"
@@ -1200,14 +1152,13 @@
         "path": "tide",
         "ambition_progress": 24
       },
-      "next_storylet": "path-tide-26",
+      "next_storylet": null,
       "choices": [
         {
           "label": "Establish the evidence through careful research",
           "stat": "observation",
           "difficulty": 8,
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "coin": 3,
             "flag": "tide-proof-25"
@@ -1223,7 +1174,6 @@
           "stat": "persuasion",
           "difficulty": 7,
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "relation": {
               "hands": 2
@@ -1247,7 +1197,6 @@
             "faction": "wardens"
           },
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "relation": {
               "wardens": 1
@@ -1263,8 +1212,8 @@
       ]
     },
     {
-      "id": "path-tide-26",
-      "title": "26/30: The names along the quay",
+      "id": "side-tide-26",
+      "title": "Companion inquiry: The names along the quay",
       "description": "Children paint erased addresses beneath the quay's lanterns.",
       "where": [
         "ink"
@@ -1274,14 +1223,13 @@
         "path": "tide",
         "ambition_progress": 25
       },
-      "next_storylet": "path-tide-27",
+      "next_storylet": null,
       "choices": [
         {
           "label": "Establish the evidence through careful research",
           "stat": "observation",
           "difficulty": 8,
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "coin": 3,
             "flag": "tide-proof-26"
@@ -1297,7 +1245,6 @@
           "stat": "persuasion",
           "difficulty": 7,
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "relation": {
               "hands": 2
@@ -1321,7 +1268,6 @@
             "faction": "wardens"
           },
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "relation": {
               "wardens": 1
@@ -1337,8 +1283,8 @@
       ]
     },
     {
-      "id": "path-tide-27",
-      "title": "27/30: The heir who refuses",
+      "id": "side-tide-27",
+      "title": "Companion inquiry: The heir who refuses",
       "description": "A young claimant declines ownership, fearing the tenants will be evicted.",
       "where": [
         "market"
@@ -1348,14 +1294,13 @@
         "path": "tide",
         "ambition_progress": 26
       },
-      "next_storylet": "path-tide-28",
+      "next_storylet": null,
       "choices": [
         {
           "label": "Establish the evidence through careful research",
           "stat": "observation",
           "difficulty": 8,
           "effects": {
-            "pathProgress": 1,
             "clues": 1,
             "coin": 3,
             "flag": "tide-proof-27"
@@ -1371,7 +1316,6 @@
           "stat": "persuasion",
           "difficulty": 8,
           "effects": {
-            "pathProgress": 1,
             "clues": 1,
             "relation": {
               "hands": 2
@@ -1395,7 +1339,6 @@
             "faction": "wardens"
           },
           "effects": {
-            "pathProgress": 1,
             "clues": 1,
             "relation": {
               "wardens": 1
@@ -1411,8 +1354,8 @@
       ]
     },
     {
-      "id": "path-tide-28",
-      "title": "28/30: The last legal tide",
+      "id": "side-tide-28",
+      "title": "Companion inquiry: The last legal tide",
       "description": "The water rises for the final reading and demands a witness from each bank.",
       "where": [
         "soot"
@@ -1422,14 +1365,13 @@
         "path": "tide",
         "ambition_progress": 27
       },
-      "next_storylet": "path-tide-29",
+      "next_storylet": null,
       "choices": [
         {
           "label": "Establish the evidence through careful research",
           "stat": "observation",
           "difficulty": 8,
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "coin": 3,
             "flag": "tide-proof-28"
@@ -1445,7 +1387,6 @@
           "stat": "persuasion",
           "difficulty": 8,
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "relation": {
               "hands": 2
@@ -1469,7 +1410,6 @@
             "faction": "wardens"
           },
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "relation": {
               "wardens": 1
@@ -1485,8 +1425,8 @@
       ]
     },
     {
-      "id": "path-tide-29",
-      "title": "29/30: A settlement that can be lived in",
+      "id": "side-tide-29",
+      "title": "Companion inquiry: A settlement that can be lived in",
       "description": "The river offers the city one more chance to keep its promises.",
       "where": [
         "choir"
@@ -1496,14 +1436,13 @@
         "path": "tide",
         "ambition_progress": 28
       },
-      "next_storylet": "path-tide-30",
+      "next_storylet": null,
       "choices": [
         {
           "label": "Establish the evidence through careful research",
           "stat": "observation",
           "difficulty": 9,
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "coin": 3,
             "flag": "tide-proof-29"
@@ -1519,7 +1458,6 @@
           "stat": "persuasion",
           "difficulty": 8,
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "relation": {
               "hands": 2
@@ -1543,7 +1481,6 @@
             "faction": "wardens"
           },
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "relation": {
               "wardens": 1
@@ -1559,8 +1496,8 @@
       ]
     },
     {
-      "id": "path-tide-30",
-      "title": "30/30: The quiet bell of the Siltway",
+      "id": "side-tide-30",
+      "title": "Companion inquiry: The quiet bell of the Siltway",
       "description": "At dawn the solicitors ask whose name will appear on the final declaration.",
       "where": [
         "stairs"
@@ -1577,14 +1514,9 @@
           "stat": "observation",
           "difficulty": 9,
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "coin": 3,
-            "flag": "tide-proof-30",
-            "pathEnding": "tide:public-trust",
-            "items": {
-              "quiet-bell": 1
-            }
+            "flag": "tide-proof-30"
           },
           "fail": {
             "suspicion": 1
@@ -1597,7 +1529,6 @@
           "stat": "persuasion",
           "difficulty": 8,
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "relation": {
               "hands": 2
@@ -1605,11 +1536,7 @@
             "quirks": {
               "generous": 1
             },
-            "flag": "tide-witness-30",
-            "pathEnding": "tide:community-trust",
-            "items": {
-              "quiet-bell": 1
-            }
+            "flag": "tide-witness-30"
           },
           "fail": {
             "notoriety": 1
@@ -1625,16 +1552,11 @@
             "faction": "wardens"
           },
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "relation": {
               "wardens": 1
             },
-            "flag": "tide-oath-30",
-            "pathEnding": "tide:protective-charter",
-            "items": {
-              "quiet-bell": 1
-            }
+            "flag": "tide-oath-30"
           },
           "fail": {
             "health": -1
@@ -1645,8 +1567,8 @@
       ]
     },
     {
-      "id": "path-mirror-9",
-      "title": "9/30: The catalogue of borrowed faces",
+      "id": "side-mirror-9",
+      "title": "Companion inquiry: The catalogue of borrowed faces",
       "description": "An auctioneer offers a childhood memory described in a voice you recognise.",
       "where": [
         "market"
@@ -1656,14 +1578,13 @@
         "path": "mirror",
         "ambition_progress": 8
       },
-      "next_storylet": "path-mirror-10",
+      "next_storylet": null,
       "choices": [
         {
           "label": "Establish the evidence through discreet investigation",
           "stat": "guile",
           "difficulty": 5,
           "effects": {
-            "pathProgress": 1,
             "clues": 1,
             "coin": 3,
             "flag": "mirror-proof-9"
@@ -1679,7 +1600,6 @@
           "stat": "persuasion",
           "difficulty": 5,
           "effects": {
-            "pathProgress": 1,
             "clues": 1,
             "relation": {
               "choir": 2
@@ -1703,7 +1623,6 @@
             "faction": "wardens"
           },
           "effects": {
-            "pathProgress": 1,
             "clues": 1,
             "relation": {
               "wardens": 1
@@ -1719,8 +1638,8 @@
       ]
     },
     {
-      "id": "path-mirror-10",
-      "title": "10/30: A school without pupils",
+      "id": "side-mirror-10",
+      "title": "Companion inquiry: A school without pupils",
       "description": "The register lists teachers, lessons and fees but no enrolled children.",
       "where": [
         "choir"
@@ -1730,14 +1649,13 @@
         "path": "mirror",
         "ambition_progress": 9
       },
-      "next_storylet": "path-mirror-11",
+      "next_storylet": null,
       "choices": [
         {
           "label": "Establish the evidence through discreet investigation",
           "stat": "guile",
           "difficulty": 5,
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "coin": 3,
             "flag": "mirror-proof-10"
@@ -1753,7 +1671,6 @@
           "stat": "persuasion",
           "difficulty": 5,
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "relation": {
               "choir": 2
@@ -1777,7 +1694,6 @@
             "faction": "wardens"
           },
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "relation": {
               "wardens": 1
@@ -1793,8 +1709,8 @@
       ]
     },
     {
-      "id": "path-mirror-11",
-      "title": "11/30: The optician who never blinks",
+      "id": "side-mirror-11",
+      "title": "Companion inquiry: The optician who never blinks",
       "description": "An optician measures memories as if they were lenses.",
       "where": [
         "ink"
@@ -1804,14 +1720,13 @@
         "path": "mirror",
         "ambition_progress": 10
       },
-      "next_storylet": "path-mirror-12",
+      "next_storylet": null,
       "choices": [
         {
           "label": "Establish the evidence through discreet investigation",
           "stat": "guile",
           "difficulty": 5,
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "coin": 3,
             "flag": "mirror-proof-11"
@@ -1827,7 +1742,6 @@
           "stat": "persuasion",
           "difficulty": 5,
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "relation": {
               "choir": 2
@@ -1851,7 +1765,6 @@
             "faction": "wardens"
           },
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "relation": {
               "wardens": 1
@@ -1867,8 +1780,8 @@
       ]
     },
     {
-      "id": "path-mirror-12",
-      "title": "12/30: A portrait painted backwards",
+      "id": "side-mirror-12",
+      "title": "Companion inquiry: A portrait painted backwards",
       "description": "A family portrait changes whenever you look away from it.",
       "where": [
         "quays"
@@ -1878,14 +1791,13 @@
         "path": "mirror",
         "ambition_progress": 11
       },
-      "next_storylet": "path-mirror-13",
+      "next_storylet": null,
       "choices": [
         {
           "label": "Establish the evidence through discreet investigation",
           "stat": "guile",
           "difficulty": 5,
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "coin": 3,
             "flag": "mirror-proof-12"
@@ -1901,7 +1813,6 @@
           "stat": "persuasion",
           "difficulty": 5,
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "relation": {
               "choir": 2
@@ -1925,7 +1836,6 @@
             "faction": "wardens"
           },
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "relation": {
               "wardens": 1
@@ -1941,8 +1851,8 @@
       ]
     },
     {
-      "id": "path-mirror-13",
-      "title": "13/30: The seamstress of identities",
+      "id": "side-mirror-13",
+      "title": "Companion inquiry: The seamstress of identities",
       "description": "A seamstress stitches borrowed names into respectable coats.",
       "where": [
         "soot"
@@ -1952,14 +1862,13 @@
         "path": "mirror",
         "ambition_progress": 12
       },
-      "next_storylet": "path-mirror-14",
+      "next_storylet": null,
       "choices": [
         {
           "label": "Establish the evidence through discreet investigation",
           "stat": "guile",
           "difficulty": 5,
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "coin": 3,
             "flag": "mirror-proof-13"
@@ -1975,7 +1884,6 @@
           "stat": "persuasion",
           "difficulty": 5,
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "relation": {
               "choir": 2
@@ -1999,7 +1907,6 @@
             "faction": "wardens"
           },
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "relation": {
               "wardens": 1
@@ -2015,8 +1922,8 @@
       ]
     },
     {
-      "id": "path-mirror-14",
-      "title": "14/30: A lullaby behind a wall",
+      "id": "side-mirror-14",
+      "title": "Companion inquiry: A lullaby behind a wall",
       "description": "A forbidden lullaby leaks through the walls of the Glass Arcade.",
       "where": [
         "stairs"
@@ -2026,14 +1933,13 @@
         "path": "mirror",
         "ambition_progress": 13
       },
-      "next_storylet": "path-mirror-15",
+      "next_storylet": null,
       "choices": [
         {
           "label": "Establish the evidence through discreet investigation",
           "stat": "guile",
           "difficulty": 6,
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "coin": 3,
             "flag": "mirror-proof-14"
@@ -2049,7 +1955,6 @@
           "stat": "persuasion",
           "difficulty": 5,
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "relation": {
               "choir": 2
@@ -2073,7 +1978,6 @@
             "faction": "wardens"
           },
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "relation": {
               "wardens": 1
@@ -2089,8 +1993,8 @@
       ]
     },
     {
-      "id": "path-mirror-15",
-      "title": "15/30: The first counterfeit self",
+      "id": "side-mirror-15",
+      "title": "Companion inquiry: The first counterfeit self",
       "description": "A double of you insists your childhood was purchased legally.",
       "where": [
         "court"
@@ -2100,14 +2004,13 @@
         "path": "mirror",
         "ambition_progress": 14
       },
-      "next_storylet": "path-mirror-16",
+      "next_storylet": null,
       "choices": [
         {
           "label": "Establish the evidence through discreet investigation",
           "stat": "guile",
           "difficulty": 6,
           "effects": {
-            "pathProgress": 1,
             "clues": 1,
             "coin": 3,
             "flag": "mirror-proof-15"
@@ -2123,7 +2026,6 @@
           "stat": "persuasion",
           "difficulty": 6,
           "effects": {
-            "pathProgress": 1,
             "clues": 1,
             "relation": {
               "choir": 2
@@ -2147,7 +2049,6 @@
             "faction": "wardens"
           },
           "effects": {
-            "pathProgress": 1,
             "clues": 1,
             "relation": {
               "wardens": 1
@@ -2163,8 +2064,8 @@
       ]
     },
     {
-      "id": "path-mirror-16",
-      "title": "16/30: An honest broker's condition",
+      "id": "side-mirror-16",
+      "title": "Companion inquiry: An honest broker's condition",
       "description": "A broker agrees to testify if you protect the apprentices who copied the memories.",
       "where": [
         "edge"
@@ -2174,14 +2075,13 @@
         "path": "mirror",
         "ambition_progress": 15
       },
-      "next_storylet": "path-mirror-17",
+      "next_storylet": null,
       "choices": [
         {
           "label": "Establish the evidence through discreet investigation",
           "stat": "guile",
           "difficulty": 6,
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "coin": 3,
             "flag": "mirror-proof-16"
@@ -2197,7 +2097,6 @@
           "stat": "persuasion",
           "difficulty": 6,
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "relation": {
               "choir": 2
@@ -2221,7 +2120,6 @@
             "faction": "wardens"
           },
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "relation": {
               "wardens": 1
@@ -2237,8 +2135,8 @@
       ]
     },
     {
-      "id": "path-mirror-17",
-      "title": "17/30: The stolen birthday",
+      "id": "side-mirror-17",
+      "title": "Companion inquiry: The stolen birthday",
       "description": "A child remembers the cake but not the people who shared it.",
       "where": [
         "market"
@@ -2248,14 +2146,13 @@
         "path": "mirror",
         "ambition_progress": 16
       },
-      "next_storylet": "path-mirror-18",
+      "next_storylet": null,
       "choices": [
         {
           "label": "Establish the evidence through discreet investigation",
           "stat": "guile",
           "difficulty": 6,
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "coin": 3,
             "flag": "mirror-proof-17"
@@ -2271,7 +2168,6 @@
           "stat": "persuasion",
           "difficulty": 6,
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "relation": {
               "choir": 2
@@ -2295,7 +2191,6 @@
             "faction": "wardens"
           },
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "relation": {
               "wardens": 1
@@ -2311,8 +2206,8 @@
       ]
     },
     {
-      "id": "path-mirror-18",
-      "title": "18/30: A letter with two signatures",
+      "id": "side-mirror-18",
+      "title": "Companion inquiry: A letter with two signatures",
       "description": "Your own handwriting answers a letter that you have never received.",
       "where": [
         "choir"
@@ -2322,14 +2217,13 @@
         "path": "mirror",
         "ambition_progress": 17
       },
-      "next_storylet": "path-mirror-19",
+      "next_storylet": null,
       "choices": [
         {
           "label": "Establish the evidence through discreet investigation",
           "stat": "guile",
           "difficulty": 6,
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "coin": 3,
             "flag": "mirror-proof-18"
@@ -2345,7 +2239,6 @@
           "stat": "persuasion",
           "difficulty": 6,
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "relation": {
               "choir": 2
@@ -2369,7 +2262,6 @@
             "faction": "wardens"
           },
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "relation": {
               "wardens": 1
@@ -2385,8 +2277,8 @@
       ]
     },
     {
-      "id": "path-mirror-19",
-      "title": "19/30: The chamber of unclaimed years",
+      "id": "side-mirror-19",
+      "title": "Companion inquiry: The chamber of unclaimed years",
       "description": "Shelves of sealed jars contain entire years nobody was allowed to remember.",
       "where": [
         "ink"
@@ -2396,14 +2288,13 @@
         "path": "mirror",
         "ambition_progress": 18
       },
-      "next_storylet": "path-mirror-20",
+      "next_storylet": null,
       "choices": [
         {
           "label": "Establish the evidence through discreet investigation",
           "stat": "guile",
           "difficulty": 7,
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "coin": 3,
             "flag": "mirror-proof-19"
@@ -2419,7 +2310,6 @@
           "stat": "persuasion",
           "difficulty": 6,
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "relation": {
               "choir": 2
@@ -2443,7 +2333,6 @@
             "faction": "wardens"
           },
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "relation": {
               "wardens": 1
@@ -2459,8 +2348,8 @@
       ]
     },
     {
-      "id": "path-mirror-20",
-      "title": "20/30: The inspector's private collection",
+      "id": "side-mirror-20",
+      "title": "Companion inquiry: The inspector's private collection",
       "description": "An inspector secretly holds the childhood he was paid to confiscate.",
       "where": [
         "quays"
@@ -2470,14 +2359,13 @@
         "path": "mirror",
         "ambition_progress": 19
       },
-      "next_storylet": "path-mirror-21",
+      "next_storylet": null,
       "choices": [
         {
           "label": "Establish the evidence through discreet investigation",
           "stat": "guile",
           "difficulty": 7,
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "coin": 3,
             "flag": "mirror-proof-20"
@@ -2493,7 +2381,6 @@
           "stat": "persuasion",
           "difficulty": 6,
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "relation": {
               "choir": 2
@@ -2517,7 +2404,6 @@
             "faction": "wardens"
           },
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "relation": {
               "wardens": 1
@@ -2533,8 +2419,8 @@
       ]
     },
     {
-      "id": "path-mirror-21",
-      "title": "21/30: A city of second chances",
+      "id": "side-mirror-21",
+      "title": "Companion inquiry: A city of second chances",
       "description": "Former buyers offer to return memories, but not the lives built around them.",
       "where": [
         "soot"
@@ -2544,14 +2430,13 @@
         "path": "mirror",
         "ambition_progress": 20
       },
-      "next_storylet": "path-mirror-22",
+      "next_storylet": null,
       "choices": [
         {
           "label": "Establish the evidence through discreet investigation",
           "stat": "guile",
           "difficulty": 7,
           "effects": {
-            "pathProgress": 1,
             "clues": 1,
             "coin": 3,
             "flag": "mirror-proof-21"
@@ -2567,7 +2452,6 @@
           "stat": "persuasion",
           "difficulty": 7,
           "effects": {
-            "pathProgress": 1,
             "clues": 1,
             "relation": {
               "choir": 2
@@ -2591,7 +2475,6 @@
             "faction": "wardens"
           },
           "effects": {
-            "pathProgress": 1,
             "clues": 1,
             "relation": {
               "wardens": 1
@@ -2607,8 +2490,8 @@
       ]
     },
     {
-      "id": "path-mirror-22",
-      "title": "22/30: The witness who is not a child",
+      "id": "side-mirror-22",
+      "title": "Companion inquiry: The witness who is not a child",
       "description": "An elderly witness recalls being traded as a child under a younger name.",
       "where": [
         "stairs"
@@ -2618,14 +2501,13 @@
         "path": "mirror",
         "ambition_progress": 21
       },
-      "next_storylet": "path-mirror-23",
+      "next_storylet": null,
       "choices": [
         {
           "label": "Establish the evidence through discreet investigation",
           "stat": "guile",
           "difficulty": 7,
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "coin": 3,
             "flag": "mirror-proof-22"
@@ -2641,7 +2523,6 @@
           "stat": "persuasion",
           "difficulty": 7,
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "relation": {
               "choir": 2
@@ -2665,7 +2546,6 @@
             "faction": "wardens"
           },
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "relation": {
               "wardens": 1
@@ -2681,8 +2561,8 @@
       ]
     },
     {
-      "id": "path-mirror-23",
-      "title": "23/30: The first public reunion",
+      "id": "side-mirror-23",
+      "title": "Companion inquiry: The first public reunion",
       "description": "Families assemble in a hall where nobody is promised they will recognise anyone.",
       "where": [
         "court"
@@ -2692,14 +2572,13 @@
         "path": "mirror",
         "ambition_progress": 22
       },
-      "next_storylet": "path-mirror-24",
+      "next_storylet": null,
       "choices": [
         {
           "label": "Establish the evidence through discreet investigation",
           "stat": "guile",
           "difficulty": 7,
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "coin": 3,
             "flag": "mirror-proof-23"
@@ -2715,7 +2594,6 @@
           "stat": "persuasion",
           "difficulty": 7,
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "relation": {
               "choir": 2
@@ -2739,7 +2617,6 @@
             "faction": "wardens"
           },
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "relation": {
               "wardens": 1
@@ -2755,8 +2632,8 @@
       ]
     },
     {
-      "id": "path-mirror-24",
-      "title": "24/30: A bargain about consent",
+      "id": "side-mirror-24",
+      "title": "Companion inquiry: A bargain about consent",
       "description": "The broker offers to restore everyone at once with a dangerous machine.",
       "where": [
         "edge"
@@ -2766,14 +2643,13 @@
         "path": "mirror",
         "ambition_progress": 23
       },
-      "next_storylet": "path-mirror-25",
+      "next_storylet": null,
       "choices": [
         {
           "label": "Establish the evidence through discreet investigation",
           "stat": "guile",
           "difficulty": 8,
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "coin": 3,
             "flag": "mirror-proof-24"
@@ -2789,7 +2665,6 @@
           "stat": "persuasion",
           "difficulty": 7,
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "relation": {
               "choir": 2
@@ -2813,7 +2688,6 @@
             "faction": "wardens"
           },
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "relation": {
               "wardens": 1
@@ -2829,8 +2703,8 @@
       ]
     },
     {
-      "id": "path-mirror-25",
-      "title": "25/30: An exchange of true names",
+      "id": "side-mirror-25",
+      "title": "Companion inquiry: An exchange of true names",
       "description": "Two doubles volunteer to testify about the same memory.",
       "where": [
         "market"
@@ -2840,14 +2714,13 @@
         "path": "mirror",
         "ambition_progress": 24
       },
-      "next_storylet": "path-mirror-26",
+      "next_storylet": null,
       "choices": [
         {
           "label": "Establish the evidence through discreet investigation",
           "stat": "guile",
           "difficulty": 8,
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "coin": 3,
             "flag": "mirror-proof-25"
@@ -2863,7 +2736,6 @@
           "stat": "persuasion",
           "difficulty": 7,
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "relation": {
               "choir": 2
@@ -2887,7 +2759,6 @@
             "faction": "wardens"
           },
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "relation": {
               "wardens": 1
@@ -2903,8 +2774,8 @@
       ]
     },
     {
-      "id": "path-mirror-26",
-      "title": "26/30: The mirror council",
+      "id": "side-mirror-26",
+      "title": "Companion inquiry: The mirror council",
       "description": "A council of reflected children disputes the city's right to call them counterfeit.",
       "where": [
         "choir"
@@ -2914,14 +2785,13 @@
         "path": "mirror",
         "ambition_progress": 25
       },
-      "next_storylet": "path-mirror-27",
+      "next_storylet": null,
       "choices": [
         {
           "label": "Establish the evidence through discreet investigation",
           "stat": "guile",
           "difficulty": 8,
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "coin": 3,
             "flag": "mirror-proof-26"
@@ -2937,7 +2807,6 @@
           "stat": "persuasion",
           "difficulty": 7,
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "relation": {
               "choir": 2
@@ -2961,7 +2830,6 @@
             "faction": "wardens"
           },
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "relation": {
               "wardens": 1
@@ -2977,8 +2845,8 @@
       ]
     },
     {
-      "id": "path-mirror-27",
-      "title": "27/30: The glassworker's proof",
+      "id": "side-mirror-27",
+      "title": "Companion inquiry: The glassworker's proof",
       "description": "A glassworker can demonstrate the mechanism, but doing so will shatter her family's livelihood.",
       "where": [
         "ink"
@@ -2988,14 +2856,13 @@
         "path": "mirror",
         "ambition_progress": 26
       },
-      "next_storylet": "path-mirror-28",
+      "next_storylet": null,
       "choices": [
         {
           "label": "Establish the evidence through discreet investigation",
           "stat": "guile",
           "difficulty": 8,
           "effects": {
-            "pathProgress": 1,
             "clues": 1,
             "coin": 3,
             "flag": "mirror-proof-27"
@@ -3011,7 +2878,6 @@
           "stat": "persuasion",
           "difficulty": 8,
           "effects": {
-            "pathProgress": 1,
             "clues": 1,
             "relation": {
               "choir": 2
@@ -3035,7 +2901,6 @@
             "faction": "wardens"
           },
           "effects": {
-            "pathProgress": 1,
             "clues": 1,
             "relation": {
               "wardens": 1
@@ -3051,8 +2916,8 @@
       ]
     },
     {
-      "id": "path-mirror-28",
-      "title": "28/30: The nursery opens",
+      "id": "side-mirror-28",
+      "title": "Companion inquiry: The nursery opens",
       "description": "The hidden nursery doors open after years of silence.",
       "where": [
         "quays"
@@ -3062,14 +2927,13 @@
         "path": "mirror",
         "ambition_progress": 27
       },
-      "next_storylet": "path-mirror-29",
+      "next_storylet": null,
       "choices": [
         {
           "label": "Establish the evidence through discreet investigation",
           "stat": "guile",
           "difficulty": 8,
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "coin": 3,
             "flag": "mirror-proof-28"
@@ -3085,7 +2949,6 @@
           "stat": "persuasion",
           "difficulty": 8,
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "relation": {
               "choir": 2
@@ -3109,7 +2972,6 @@
             "faction": "wardens"
           },
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "relation": {
               "wardens": 1
@@ -3125,8 +2987,8 @@
       ]
     },
     {
-      "id": "path-mirror-29",
-      "title": "29/30: An ending without erasure",
+      "id": "side-mirror-29",
+      "title": "Companion inquiry: An ending without erasure",
       "description": "The Registry insists each memory have one legal owner.",
       "where": [
         "soot"
@@ -3136,14 +2998,13 @@
         "path": "mirror",
         "ambition_progress": 28
       },
-      "next_storylet": "path-mirror-30",
+      "next_storylet": null,
       "choices": [
         {
           "label": "Establish the evidence through discreet investigation",
           "stat": "guile",
           "difficulty": 9,
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "coin": 3,
             "flag": "mirror-proof-29"
@@ -3159,7 +3020,6 @@
           "stat": "persuasion",
           "difficulty": 8,
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "relation": {
               "choir": 2
@@ -3183,7 +3043,6 @@
             "faction": "wardens"
           },
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "relation": {
               "wardens": 1
@@ -3199,8 +3058,8 @@
       ]
     },
     {
-      "id": "path-mirror-30",
-      "title": "30/30: The key to the second reflection",
+      "id": "side-mirror-30",
+      "title": "Companion inquiry: The key to the second reflection",
       "description": "At the Arcade, your two possible childhoods wait behind a clear door.",
       "where": [
         "stairs"
@@ -3217,14 +3076,9 @@
           "stat": "guile",
           "difficulty": 9,
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "coin": 3,
-            "flag": "mirror-proof-30",
-            "pathEnding": "mirror:public-trust",
-            "items": {
-              "mirror-key": 1
-            }
+            "flag": "mirror-proof-30"
           },
           "fail": {
             "suspicion": 1
@@ -3237,7 +3091,6 @@
           "stat": "persuasion",
           "difficulty": 8,
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "relation": {
               "choir": 2
@@ -3245,11 +3098,7 @@
             "quirks": {
               "generous": 1
             },
-            "flag": "mirror-witness-30",
-            "pathEnding": "mirror:community-trust",
-            "items": {
-              "mirror-key": 1
-            }
+            "flag": "mirror-witness-30"
           },
           "fail": {
             "notoriety": 1
@@ -3265,16 +3114,11 @@
             "faction": "wardens"
           },
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "relation": {
               "wardens": 1
             },
-            "flag": "mirror-oath-30",
-            "pathEnding": "mirror:protective-charter",
-            "items": {
-              "mirror-key": 1
-            }
+            "flag": "mirror-oath-30"
           },
           "fail": {
             "health": -1
@@ -3285,8 +3129,8 @@
       ]
     },
     {
-      "id": "path-ember-9",
-      "title": "9/30: The night shift's confession",
+      "id": "side-ember-9",
+      "title": "Companion inquiry: The night shift's confession",
       "description": "A furnace worker asks why the city's lamp supply is billed as a public secret.",
       "where": [
         "soot"
@@ -3296,14 +3140,13 @@
         "path": "ember",
         "ambition_progress": 8
       },
-      "next_storylet": "path-ember-10",
+      "next_storylet": null,
       "choices": [
         {
           "label": "Establish the evidence through public testimony",
           "stat": "persuasion",
           "difficulty": 5,
           "effects": {
-            "pathProgress": 1,
             "clues": 1,
             "coin": 3,
             "flag": "ember-proof-9"
@@ -3319,7 +3162,6 @@
           "stat": "guile",
           "difficulty": 5,
           "effects": {
-            "pathProgress": 1,
             "clues": 1,
             "relation": {
               "dawn": 2
@@ -3343,7 +3185,6 @@
             "faction": "wardens"
           },
           "effects": {
-            "pathProgress": 1,
             "clues": 1,
             "relation": {
               "wardens": 1
@@ -3359,8 +3200,8 @@
       ]
     },
     {
-      "id": "path-ember-10",
-      "title": "10/30: The coal that is not coal",
+      "id": "side-ember-10",
+      "title": "Companion inquiry: The coal that is not coal",
       "description": "Black fuel arrives in crates marked with the names of missing households.",
       "where": [
         "market"
@@ -3370,14 +3211,13 @@
         "path": "ember",
         "ambition_progress": 9
       },
-      "next_storylet": "path-ember-11",
+      "next_storylet": null,
       "choices": [
         {
           "label": "Establish the evidence through public testimony",
           "stat": "persuasion",
           "difficulty": 5,
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "coin": 3,
             "flag": "ember-proof-10"
@@ -3393,7 +3233,6 @@
           "stat": "guile",
           "difficulty": 5,
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "relation": {
               "dawn": 2
@@ -3417,7 +3256,6 @@
             "faction": "wardens"
           },
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "relation": {
               "wardens": 1
@@ -3433,8 +3271,8 @@
       ]
     },
     {
-      "id": "path-ember-11",
-      "title": "11/30: A union behind iron doors",
+      "id": "side-ember-11",
+      "title": "Companion inquiry: A union behind iron doors",
       "description": "Workers meet in a toolroom where each clock shows a different time.",
       "where": [
         "ink"
@@ -3444,14 +3282,13 @@
         "path": "ember",
         "ambition_progress": 10
       },
-      "next_storylet": "path-ember-12",
+      "next_storylet": null,
       "choices": [
         {
           "label": "Establish the evidence through public testimony",
           "stat": "persuasion",
           "difficulty": 5,
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "coin": 3,
             "flag": "ember-proof-11"
@@ -3467,7 +3304,6 @@
           "stat": "guile",
           "difficulty": 5,
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "relation": {
               "dawn": 2
@@ -3491,7 +3327,6 @@
             "faction": "wardens"
           },
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "relation": {
               "wardens": 1
@@ -3507,8 +3342,8 @@
       ]
     },
     {
-      "id": "path-ember-12",
-      "title": "12/30: A switch that requires two hands",
+      "id": "side-ember-12",
+      "title": "Companion inquiry: A switch that requires two hands",
       "description": "A control panel has one switch for the Council and one for the factory crew.",
       "where": [
         "choir"
@@ -3518,14 +3353,13 @@
         "path": "ember",
         "ambition_progress": 11
       },
-      "next_storylet": "path-ember-13",
+      "next_storylet": null,
       "choices": [
         {
           "label": "Establish the evidence through public testimony",
           "stat": "persuasion",
           "difficulty": 5,
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "coin": 3,
             "flag": "ember-proof-12"
@@ -3541,7 +3375,6 @@
           "stat": "guile",
           "difficulty": 5,
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "relation": {
               "dawn": 2
@@ -3565,7 +3398,6 @@
             "faction": "wardens"
           },
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "relation": {
               "wardens": 1
@@ -3581,8 +3413,8 @@
       ]
     },
     {
-      "id": "path-ember-13",
-      "title": "13/30: The inspector's lost report",
+      "id": "side-ember-13",
+      "title": "Companion inquiry: The inspector's lost report",
       "description": "An inspector lost her position for documenting soot in the nurseries.",
       "where": [
         "quays"
@@ -3592,14 +3424,13 @@
         "path": "ember",
         "ambition_progress": 12
       },
-      "next_storylet": "path-ember-14",
+      "next_storylet": null,
       "choices": [
         {
           "label": "Establish the evidence through public testimony",
           "stat": "persuasion",
           "difficulty": 5,
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "coin": 3,
             "flag": "ember-proof-13"
@@ -3615,7 +3446,6 @@
           "stat": "guile",
           "difficulty": 5,
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "relation": {
               "dawn": 2
@@ -3639,7 +3469,6 @@
             "faction": "wardens"
           },
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "relation": {
               "wardens": 1
@@ -3655,8 +3484,8 @@
       ]
     },
     {
-      "id": "path-ember-14",
-      "title": "14/30: The choir of exhaust pipes",
+      "id": "side-ember-14",
+      "title": "Companion inquiry: The choir of exhaust pipes",
       "description": "The Moss Choir hears voices in the furnace exhaust.",
       "where": [
         "stairs"
@@ -3666,14 +3495,13 @@
         "path": "ember",
         "ambition_progress": 13
       },
-      "next_storylet": "path-ember-15",
+      "next_storylet": null,
       "choices": [
         {
           "label": "Establish the evidence through public testimony",
           "stat": "persuasion",
           "difficulty": 6,
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "coin": 3,
             "flag": "ember-proof-14"
@@ -3689,7 +3517,6 @@
           "stat": "guile",
           "difficulty": 5,
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "relation": {
               "dawn": 2
@@ -3713,7 +3540,6 @@
             "faction": "wardens"
           },
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "relation": {
               "wardens": 1
@@ -3729,8 +3555,8 @@
       ]
     },
     {
-      "id": "path-ember-15",
-      "title": "15/30: A demonstration of the burden",
+      "id": "side-ember-15",
+      "title": "Companion inquiry: A demonstration of the burden",
       "description": "The overseer offers you a tour in exchange for agreeing to his public statement.",
       "where": [
         "court"
@@ -3740,14 +3566,13 @@
         "path": "ember",
         "ambition_progress": 14
       },
-      "next_storylet": "path-ember-16",
+      "next_storylet": null,
       "choices": [
         {
           "label": "Establish the evidence through public testimony",
           "stat": "persuasion",
           "difficulty": 6,
           "effects": {
-            "pathProgress": 1,
             "clues": 1,
             "coin": 3,
             "flag": "ember-proof-15"
@@ -3763,7 +3588,6 @@
           "stat": "guile",
           "difficulty": 6,
           "effects": {
-            "pathProgress": 1,
             "clues": 1,
             "relation": {
               "dawn": 2
@@ -3787,7 +3611,6 @@
             "faction": "wardens"
           },
           "effects": {
-            "pathProgress": 1,
             "clues": 1,
             "relation": {
               "wardens": 1
@@ -3803,8 +3626,8 @@
       ]
     },
     {
-      "id": "path-ember-16",
-      "title": "16/30: The engineer who refused",
+      "id": "side-ember-16",
+      "title": "Companion inquiry: The engineer who refused",
       "description": "A retired engineer designed the emergency shutoff but never signed its acceptance.",
       "where": [
         "edge"
@@ -3814,14 +3637,13 @@
         "path": "ember",
         "ambition_progress": 15
       },
-      "next_storylet": "path-ember-17",
+      "next_storylet": null,
       "choices": [
         {
           "label": "Establish the evidence through public testimony",
           "stat": "persuasion",
           "difficulty": 6,
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "coin": 3,
             "flag": "ember-proof-16"
@@ -3837,7 +3659,6 @@
           "stat": "guile",
           "difficulty": 6,
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "relation": {
               "dawn": 2
@@ -3861,7 +3682,6 @@
             "faction": "wardens"
           },
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "relation": {
               "wardens": 1
@@ -3877,8 +3697,8 @@
       ]
     },
     {
-      "id": "path-ember-17",
-      "title": "17/30: A ledger written in heat",
+      "id": "side-ember-17",
+      "title": "Companion inquiry: A ledger written in heat",
       "description": "An account book only reveals its figures when held close to a flame.",
       "where": [
         "soot"
@@ -3888,14 +3708,13 @@
         "path": "ember",
         "ambition_progress": 16
       },
-      "next_storylet": "path-ember-18",
+      "next_storylet": null,
       "choices": [
         {
           "label": "Establish the evidence through public testimony",
           "stat": "persuasion",
           "difficulty": 6,
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "coin": 3,
             "flag": "ember-proof-17"
@@ -3911,7 +3730,6 @@
           "stat": "guile",
           "difficulty": 6,
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "relation": {
               "dawn": 2
@@ -3935,7 +3753,6 @@
             "faction": "wardens"
           },
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "relation": {
               "wardens": 1
@@ -3951,8 +3768,8 @@
       ]
     },
     {
-      "id": "path-ember-18",
-      "title": "18/30: The apprentices' testimony",
+      "id": "side-ember-18",
+      "title": "Companion inquiry: The apprentices' testimony",
       "description": "Young apprentices assemble a diagram of the furnace from memory.",
       "where": [
         "market"
@@ -3962,14 +3779,13 @@
         "path": "ember",
         "ambition_progress": 17
       },
-      "next_storylet": "path-ember-19",
+      "next_storylet": null,
       "choices": [
         {
           "label": "Establish the evidence through public testimony",
           "stat": "persuasion",
           "difficulty": 6,
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "coin": 3,
             "flag": "ember-proof-18"
@@ -3985,7 +3801,6 @@
           "stat": "guile",
           "difficulty": 6,
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "relation": {
               "dawn": 2
@@ -4009,7 +3824,6 @@
             "faction": "wardens"
           },
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "relation": {
               "wardens": 1
@@ -4025,8 +3839,8 @@
       ]
     },
     {
-      "id": "path-ember-19",
-      "title": "19/30: The weight of a false sky",
+      "id": "side-ember-19",
+      "title": "Companion inquiry: The weight of a false sky",
       "description": "A structural engineer reveals that the furnace supports a hanging portion of the roof.",
       "where": [
         "ink"
@@ -4036,14 +3850,13 @@
         "path": "ember",
         "ambition_progress": 18
       },
-      "next_storylet": "path-ember-20",
+      "next_storylet": null,
       "choices": [
         {
           "label": "Establish the evidence through public testimony",
           "stat": "persuasion",
           "difficulty": 7,
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "coin": 3,
             "flag": "ember-proof-19"
@@ -4059,7 +3872,6 @@
           "stat": "guile",
           "difficulty": 6,
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "relation": {
               "dawn": 2
@@ -4083,7 +3895,6 @@
             "faction": "wardens"
           },
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "relation": {
               "wardens": 1
@@ -4099,8 +3910,8 @@
       ]
     },
     {
-      "id": "path-ember-20",
-      "title": "20/30: The private offer",
+      "id": "side-ember-20",
+      "title": "Companion inquiry: The private offer",
       "description": "Council envoys offer you the keys to the furnace if you agree never to disclose its fuel.",
       "where": [
         "choir"
@@ -4110,14 +3921,13 @@
         "path": "ember",
         "ambition_progress": 19
       },
-      "next_storylet": "path-ember-21",
+      "next_storylet": null,
       "choices": [
         {
           "label": "Establish the evidence through public testimony",
           "stat": "persuasion",
           "difficulty": 7,
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "coin": 3,
             "flag": "ember-proof-20"
@@ -4133,7 +3943,6 @@
           "stat": "guile",
           "difficulty": 6,
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "relation": {
               "dawn": 2
@@ -4157,7 +3966,6 @@
             "faction": "wardens"
           },
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "relation": {
               "wardens": 1
@@ -4173,8 +3981,8 @@
       ]
     },
     {
-      "id": "path-ember-21",
-      "title": "21/30: A strike at sunrise",
+      "id": "side-ember-21",
+      "title": "Companion inquiry: A strike at sunrise",
       "description": "The workers strike when the lamps dim, refusing to start the old system.",
       "where": [
         "quays"
@@ -4184,14 +3992,13 @@
         "path": "ember",
         "ambition_progress": 20
       },
-      "next_storylet": "path-ember-22",
+      "next_storylet": null,
       "choices": [
         {
           "label": "Establish the evidence through public testimony",
           "stat": "persuasion",
           "difficulty": 7,
           "effects": {
-            "pathProgress": 1,
             "clues": 1,
             "coin": 3,
             "flag": "ember-proof-21"
@@ -4207,7 +4014,6 @@
           "stat": "guile",
           "difficulty": 7,
           "effects": {
-            "pathProgress": 1,
             "clues": 1,
             "relation": {
               "dawn": 2
@@ -4231,7 +4037,6 @@
             "faction": "wardens"
           },
           "effects": {
-            "pathProgress": 1,
             "clues": 1,
             "relation": {
               "wardens": 1
@@ -4247,8 +4052,8 @@
       ]
     },
     {
-      "id": "path-ember-22",
-      "title": "22/30: The hidden reservoir",
+      "id": "side-ember-22",
+      "title": "Companion inquiry: The hidden reservoir",
       "description": "Beneath the furnaces sits a reservoir of luminous water.",
       "where": [
         "stairs"
@@ -4258,14 +4063,13 @@
         "path": "ember",
         "ambition_progress": 21
       },
-      "next_storylet": "path-ember-23",
+      "next_storylet": null,
       "choices": [
         {
           "label": "Establish the evidence through public testimony",
           "stat": "persuasion",
           "difficulty": 7,
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "coin": 3,
             "flag": "ember-proof-22"
@@ -4281,7 +4085,6 @@
           "stat": "guile",
           "difficulty": 7,
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "relation": {
               "dawn": 2
@@ -4305,7 +4108,6 @@
             "faction": "wardens"
           },
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "relation": {
               "wardens": 1
@@ -4321,8 +4123,8 @@
       ]
     },
     {
-      "id": "path-ember-23",
-      "title": "23/30: The councillor's daughter",
+      "id": "side-ember-23",
+      "title": "Companion inquiry: The councillor's daughter",
       "description": "A councillor's daughter agrees to testify against her father's order.",
       "where": [
         "court"
@@ -4332,14 +4134,13 @@
         "path": "ember",
         "ambition_progress": 22
       },
-      "next_storylet": "path-ember-24",
+      "next_storylet": null,
       "choices": [
         {
           "label": "Establish the evidence through public testimony",
           "stat": "persuasion",
           "difficulty": 7,
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "coin": 3,
             "flag": "ember-proof-23"
@@ -4355,7 +4156,6 @@
           "stat": "guile",
           "difficulty": 7,
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "relation": {
               "dawn": 2
@@ -4379,7 +4179,6 @@
             "faction": "wardens"
           },
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "relation": {
               "wardens": 1
@@ -4395,8 +4194,8 @@
       ]
     },
     {
-      "id": "path-ember-24",
-      "title": "24/30: A repaired valve",
+      "id": "side-ember-24",
+      "title": "Companion inquiry: A repaired valve",
       "description": "The workers make the first replacement valve in their own workshop.",
       "where": [
         "edge"
@@ -4406,14 +4205,13 @@
         "path": "ember",
         "ambition_progress": 23
       },
-      "next_storylet": "path-ember-25",
+      "next_storylet": null,
       "choices": [
         {
           "label": "Establish the evidence through public testimony",
           "stat": "persuasion",
           "difficulty": 8,
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "coin": 3,
             "flag": "ember-proof-24"
@@ -4429,7 +4227,6 @@
           "stat": "guile",
           "difficulty": 7,
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "relation": {
               "dawn": 2
@@ -4453,7 +4250,6 @@
             "faction": "wardens"
           },
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "relation": {
               "wardens": 1
@@ -4469,8 +4265,8 @@
       ]
     },
     {
-      "id": "path-ember-25",
-      "title": "25/30: The argument over ownership",
+      "id": "side-ember-25",
+      "title": "Companion inquiry: The argument over ownership",
       "description": "Union and Council representatives dispute who may operate the new machinery.",
       "where": [
         "soot"
@@ -4480,14 +4276,13 @@
         "path": "ember",
         "ambition_progress": 24
       },
-      "next_storylet": "path-ember-26",
+      "next_storylet": null,
       "choices": [
         {
           "label": "Establish the evidence through public testimony",
           "stat": "persuasion",
           "difficulty": 8,
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "coin": 3,
             "flag": "ember-proof-25"
@@ -4503,7 +4298,6 @@
           "stat": "guile",
           "difficulty": 7,
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "relation": {
               "dawn": 2
@@ -4527,7 +4321,6 @@
             "faction": "wardens"
           },
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "relation": {
               "wardens": 1
@@ -4543,8 +4336,8 @@
       ]
     },
     {
-      "id": "path-ember-26",
-      "title": "26/30: The day of the blackout",
+      "id": "side-ember-26",
+      "title": "Companion inquiry: The day of the blackout",
       "description": "The old furnace stalls and the city prepares for three hours without light.",
       "where": [
         "market"
@@ -4554,14 +4347,13 @@
         "path": "ember",
         "ambition_progress": 25
       },
-      "next_storylet": "path-ember-27",
+      "next_storylet": null,
       "choices": [
         {
           "label": "Establish the evidence through public testimony",
           "stat": "persuasion",
           "difficulty": 8,
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "coin": 3,
             "flag": "ember-proof-26"
@@ -4577,7 +4369,6 @@
           "stat": "guile",
           "difficulty": 7,
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "relation": {
               "dawn": 2
@@ -4601,7 +4392,6 @@
             "faction": "wardens"
           },
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "relation": {
               "wardens": 1
@@ -4617,8 +4407,8 @@
       ]
     },
     {
-      "id": "path-ember-27",
-      "title": "27/30: A charter with witnesses",
+      "id": "side-ember-27",
+      "title": "Companion inquiry: A charter with witnesses",
       "description": "The workers insist every future shutdown be decided with local residents present.",
       "where": [
         "ink"
@@ -4628,14 +4418,13 @@
         "path": "ember",
         "ambition_progress": 26
       },
-      "next_storylet": "path-ember-28",
+      "next_storylet": null,
       "choices": [
         {
           "label": "Establish the evidence through public testimony",
           "stat": "persuasion",
           "difficulty": 8,
           "effects": {
-            "pathProgress": 1,
             "clues": 1,
             "coin": 3,
             "flag": "ember-proof-27"
@@ -4651,7 +4440,6 @@
           "stat": "guile",
           "difficulty": 8,
           "effects": {
-            "pathProgress": 1,
             "clues": 1,
             "relation": {
               "dawn": 2
@@ -4675,7 +4463,6 @@
             "faction": "wardens"
           },
           "effects": {
-            "pathProgress": 1,
             "clues": 1,
             "relation": {
               "wardens": 1
@@ -4691,8 +4478,8 @@
       ]
     },
     {
-      "id": "path-ember-28",
-      "title": "28/30: The old machinery sleeps",
+      "id": "side-ember-28",
+      "title": "Companion inquiry: The old machinery sleeps",
       "description": "The last machine fed by erased names falls silent.",
       "where": [
         "choir"
@@ -4702,14 +4489,13 @@
         "path": "ember",
         "ambition_progress": 27
       },
-      "next_storylet": "path-ember-29",
+      "next_storylet": null,
       "choices": [
         {
           "label": "Establish the evidence through public testimony",
           "stat": "persuasion",
           "difficulty": 8,
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "coin": 3,
             "flag": "ember-proof-28"
@@ -4725,7 +4511,6 @@
           "stat": "guile",
           "difficulty": 8,
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "relation": {
               "dawn": 2
@@ -4749,7 +4534,6 @@
             "faction": "wardens"
           },
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "relation": {
               "wardens": 1
@@ -4765,8 +4549,8 @@
       ]
     },
     {
-      "id": "path-ember-29",
-      "title": "29/30: A new public flame",
+      "id": "side-ember-29",
+      "title": "Companion inquiry: A new public flame",
       "description": "The first new furnace is lit with the apprentices and nearby households watching.",
       "where": [
         "quays"
@@ -4776,14 +4560,13 @@
         "path": "ember",
         "ambition_progress": 28
       },
-      "next_storylet": "path-ember-30",
+      "next_storylet": null,
       "choices": [
         {
           "label": "Establish the evidence through public testimony",
           "stat": "persuasion",
           "difficulty": 9,
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "coin": 3,
             "flag": "ember-proof-29"
@@ -4799,7 +4582,6 @@
           "stat": "guile",
           "difficulty": 8,
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "relation": {
               "dawn": 2
@@ -4823,7 +4605,6 @@
             "faction": "wardens"
           },
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "relation": {
               "wardens": 1
@@ -4839,8 +4620,8 @@
       ]
     },
     {
-      "id": "path-ember-30",
-      "title": "30/30: The council's last fire",
+      "id": "side-ember-30",
+      "title": "Companion inquiry: The council's last fire",
       "description": "The Council asks you to sign the permanent charter: retain the old title, or share it with the workers.",
       "where": [
         "stairs"
@@ -4857,14 +4638,9 @@
           "stat": "persuasion",
           "difficulty": 9,
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "coin": 3,
-            "flag": "ember-proof-30",
-            "pathEnding": "ember:public-trust",
-            "items": {
-              "ember-crown": 1
-            }
+            "flag": "ember-proof-30"
           },
           "fail": {
             "suspicion": 1
@@ -4877,7 +4653,6 @@
           "stat": "guile",
           "difficulty": 8,
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "relation": {
               "dawn": 2
@@ -4885,11 +4660,7 @@
             "quirks": {
               "generous": 1
             },
-            "flag": "ember-witness-30",
-            "pathEnding": "ember:community-trust",
-            "items": {
-              "ember-crown": 1
-            }
+            "flag": "ember-witness-30"
           },
           "fail": {
             "notoriety": 1
@@ -4905,16 +4676,11 @@
             "faction": "wardens"
           },
           "effects": {
-            "pathProgress": 1,
             "clues": 0,
             "relation": {
               "wardens": 1
             },
-            "flag": "ember-oath-30",
-            "pathEnding": "ember:protective-charter",
-            "items": {
-              "ember-crown": 1
-            }
+            "flag": "ember-oath-30"
           },
           "fail": {
             "health": -1
