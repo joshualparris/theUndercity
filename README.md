@@ -12,6 +12,8 @@ The site is published from this repository on Vercel. No sign-in or payment is r
 
 ## Narrative production pipeline
 
+**[Open the QBN Studio CMS](tools/cms/index.html)** to draft branching stories and export review packets.
+
 **[Narrative Studio](docs/narrative-studio/README.md)** defines our pitch → midflight skeleton → prose → four QA reviews → human approval process. Its 40-topic spoilers ledger tracks reveal depth and deliberately conflicting witness accounts. Use `npm run studio:validate` before releasing new storylets; editorial drafts are not loaded by the running game.
 
 ## What is playable

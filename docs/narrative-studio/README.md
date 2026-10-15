@@ -22,9 +22,11 @@ Update the secrets ledger and bible whenever a canon fact ships. Check the last 
 **Fifty** individually approved storylets before any batch of ten; the reference document has conflicting thresholds of 20 and 50. Keep individual QA regardless of batch size. Monthly review *all* item sources/sinks, card economy, currency loops, menaces and profession income. Propose changes for humans to approve; do not silently rebalance the game.
 
 ## Editor and CI
-- Open `tools/narrative-studio/editor.html` as a local/browser tool to author a structured draft and download a review packet. It never overwrites player saves or GitHub content.
+- Open `tools/cms/index.html` as a local/browser tool to author a structured draft and download a review packet. It never overwrites player saves or GitHub content.
 - `npm run studio:validate` validates all packets under `content/narrative-studio/submissions/`, ledger IDs, per-branch contracts and sign-off.
 - `npm run studio:report` prints the stage backlog.
 - The existing `scripts/validate-content.mjs` and generated-bundle parity are still authoritative for real player content. CI runs both checks.
 
 This does not automate a separate writer's taste or magically implement a large content library. It gives a reproducible gate that future AI tools can use without letting unapproved draft prose go live.
+## Existing QBN Studio CMS and Groq Foundry
+The [no-code QBN Studio editor](../../tools/cms/index.html) has dropdowns for branches, qualities, outcomes and effects; its exports use `format: qbn-studio-export` with `stories[]`. Copy exported JSON to `content/narrative-studio/submissions/` for the editorial gate; the validator accepts either native editorial packets or this CMS bundle. The [Storylet Foundry](../../tools/storylet-generator.mjs) offers optional Groq-assisted drafting with separate review/publishing commands. **Neither CMS export nor AI generation is automatic player-content publication.** A CMS draft with `approved` status also needs `runtime_integration: verified` and actual tests before the editorial gate calls it shipped. Use the full `npm run release:check` (NeathBound) or `npm test` plus `npm run studio:validate` (Undercity).
