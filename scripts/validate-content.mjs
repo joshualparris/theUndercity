@@ -146,6 +146,35 @@ byProgress.forEach((st,i)=>{
   }
  }
 });
+const late=parsed("content/storylets/ambitions/late-main.v1.json");
+if(late.schema_version!==1||late.content_type!=="ambition-main-collection"||late.chapters?.length!==72)
+ fail("late-main.v1.json","expected 72 late main chapters, schema_version 1");
+for(const ambition of ["tide","mirror","ember"]){
+ const byStage=late.chapters.filter(st=>st.id.startsWith("path-"+ambition+"-")).sort((a,b)=>a.progress-b.progress);
+ if(byStage.length!==24)fail(ambition,"expected 24 late chapters");
+ byStage.forEach((st,i)=>{
+  const stage=i+9,at="late-main "+st.id;
+  if(st.id!=="path-"+ambition+"-"+stage||st.storyId!==st.id)fail(at,"noncanonical ID");
+  if(st.progress!==stage-1||st.unlock?.path!==ambition||st.unlock.ambition_progress!==stage-1)
+   fail(at,"broken simple-chain gate");
+  if(st.next_storylet!==(stage===32?null:"path-"+ambition+"-"+(stage+1)))fail(at,"next_storylet broken");
+  if(!st.title||!st.description||!Array.isArray(st.where)||!st.where.every(x=>placeIds.has(x)))
+   fail(at,"missing copy or invalid district");
+  if(!Array.isArray(st.choices)||st.choices.length<3)fail(at,"needs several choices");
+  for(const c of st.choices||[]){
+   if(!c.label||!c.success||!c.failure)fail(at,"missing dialogue outcome");
+   if(!qualityIds.has(c.stat))fail(at,"unrecognised challenge quality "+c.stat);
+   if(c.effects?.pathProgress!==1)fail(at,"success must advance one chapter");
+   if(c.requirement_flag&&!c.requirement_flag.startsWith(ambition+"-witness-"))fail(at,"invalid saved-witness gate");
+   if(c.requirement_extra){
+    for(const [k,v] of Object.entries(c.requirement_extra))
+     if(![ambition+"Evidence",ambition+"Witnesses"].includes(k)||!Number.isInteger(v)||v<0)
+      fail(at,"invalid earned-coalition gate "+k);
+   }
+   for(const item of Object.keys(c.effects?.items||{}))if(!itemIds.has(item))fail(at,"unknown reward item "+item);
+  }
+ });
+}
 for(const [key,gear] of Object.entries(sys.gear||{})){
  if(!itemIds.has(key))fail("equipment "+key,"undeclared inventory item");
  if(!(sys.slots||[]).includes(gear[0]))fail("equipment "+key,"unknown slot "+gear[0]);
