@@ -267,7 +267,7 @@ function equipItem(id){
  state.tab="possessions";addJournal("Changed equipment: "+ITEMS[id]);done();
 }
 function renderMessages(){
- return '<div class="hero"><div class="eyebrow">The city writes back</div><h1>Messages</h1>+
+ return '<div class="hero"><div class="eyebrow">The city writes back</div><h1>Messages</h1>'+
  '<p>Some stories arrive after real time passes, including while the game is closed. Rewards arrive when you next open the game.</p></div>'+
  (state.messages.length?state.messages.map(m=>'<article class="story"><div class="eyebrow">'+esc(new Date(m.date).toLocaleString())+
  '</div><h2>'+esc(m.title)+'</h2><p>'+esc(m.text)+'</p></article>').join(''):
