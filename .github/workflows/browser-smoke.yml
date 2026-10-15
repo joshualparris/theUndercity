@@ -1,0 +1,27 @@
+name: Real-browser accessibility and mobile smoke
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/browser-smoke.yml
+      - tests/browser-smoke.mjs
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install browser test dependencies and Chromium
+        run: |
+          npm install --no-save playwright @axe-core/playwright
+          npx playwright install --with-deps chromium
+      - name: Check real browser, mobile width and WCAG A/AA
+        run: |
+          python3 -m http.server 8123 --bind 127.0.0.1 >/tmp/undercity-http.log 2>&1 &
+          node tests/browser-smoke.mjs
