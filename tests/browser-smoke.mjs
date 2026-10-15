@@ -181,6 +181,40 @@ try{
  assert.match(await cmsPage.locator('[data-path="pitch"]').inputValue(),/Premise:/);
  assert.match(await cmsPage.locator("#editor-subtitle").innerText(),/midflight/);
  console.log("BROWSER PASS Pitch stage · Advance automatically fills empty pitch and opens Structure");
+
+ // Final-stage user report: an empty reviewer used to trap an otherwise
+ // complete draft at Peer review. Solo creator approval must remain honest.
+ await cmsPage.evaluate(()=>{
+  const storageKey="qbn.studio.undercity.v1";
+  const drafts=JSON.parse(localStorage.getItem(storageKey)||"[]");
+  const item=drafts.find(d=>d.title==="The Silent Landlord");
+  if(!item)throw Error("Expected fixture draft in browser storage");
+  item.status="review";item.author="Solo game creator";item.reviewer="";
+  item.pitch="A landlord offers a dangerous compromise, forcing the player to protect tenants or expose the forged household registry.";
+  item.choices.forEach((c,i)=>{
+   c.label=i===0?"Publish the threatened neighbours' names":"Protect the neighbours and confront the landlord";
+   c.success={title:"The tenants remember",text:"A courageous neighbour secures the household accounts before anyone can erase their names.",effects:[]};
+   c.failure={title:"An uneasy silence",text:"The landlord threatens witnesses, but the oldest tenant hides a copy of the true ledger.",effects:[]};
+  });
+  localStorage.setItem(storageKey,JSON.stringify(drafts));
+ });
+ await cmsPage.reload({waitUntil:"networkidle"});
+ await cmsPage.locator('[data-open]').filter({hasText:"The Silent Landlord"}).first().click();
+ assert.equal(await cmsPage.locator("#solo-approve").isVisible(),true);
+ assert.equal(await cmsPage.locator("#download-publish").isDisabled(),true);
+ cmsPage.once("dialog",dialog=>dialog.accept());
+ await cmsPage.locator("#solo-approve").click();
+ assert.match(await cmsPage.locator("#editor-subtitle").innerText(),/approved/);
+ assert.equal(await cmsPage.locator("#download-publish").isEnabled(),true);
+ const soloState=await cmsPage.evaluate(()=>{
+  const drafts=JSON.parse(localStorage.getItem("qbn.studio.undercity.v1")||"[]");
+  return drafts.find(d=>d.title==="The Silent Landlord");
+ });
+ assert.equal(soloState.review_mode,"solo-creator");
+ assert.equal(soloState.creator_approval.independent_human_review,false);
+ assert.equal(soloState.reviewer,"");
+ assert.ok(!soloState.qa.peer);
+ console.log("BROWSER PASS Solo review · peer-review blocker removed with explicit creator consent and honest export provenance");
  console.log("BROWSER PASS Narrative Studio · editor creates draft and loads without JavaScript errors");
  await cmsContext.close();
 }finally{await browser.close();}
