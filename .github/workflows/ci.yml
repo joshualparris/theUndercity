@@ -18,5 +18,7 @@ jobs:
         run: node scripts/build-content.mjs --check
       - name: Validate all authored stories and references
         run: node scripts/validate-content.mjs
+      - name: Verify the content tracker
+        run: node scripts/content-tracker.mjs --check
       - name: Static and interactive engine tests
         run: node --test tests/*.test.mjs
