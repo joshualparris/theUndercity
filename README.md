@@ -64,3 +64,10 @@ The game is dependency-free plain HTML/CSS/JavaScript. The canonical QBN engine 
 The supplied 64-page research PDF is much larger than a single release. **All four ambitions now meet the 30–40 chapter count target**, but further authored branching, character-specific dialogue and NPC consequences are still needed for the full depth requested. Early-stage stories and some other content still use JavaScript predicates, and there is no web-based CMS, cross-player social system, cloud account/save service, or fully developed crafting economy. The story and mechanics remain independently authored.
 
 See [Specification coverage and roadmap](docs/SPEC_PROGRESS.md) for explicit implemented/partial/not-yet-built status and the next planned systems. The setting, characters and prose are independently authored rather than copied from other games.
+
+
+## Narrative CMS · QBN Studio
+
+The same no-code editorial workflow is available in the [Undercity Studio](https://the-undercity.vercel.app/tools/cms/), adapted to Observation, Guile, Persuasion and Resolve, the city's own locations and local save-compatible runtime. Create branches, challenge gates and outcomes, export drafts, and use stage-specific AI briefs without an exposed API key.
+
+Read the [studio workflow](tools/cms/WORKFLOW.md), [world bible](tools/cms/bible.md), [proposed secrets ledger](tools/cms/secrets.md) and [style guide](tools/cms/style.md). Human-approved individual JSON enters `content/storylets/cms/<story-id>.json`; run `npm run cms:build && npm run cms:check && npm test`, then refresh the content tracker. Drafts stay in the author's browser until exported. Current collaboration is file/PR-based rather than simultaneous editing.
