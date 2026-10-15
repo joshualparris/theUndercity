@@ -10,7 +10,7 @@ const QualityType=Object.freeze({
  PRIMARY_STAT:"primary_stat",MENACE:"menace",DISPOSITION:"disposition",
  AFFILIATION:"affiliation",REVERIE:"reverie",STORY:"story",ITEM:"item",
  CONDITION:"condition",DEED:"deed",PASSAGE:"passage",
- PENDING_EVENT:"pending_event",METAQUALITY:"metaquality",FATE_MARKER:"fate_marker"
+ PENDING_EVENT:"pending_event",METAQUALITY:"metaquality",CIRCUMSTANCE:"circumstance",FATE_MARKER:"fate_marker"
 });
 const PYRAMIDAL=new Set([
  QualityType.PRIMARY_STAT,QualityType.MENACE,QualityType.DISPOSITION,
@@ -97,7 +97,7 @@ function applyEffect(player,effect,qualityDefs){
    }
   }
  }else{
-  const max=def.type===QualityType.FATE_MARKER?1:def.max??Infinity;
+  const max=[QualityType.FATE_MARKER,QualityType.CIRCUMSTANCE].includes(def.type)?1:def.max??Infinity;
   const level=Math.max(0,Math.min(max,current.level+effect.cp));
   player.qualities[effect.quality]={id:effect.quality,cp:level,level};
  }
