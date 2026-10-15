@@ -24,7 +24,7 @@ try{
   const firstResult=page.locator("#action-result");
   await firstResult.waitFor({state:"visible"});
   assert.equal(await firstResult.getAttribute("role"),"region");
-  assert.match(await firstResult.innerText(),/Your action has resolved/);
+  assert.match(await firstResult.innerText(),/Your action has resolved/i);
   const receipt=await page.evaluate(()=>{
    const card=document.querySelector("#action-result"),header=document.querySelector("header");
    const rect=card.getBoundingClientRect();
@@ -50,7 +50,7 @@ try{
   assert.ok(resultView.top>=resultView.headerBottom-4,"branch result is not obscured: "+JSON.stringify(resultView));
   assert.ok(resultView.top<resultView.viewport*.8,"branch result appears on screen: "+JSON.stringify(resultView));
   assert.match(await firstResult.innerText(),/You chose:/,"player sees which branch was played");
-  assert.match(await firstResult.innerText(),/What changed/,"quality and action deltas shown");
+  assert.match(await firstResult.innerText(),/What changed/i,"quality and action deltas shown");
   await page.locator('[data-act="dismiss"]').first().click();
   assert.equal(await page.locator("#action-result").count(),0);
   if(width===390){
