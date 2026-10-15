@@ -93,6 +93,12 @@ try{
  await cmsPage.locator("#new-story").click();
  await cmsPage.locator("#editor").waitFor({state:"visible"});
  assert.deepEqual(cmsErrors,[],"Narrative Studio browser errors");
+ const ai= cmsPage.locator("#groq-studio");
+ assert.equal(await ai.isVisible(),true,"Groq panel should mount in the editor");
+ assert.equal(await cmsPage.locator("#groq-mode option").count(),14,"every writing workflow must be available");
+ assert.equal(await cmsPage.locator("#groq-apply").isDisabled(),true,"nothing may apply before preview");
+ assert.ok((await cmsPage.locator("#groq-access").getAttribute("type"))==="password","do not show the access code");
+ console.log("BROWSER PASS QBN Groq partner · 14 AI tasks, protected access-code field, preview-only default");
  console.log("BROWSER PASS Narrative Studio · editor creates draft and loads without JavaScript errors");
  await cmsContext.close();
 }finally{await browser.close();}
