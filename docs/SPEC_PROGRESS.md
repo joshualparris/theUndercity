@@ -20,7 +20,7 @@ Updated: 15 October 2026. Source: the uploaded 64-page Undercity/Neathbound tech
 | Quirks | Nine character traits earned by story decisions |
 | Exceptional stories | Three independent three-chapter investigations |
 | Seasonal encounters | Six themed events rotating in two-month windows |
-| Equipment | Eighteen enumerated slots, metadata for supported items and additive stat-check bonuses |
+| Equipment | Twenty equipment slots in the current build (the PDF's earlier slot list names eighteen), metadata for supported items and additive stat-check bonuses |
 | Living stories | Four time-triggered delayed messages and rewards, persisted across reloads |
 | Journal/condition/economy | Consequence journal, pennies, shop, four condition resources and nonterminal recovery areas |
 | Testing/deployment | Node regression tests in GitHub Actions, Vercel Git deployment at https://the-undercity.vercel.app |
