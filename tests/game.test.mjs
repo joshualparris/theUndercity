@@ -248,3 +248,20 @@ test("accessible landmarks and reading preferences are saved",()=>{
  assert.equal(after.colorblind,true);
  assert.equal(after.readingSize,s.readingSize);
 });
+
+test("all four personal ambitions have 32 sequential, playable stages and a true finale",()=>{
+ const a=launch();const stories=a.window.UndercityExpansions.stories;
+ for(const id of ["moth","tide","mirror","ember"]){
+  const own=stories.filter(s=>/^path-/.test(s.id)&&s.id.startsWith("path-"+id+"-"));
+  assert.equal(own.length,32,id+" needs 32 unique chapters");
+  assert.equal(new Set(own.map(s=>s.id)).size,32,id+" chapters must be unique");
+  for(let n=1;n<=32;n++){
+   const stage=own.find(s=>s.id==="path-"+id+"-"+n);
+   assert.ok(stage,id+" missing chapter "+n);
+   assert.ok(stage.choices.length>=2,id+" needs meaningful branches at "+n);
+   assert.ok(stage.when({path:id,pathProgress:n-1,flags:{}}),id+" chapter "+n+" gate wrong");
+  }
+  const finale=own.find(s=>s.id==="path-"+id+"-32");
+  assert.ok(finale.choices.some(c=>c.effects?.pathEnding),id+" ending must persist");
+ }
+});
