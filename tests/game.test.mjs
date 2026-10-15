@@ -40,7 +40,7 @@ test("the original UI starts, and full content is accessible to the same engine"
  assert.ok(d.cardCount>=16);
  assert.equal(d.professionCount,18);
  assert.equal(d.destinyCount,20);
- assert.equal(d.equipmentSlots,18);
+ assert.equal(d.equipmentSlots,20);
  assert.equal(d.livingStoryCount,4);
  assert.match(app.nodes.get("main").innerHTML,/THE.*UNDERCITY/s);
 });
@@ -111,10 +111,10 @@ test("equipping a real owned item raises effective challenge odds",()=>{
  const second=a.window.UndercityDiagnostics.broadCheck("observation",6);
  assert.ok(second>first,"equip bonus must affect odds");
  const save=JSON.parse(a.storage.getItem("the-undercity-v1"));
- assert.equal(save.equipment.tool,"charcoal");
+ assert.equal(save.equipment["tools of the trade"],"charcoal");
  a.act("equip","charcoal");
  const unequipped=JSON.parse(a.storage.getItem("the-undercity-v1"));
- assert.ok(!unequipped.equipment.tool);
+ assert.ok(!unequipped.equipment["tools of the trade"]);
 });
 
 test("a delayed Living Story resolves once and saves its message",()=>{
