@@ -13,7 +13,7 @@ function section(first,last){
  assert.ok(start>=0&&end>start,first+" was not found");
  return script.slice(start,end);
 }
-const env=vm.createContext({console});
+const env=vm.createContext({console,window:{UndercityExpansions:{stories:[],cards:[],items:{},professions:[],destinies:[],ambitions:[]}}});
 vm.runInContext(section("const SAVE=","let state;"),env,{timeout:2000});
 vm.runInContext(section("function normaliseSave(","try{state="),env,{timeout:2000});
 vm.runInContext(section("function cityRoute(","function beginOrigin("),env,{timeout:2000});
