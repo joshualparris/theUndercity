@@ -203,7 +203,7 @@ try{
  assert.equal(await cmsPage.locator("#solo-approve").isVisible(),true);
  assert.equal(await cmsPage.locator("#download-publish").isDisabled(),true);
  cmsPage.once("dialog",dialog=>dialog.accept());
- await cmsPage.locator("#solo-approve").click();
+ await cmsPage.locator("#go-next").click();
  assert.match(await cmsPage.locator("#editor-subtitle").innerText(),/approved/);
  assert.equal(await cmsPage.locator("#download-publish").isEnabled(),true);
  const soloState=await cmsPage.evaluate(()=>{
