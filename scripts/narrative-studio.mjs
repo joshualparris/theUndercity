@@ -29,7 +29,7 @@ for(const name of fs.readdirSync(subdir).filter(x=>x.endsWith(".json"))){
  const record=cms?{...source,game:"The Undercity",stage:stages[source.status]??"pitch",
   branches:source.choices.map(c=>({id:c.id,challenge:{stat:c.stat,difficulty:c.difficulty},action_cost:Number(c.action_cost),success:c.success,failure:c.failure})),
   qa:Object.fromEntries(["content","design","mechanical","continuity"].map(k=>[k,source.qa?.[k]?"pass":"pending"])),
-  human_approved:Boolean(source.qa?.peer&&source.reviewer&&source.reviewer.toLowerCase()!==source.author?.toLowerCase())}:source;
+  human_approved:Boolean(source.qa?.peer&&source.reviewer&&source.reviewer.toLowerCase()!==source.author?.toLowerCase()),creator_approved:source.review_mode==="solo-creator"&&source.creator_approval?.method==="creator-confirmed"&&source.creator_approval?.schema_qa_passed===true}:source;
  rows.push(record);
  const fail=s=>problems.push(name+": "+s);
  if(record.schema_version!==1||record.game!=="The Undercity")fail("wrong schema/game");
@@ -55,8 +55,12 @@ for(const name of fs.readdirSync(subdir).filter(x=>x.endsWith(".json"))){
  }
  if(["prose","qa","approved"].includes(record.stage)&&(!record.description?.trim()||record.description.includes("[PROSE PENDING]")))fail("unfinished story description");
  if(record.stage==="approved"){
-   if(!record.human_approved||!record.reviewer?.trim())fail("named human sign-off required");
-   for(const k of contract.qa_types)if(record.qa?.[k]!=="pass")fail("QA "+k+" not passed");
+   if(!record.human_approved&&!record.creator_approved)fail("creator confirmation or independent human sign-off required");
+   if(record.human_approved){
+    if(!record.reviewer?.trim())fail("named human reviewer required");
+    for(const k of contract.qa_types)if(record.qa?.[k]!=="pass")fail("QA "+k+" not passed");
+   }
+   if(record.creator_approved&&record.human_approved)fail("Choose accurate review provenance: solo or independent");
    if(record.runtime_integration!=="verified")fail("runtime-integration testing required");
  }
 }}
