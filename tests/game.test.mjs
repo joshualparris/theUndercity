@@ -134,3 +134,25 @@ test("a delayed Living Story resolves once and saves its message",()=>{
  assert.equal(again.messages.length,1);
  assert.equal(again.coin,8);
 });
+
+test("legacy menace values migrate to four named penalty hubs and recover safely",()=>{
+ const base={version:1,stage:"explore",tab:"story",place:"court",stats:{observation:10,guile:10,persuasion:10,resolve:10},
+  actions:5,lastTick:Date.now(),lastCard:Date.now(),items:{},hand:[],journal:[]};
+ const cases=[
+  [{suspicion:8},"the_watch_house","suspicion"],
+  [{notoriety:8},"the_tribunal","notoriety"],
+  [{health:0},"the_ward","wounds"],
+  [{sanity:0},"the_pale_rooms","delirium"]
+ ];
+ for(const [extras,hub,menace] of cases){
+  const app=launch({...base,...extras});
+  const at=JSON.parse(app.storage.getItem("the-undercity-v1"));
+  assert.equal(at.place,hub);
+  assert.ok(at.qualities[menace].level>=8);
+  if(menace==="suspicion")assert.equal(at.criminalRecord,1);
+  app.act("recover");
+  const returned=JSON.parse(app.storage.getItem("the-undercity-v1"));
+  assert.equal(returned.place,"court");
+  assert.ok(returned.qualities[menace].level<8);
+ }
+});
