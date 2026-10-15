@@ -67,7 +67,7 @@ const greater=[
 ["last-light","The Last Light","You carry an independent lantern that burns when all official lamps fail.","wardens"]
 ];
 e.destinies=[
- ...ordinary.map(([id,name,description,faction])=>({id,name,description,faction,tier:"ordinary",bonus:4})),
- ...greater.map(([id,name,description,faction])=>({id,name,description,faction,tier:"greater",bonus:10}))
+ ...ordinary.map(([id,name,description,faction],i)=>({id,name,description,faction,tier:"ordinary",bonus:4,stat_bonus:{[["resolve","observation","persuasion","guile"][i%4]]:5}})),
+ ...greater.map(([id,name,description,faction],i)=>({id,name,description,faction,tier:"greater",bonus:10,stat_bonus:{[["resolve","observation","persuasion","guile"][i%4]]:5,[["guile","resolve","observation","persuasion"][i%4]]:3}}))
 ];
 })();
