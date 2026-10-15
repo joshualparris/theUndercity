@@ -14,7 +14,7 @@ The current tested game is published from this repository on Cloudflare Workers 
 
 ## Narrative production pipeline
 
-**[Open the QBN Studio CMS](tools/cms/index.html)** to draft branching stories and export review packets.
+**[Open the QBN Studio CMS](tools/cms/index.html)**\n\n**[Groq AI writing assistant — setup and safety](tools/cms/GROQ_AI.md)**: 14 creative and editorial workflows, private server-side Groq gateway, proposal review, and AI-ready handoff exports for both games. Groq generation requires two private Cloudflare Worker secret bindings; no credentials are stored in this repository. to draft branching stories and export review packets.
 
 **[Narrative Studio](docs/narrative-studio/README.md)** defines our pitch → midflight skeleton → prose → four QA reviews → human approval process. Its 40-topic spoilers ledger tracks reveal depth and deliberately conflicting witness accounts. Use `npm run studio:validate` before releasing new storylets; editorial drafts are not loaded by the running game.
 
