@@ -156,7 +156,7 @@ function effectiveLevel(k){
  return Rules.getEffectiveStat({qualities:state.qualities,equipped:state.equipment,inventory:state.items},k,QUALITY_DEFS)+Number(state.destinyBonuses?.[k]||0);
 }
 function actionCap(character=state){return Object.values(character?.renown||{}).reduce((n,v)=>n+(Number(v)||0),0)>=14?20:MAXA;}
-function fresh(){return{version:1,stage:"welcome",tab:"story",name:"Stranger",background:"",faction:"",place:"cell",actions:MAXA,lastTick:Date.now(),lastCard:Date.now(),playtest:false,coin:8,stats:{observation:10,guile:10,persuasion:10,resolve:10},suspicion:0,notoriety:0,health:10,sanity:10,clues:0,ambition:0,items:{},relation:{ledger:0,wardens:0,choir:0,hands:0,dawn:0},flags:{},done:{},hand:["card_bell","card_courier"],journal:[],result:null,selectedCard:null,originChoice:"",path:"",pathProgress:0,pathEnding:"",penaltyVisits:{},equipment:{},living:{},messages:[],renown:{observation:0,guile:0,persuasion:0,resolve:0},quirks:{},extras:{},profession:"",lastWage:Date.now(),destiny:"",destinyBonuses:{},criminalRecord:0}}
+function fresh(){return{version:1,stage:"welcome",tab:"story",name:"Stranger",background:"",faction:"",place:"cell",actions:MAXA,lastTick:Date.now(),lastCard:Date.now(),playtest:false,coin:8,stats:{observation:10,guile:10,persuasion:10,resolve:10},suspicion:0,notoriety:0,health:10,sanity:10,clues:0,ambition:0,items:{},relation:{ledger:0,wardens:0,choir:0,hands:0,dawn:0},flags:{},done:{},hand:["card_bell","card_courier"],journal:[],result:null,selectedCard:null,originChoice:"",path:"",pathProgress:0,pathEnding:"",penaltyVisits:{},equipment:{},living:{},living_stories:[],messages:[],renown:{observation:0,guile:0,persuasion:0,resolve:0},quirks:{},extras:{},profession:"",lastWage:Date.now(),destiny:"",destinyBonuses:{},criminalRecord:0}}
 let state;
 function normaliseSave(v){
  const b=fresh();if(!v||v.version!==1||!v.stats||!PLACES[v.place])return b;
@@ -164,7 +164,10 @@ function normaliseSave(v){
  b.stats={...fresh().stats,...(v.stats||{})};
  b.renown={observation:0,guile:0,persuasion:0,resolve:0,...(v.renown||{})};
  b.quirks={...(v.quirks||{})};b.extras={...(v.extras||{})};b.penaltyVisits={...(v.penaltyVisits||{})};b.destinyBonuses={...(v.destinyBonuses||{})};b.criminalRecord=Math.max(0,Math.min(7,Number(v.criminalRecord)||0));
- b.living={...(v.living||{})};b.messages=Array.isArray(v.messages)?v.messages.slice(0,60):[];
+ b.living={...(v.living||{})};
+ b.living_stories=Array.isArray(v.living_stories)?
+  v.living_stories.filter(e=>e&&typeof e.id==="string"&&Number.isFinite(e.trigger_time)).slice(0,100):[];
+ b.messages=Array.isArray(v.messages)?v.messages.slice(0,60):[];
  b.equipment=Object.fromEntries(Object.entries(v.equipment||{}).filter(([slot,item])=>SLOTS.includes(slot)&&GEAR[item]?.[0]===slot&&(v.items?.[item]||0)>0));
  b.flags={...(v.flags||{})};b.relation={...fresh().relation,...(v.relation||{})};
  b.items={...(v.items||{})};b.done={...(v.done||{})};
@@ -195,6 +198,34 @@ function eligibleCard(c){return !state.hand.includes(c.id)&&(!c.where||c.where.i
 function odds(stat,d,scaler=.60){return Rules.broadChance(effectiveLevel(stat),d,scaler)}
 function labelStat(stat){return STATS[stat]||stat}
 function addJournal(t){state.journal.unshift({text:t,date:new Date().toISOString(),place:state.place});state.journal=state.journal.slice(0,80)}
+function tickLivingStories(now=Date.now()){
+ state.living_stories??=[];
+ state.living??={};
+ for(const spec of LIVING){
+  if(state.flags["living:complete:"+spec.id])continue;
+  let active=state.living_stories.find(e=>e.id===spec.id);
+  if(!active){
+   if(!spec.trigger(state))continue;
+   active={
+    id:spec.id,trigger_quality:spec.trigger_quality,
+    delay_hours:spec.delay_hours,
+    message:spec.text,storylet_id:spec.storylet_id,
+    trigger_time:state.living[spec.id]||now
+   };
+   state.living_stories.push(active);
+  }
+  if(now-active.trigger_time<active.delay_hours*3600000)continue;
+  state.flags["living:complete:"+spec.id]=true;
+  apply(spec.effects);
+  state.messages.unshift({
+   id:spec.id,title:spec.title,text:active.message,
+   storylet_id:active.storylet_id,date:new Date(now).toISOString()
+  });
+  state.messages=state.messages.slice(0,60);
+  addJournal("A timed story arrived: "+spec.title);
+  state.living_stories=state.living_stories.filter(x=>x.id!==spec.id);
+ }
+}
 function tick(){
  const now=Date.now(),holder={actions:state.actions,max_actions:actionCap(),last_action_tick:state.lastTick};
  if(holder.last_action_tick>now)holder.last_action_tick=now;
@@ -203,16 +234,7 @@ function tick(){
  if(now<state.lastCard||state.hand.length>=6)state.lastCard=now;
  const draws=Math.max(0,Math.floor((now-state.lastCard)/CARDRATE));
  if(draws>0){state.lastCard+=draws*CARDRATE;for(let i=0;i<Math.min(6,draws)&&state.hand.length<6;i++)drawCard();}
- for(const event of LIVING){
-  if(!event.trigger(state)||state.flags["living:complete:"+event.id])continue;
-  if(!state.living[event.id]){state.living[event.id]=now;continue;}
-  if(now-state.living[event.id]>=event.delay){
-    state.flags["living:complete:"+event.id]=true;apply(event.effects);
-    state.messages.unshift({title:event.title,text:event.text,date:new Date(now).toISOString()});
-    state.messages=state.messages.slice(0,60);
-    addJournal("A letter arrived: "+event.title);
-  }
- }
+ tickLivingStories(now);
  if(state.profession){const job=PROFESSIONS.find(p=>p.id===state.profession);
    if(job){if(!Number.isFinite(state.lastWage)||state.lastWage>now)state.lastWage=now;
     const n=Math.max(0,Math.min(52,Math.floor((now-state.lastWage)/WEEK)));
@@ -442,11 +464,25 @@ function equipItem(id){
  state.tab="possessions";addJournal("Changed equipment: "+ITEMS[id]);done();
 }
 function renderMessages(){
+ const now=Date.now();
+ const pending=(state.living_stories||[]).map(x=>{
+  const remain=Math.max(0,x.delay_hours*3600000-(now-x.trigger_time));
+  const hours=Math.floor(remain/3600000),minutes=Math.ceil(remain%3600000/60000);
+  const spec=LIVING.find(e=>e.id===x.id);
+  return '<article class="story"><h2>'+esc(spec?.title||x.id)+'</h2>'+
+   '<p><strong>Arrival in '+hours+'h '+minutes+'m</strong></p>'+
+   '<p>Trigger: '+esc(x.trigger_quality)+' · '+esc(x.delay_hours)+' hours from activation</p></article>';
+ }).join('');
+ const delivered=state.messages.map(m=>
+  '<article class="story"><div class="eyebrow">'+esc(new Date(m.date).toLocaleString())+'</div>'+
+  '<h2>'+esc(m.title)+'</h2><p>'+esc(m.text)+'</p>'+
+  (m.storylet_id?'<p class="small">Related storylet: '+esc(m.storylet_id)+'</p>':'')+'</article>'
+ ).join('');
  return '<div class="hero"><div class="eyebrow">The city writes back</div><h1>Messages</h1>'+
- '<p>Some stories arrive after real time passes, including while the game is closed. Rewards arrive when you next open the game.</p></div>'+
- (state.messages.length?state.messages.map(m=>'<article class="story"><div class="eyebrow">'+esc(new Date(m.date).toLocaleString())+
- '</div><h2>'+esc(m.title)+'</h2><p>'+esc(m.text)+'</p></article>').join(''):
- '<div class="empty">Your letterbox is quiet. Advance the city investigation or your reputation to invite correspondence.</div>');
+ '<p>Letters are scheduled when their qualities become true, and they arrive after real-world time has elapsed, including while this browser is closed. Times are approximate until you reopen or refresh the game.</p></div>'+
+ (pending?'<h2>On the way · '+state.living_stories.length+'</h2>'+pending:'')+
+ (delivered?'<h2>Received</h2>'+delivered:'')+
+ (!pending&&!delivered?'<div class="empty">Your letterbox is quiet. Advance stories or build relationships to receive correspondence.</div>':'');
 }
 function renderJournal(){return '<div class="hero"><div class="eyebrow">The chronicle</div><h1>Your journal</h1><p>Choices have consequences, even when the city would prefer you to forget. Your most recent 80 entries are stored locally.</p></div>'+(state.journal.length?state.journal.map(l=>'<div class="log">'+esc(l.text)+'<small>'+esc(PLACES[l.place]?.name||"Undercity")+' · '+new Date(l.date).toLocaleString()+'</small></div>').join(""):'<div class="empty">No entries yet. Your first decision will be remembered.</div>')}
 function renderBazaar(){
@@ -528,8 +564,8 @@ function renderSettings(){return '<div class="hero"><div class="eyebrow">The exp
 function render(){tick();renderTop();renderNav();renderMenaces();renderHand();const fn={story:renderStory,map:renderMap,myself:renderMyself,paths:renderPaths,possessions:renderPossessions,journal:renderJournal,messages:renderMessages,bazaar:renderBazaar,help:renderHelp,settings:renderSettings}[state.tab]||renderStory;$("main").innerHTML=fn()}
 document.addEventListener("click",e=>{const b=e.target.closest("button[data-act]");if(!b)return;let a=b.dataset.act,v=b.dataset.target;switch(a){case"intro":state.stage="origin";state.tutorial=true;done();break;case"skip":state.stage="origin";state.tutorial=false;done();break;case"origin":beginOrigin(v);break;case"faction":beginFaction(v);break;case"escape":escapeCell(v);break;case"tab":setTab(v);break;case"travel":travel(v);break;case"choose":choose(b.dataset.target,+b.dataset.index,b.dataset.card==="1");break;case"card":chooseCard(v);break;case"dismiss":state.result=null;state.selectedCard=null;done();break;case"recover":recover(+b.dataset.index||0);break;case"equip":equipItem(v);break;case"profession":hireProfession(v);break;case"destiny":claimDestiny(v);break;case"shop":shop(+b.dataset.index);break;case"buy-item":tradeItem(v,false);break;case"sell-item":tradeItem(v,true);break;case"draw":buyDraw();break;case"playtest":state.playtest=!state.playtest;done();break;case"menu":{let open=$("left").classList.toggle("mobile-open");b.setAttribute("aria-expanded",String(open));break}case"font":{let size=parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--font"))||1;size=Math.max(.85,Math.min(1.35,size+(v==="larger"?.1:-.1)));document.documentElement.style.setProperty("--font",size+"rem");break}case"export":{let blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"}),url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download="undercity-save.json";a.click();setTimeout(()=>URL.revokeObjectURL(url),2000);break}case"import":$("savefile").click();break;case"reset":if(confirm("Restart The Undercity? Your current local progress will be erased. Export a save first if you want to keep it.")){state=fresh();done()}break}});
 document.addEventListener("change",e=>{if(e.target.id!=="savefile")return;let file=e.target.files[0];if(!file)return;file.text().then(t=>{let data=JSON.parse(t);if(data.version!==1||!data.stats||!PLACES[data.place]||!Array.isArray(data.hand))throw Error("Unrecognised save format");if(confirm("Replace your current local save with this imported journey?")){state=normaliseSave(data);state.result=null;done()}}).catch(err=>alert("Could not import save: "+err.message));e.target.value=""});
-tick();save();render();setInterval(()=>{let a=state.actions,h=state.hand.length;tick();if(a!==state.actions||h!==state.hand.length){save();render()}else{let el=$("countdown");if(el){let r=Math.max(0,REGEN-(Date.now()-state.lastTick));el.textContent="+"+String(Math.floor(r/60000)).padStart(2,"0")+":"+String(Math.floor(r%60000/1000)).padStart(2,"0")}}},1000);
-window.UndercityDiagnostics={statLevel:lv,broadCheck:odds,locations:()=>Object.keys(PLACES),route:(from,to)=>cityRoute(from,to),availableCards:()=>CARDS.filter(c=>!c.where||c.where.includes(state.place)).map(c=>c.id),storyCount:STORIES.length,cardCount:CARDS.length,equipmentSlots:SLOTS.length,livingStoryCount:LIVING.length,professionCount:PROFESSIONS.length,destinyCount:DESTINIES.length,saveVersion:1,
+tick();save();render();setInterval(()=>{let a=state.actions,h=state.hand.length,m=state.messages.length,p=state.living_stories?.length||0;tick();if(a!==state.actions||h!==state.hand.length||m!==state.messages.length||p!==(state.living_stories?.length||0)){save();render()}else{let el=$("countdown");if(el){let r=Math.max(0,REGEN-(Date.now()-state.lastTick));el.textContent="+"+String(Math.floor(r/60000)).padStart(2,"0")+":"+String(Math.floor(r%60000/1000)).padStart(2,"0")}}},1000);
+window.UndercityDiagnostics={tickLivingStories:()=>tickLivingStories(),statLevel:lv,broadCheck:odds,locations:()=>Object.keys(PLACES),route:(from,to)=>cityRoute(from,to),availableCards:()=>CARDS.filter(c=>!c.where||c.where.includes(state.place)).map(c=>c.id),storyCount:STORIES.length,cardCount:CARDS.length,equipmentSlots:SLOTS.length,livingStoryCount:LIVING.length,professionCount:PROFESSIONS.length,destinyCount:DESTINIES.length,saveVersion:1,
 checkState:()=>({stage:state.stage,place:state.place,ambition:state.ambition,path:state.path,pathProgress:state.pathProgress,renown:{...state.renown},profession:state.profession,destiny:state.destiny})};
 })();
 </script></body></html>
