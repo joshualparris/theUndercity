@@ -15,6 +15,8 @@ jobs:
           node-version: '22'
       - name: Verify generated content is current
         run: node scripts/build-content.mjs --check
+      - name: Verify supplemental JSON content is current
+        run: node scripts/build-second-acts.mjs --check
       - name: Validate all authored stories and references
         run: node scripts/validate-content.mjs
       - name: Verify the content tracker
