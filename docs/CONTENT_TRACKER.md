@@ -4,8 +4,8 @@ Generated from the game source. To refresh: `node scripts/content-tracker.mjs`. 
 
 ## Totals
 
-- Storylets: **286**
-- Choices: **653**
+- Storylets: **352**
+- Choices: **851**
 - Opportunity cards: **18**
 - Professions: **34**
 - Equipment slots: **20**
@@ -297,6 +297,72 @@ Generated from the game source. To refresh: `node scripts/content-tracker.mjs`. 
 | season-long-lamplight | The Long Lamplight | court | seasonal | 2 | conditional | content/world.js |  |
 | season-mosswake | The Mosswake | choir | seasonal | 2 | conditional | content/world.js |  |
 | season-thirteenth-feast | The Feast of the Thirteenth Hour | market | seasonal | 2 | conditional | content/world.js |  |
+| side-ember-10 | Companion inquiry: The coal that is not coal | market | ambition-support | 3 | conditional | content/second-acts.generated.js |  |
+| side-ember-11 | Companion inquiry: A union behind iron doors | ink | ambition-support | 3 | conditional | content/second-acts.generated.js |  |
+| side-ember-12 | Companion inquiry: A switch that requires two hands | choir | ambition-support | 3 | conditional | content/second-acts.generated.js |  |
+| side-ember-13 | Companion inquiry: The inspector's lost report | quays | ambition-support | 3 | conditional | content/second-acts.generated.js |  |
+| side-ember-14 | Companion inquiry: The choir of exhaust pipes | stairs | ambition-support | 3 | conditional | content/second-acts.generated.js |  |
+| side-ember-15 | Companion inquiry: A demonstration of the burden | court | ambition-support | 3 | conditional | content/second-acts.generated.js |  |
+| side-ember-16 | Companion inquiry: The engineer who refused | edge | ambition-support | 3 | conditional | content/second-acts.generated.js |  |
+| side-ember-17 | Companion inquiry: A ledger written in heat | soot | ambition-support | 3 | conditional | content/second-acts.generated.js |  |
+| side-ember-18 | Companion inquiry: The apprentices' testimony | market | ambition-support | 3 | conditional | content/second-acts.generated.js |  |
+| side-ember-19 | Companion inquiry: The weight of a false sky | ink | ambition-support | 3 | conditional | content/second-acts.generated.js |  |
+| side-ember-20 | Companion inquiry: The private offer | choir | ambition-support | 3 | conditional | content/second-acts.generated.js |  |
+| side-ember-21 | Companion inquiry: A strike at sunrise | quays | ambition-support | 3 | conditional | content/second-acts.generated.js |  |
+| side-ember-22 | Companion inquiry: The hidden reservoir | stairs | ambition-support | 3 | conditional | content/second-acts.generated.js |  |
+| side-ember-23 | Companion inquiry: The councillor's daughter | court | ambition-support | 3 | conditional | content/second-acts.generated.js |  |
+| side-ember-24 | Companion inquiry: A repaired valve | edge | ambition-support | 3 | conditional | content/second-acts.generated.js |  |
+| side-ember-25 | Companion inquiry: The argument over ownership | soot | ambition-support | 3 | conditional | content/second-acts.generated.js |  |
+| side-ember-26 | Companion inquiry: The day of the blackout | market | ambition-support | 3 | conditional | content/second-acts.generated.js |  |
+| side-ember-27 | Companion inquiry: A charter with witnesses | ink | ambition-support | 3 | conditional | content/second-acts.generated.js |  |
+| side-ember-28 | Companion inquiry: The old machinery sleeps | choir | ambition-support | 3 | conditional | content/second-acts.generated.js |  |
+| side-ember-29 | Companion inquiry: A new public flame | quays | ambition-support | 3 | conditional | content/second-acts.generated.js |  |
+| side-ember-30 | Companion inquiry: The council's last fire | stairs | ambition-support | 3 | conditional | content/second-acts.generated.js |  |
+| side-ember-9 | Companion inquiry: The night shift's confession | soot | ambition-support | 3 | conditional | content/second-acts.generated.js |  |
+| side-mirror-10 | Companion inquiry: A school without pupils | choir | ambition-support | 3 | conditional | content/second-acts.generated.js |  |
+| side-mirror-11 | Companion inquiry: The optician who never blinks | ink | ambition-support | 3 | conditional | content/second-acts.generated.js |  |
+| side-mirror-12 | Companion inquiry: A portrait painted backwards | quays | ambition-support | 3 | conditional | content/second-acts.generated.js |  |
+| side-mirror-13 | Companion inquiry: The seamstress of identities | soot | ambition-support | 3 | conditional | content/second-acts.generated.js |  |
+| side-mirror-14 | Companion inquiry: A lullaby behind a wall | stairs | ambition-support | 3 | conditional | content/second-acts.generated.js |  |
+| side-mirror-15 | Companion inquiry: The first counterfeit self | court | ambition-support | 3 | conditional | content/second-acts.generated.js |  |
+| side-mirror-16 | Companion inquiry: An honest broker's condition | edge | ambition-support | 3 | conditional | content/second-acts.generated.js |  |
+| side-mirror-17 | Companion inquiry: The stolen birthday | market | ambition-support | 3 | conditional | content/second-acts.generated.js |  |
+| side-mirror-18 | Companion inquiry: A letter with two signatures | choir | ambition-support | 3 | conditional | content/second-acts.generated.js |  |
+| side-mirror-19 | Companion inquiry: The chamber of unclaimed years | ink | ambition-support | 3 | conditional | content/second-acts.generated.js |  |
+| side-mirror-20 | Companion inquiry: The inspector's private collection | quays | ambition-support | 3 | conditional | content/second-acts.generated.js |  |
+| side-mirror-21 | Companion inquiry: A city of second chances | soot | ambition-support | 3 | conditional | content/second-acts.generated.js |  |
+| side-mirror-22 | Companion inquiry: The witness who is not a child | stairs | ambition-support | 3 | conditional | content/second-acts.generated.js |  |
+| side-mirror-23 | Companion inquiry: The first public reunion | court | ambition-support | 3 | conditional | content/second-acts.generated.js |  |
+| side-mirror-24 | Companion inquiry: A bargain about consent | edge | ambition-support | 3 | conditional | content/second-acts.generated.js |  |
+| side-mirror-25 | Companion inquiry: An exchange of true names | market | ambition-support | 3 | conditional | content/second-acts.generated.js |  |
+| side-mirror-26 | Companion inquiry: The mirror council | choir | ambition-support | 3 | conditional | content/second-acts.generated.js |  |
+| side-mirror-27 | Companion inquiry: The glassworker's proof | ink | ambition-support | 3 | conditional | content/second-acts.generated.js |  |
+| side-mirror-28 | Companion inquiry: The nursery opens | quays | ambition-support | 3 | conditional | content/second-acts.generated.js |  |
+| side-mirror-29 | Companion inquiry: An ending without erasure | soot | ambition-support | 3 | conditional | content/second-acts.generated.js |  |
+| side-mirror-30 | Companion inquiry: The key to the second reflection | stairs | ambition-support | 3 | conditional | content/second-acts.generated.js |  |
+| side-mirror-9 | Companion inquiry: The catalogue of borrowed faces | market | ambition-support | 3 | conditional | content/second-acts.generated.js |  |
+| side-tide-10 | Companion inquiry: The ferryman's unsigned oath | ink | ambition-support | 3 | conditional | content/second-acts.generated.js |  |
+| side-tide-11 | Companion inquiry: A cadastral map in salt | market | ambition-support | 3 | conditional | content/second-acts.generated.js |  |
+| side-tide-12 | Companion inquiry: Rent paid to water | soot | ambition-support | 3 | conditional | content/second-acts.generated.js |  |
+| side-tide-13 | Companion inquiry: The lock that opens downstream | choir | ambition-support | 3 | conditional | content/second-acts.generated.js |  |
+| side-tide-14 | Companion inquiry: An injunction sung at dusk | stairs | ambition-support | 3 | conditional | content/second-acts.generated.js |  |
+| side-tide-15 | Companion inquiry: The drowned surveyor | edge | ambition-support | 3 | conditional | content/second-acts.generated.js |  |
+| side-tide-16 | Companion inquiry: The ledger of dry land | court | ambition-support | 3 | conditional | content/second-acts.generated.js |  |
+| side-tide-17 | Companion inquiry: A crossing at low bell | quays | ambition-support | 3 | conditional | content/second-acts.generated.js |  |
+| side-tide-18 | Companion inquiry: The widow of a lost street | ink | ambition-support | 3 | conditional | content/second-acts.generated.js |  |
+| side-tide-19 | Companion inquiry: The measure of a current | market | ambition-support | 3 | conditional | content/second-acts.generated.js |  |
+| side-tide-20 | Companion inquiry: An island made of promises | soot | ambition-support | 3 | conditional | content/second-acts.generated.js |  |
+| side-tide-21 | Companion inquiry: The missing solicitor | choir | ambition-support | 3 | conditional | content/second-acts.generated.js |  |
+| side-tide-22 | Companion inquiry: Two incompatible claims | stairs | ambition-support | 3 | conditional | content/second-acts.generated.js |  |
+| side-tide-23 | Companion inquiry: The public hearing | edge | ambition-support | 3 | conditional | content/second-acts.generated.js |  |
+| side-tide-24 | Companion inquiry: The flood that was ordered | court | ambition-support | 3 | conditional | content/second-acts.generated.js |  |
+| side-tide-25 | Companion inquiry: A debt without a debtor | quays | ambition-support | 3 | conditional | content/second-acts.generated.js |  |
+| side-tide-26 | Companion inquiry: The names along the quay | ink | ambition-support | 3 | conditional | content/second-acts.generated.js |  |
+| side-tide-27 | Companion inquiry: The heir who refuses | market | ambition-support | 3 | conditional | content/second-acts.generated.js |  |
+| side-tide-28 | Companion inquiry: The last legal tide | soot | ambition-support | 3 | conditional | content/second-acts.generated.js |  |
+| side-tide-29 | Companion inquiry: A settlement that can be lived in | choir | ambition-support | 3 | conditional | content/second-acts.generated.js |  |
+| side-tide-30 | Companion inquiry: The quiet bell of the Siltway | stairs | ambition-support | 3 | conditional | content/second-acts.generated.js |  |
+| side-tide-9 | Companion inquiry: An inheritance with wet edges | quays | ambition-support | 3 | conditional | content/second-acts.generated.js |  |
 | soot_organise | The union of forgotten workers | soot | district | 2 | always | index.html |  |
 | soot_shift | The furnace that runs cold | soot | district | 2 | always | index.html |  |
 | stairs_echowell | The well of swallowed names | stairs | district | 2 | always | index.html |  |
