@@ -5,6 +5,8 @@ on:
     paths:
       - .github/workflows/browser-smoke.yml
       - tests/browser-smoke.mjs
+      - tools/cms/**
+      - index.html
   workflow_dispatch:
 permissions:
   contents: read
