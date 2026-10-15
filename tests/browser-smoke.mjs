@@ -31,4 +31,16 @@ try{
   console.log("BROWSER PASS "+width+"px · title, onboarding, escape, 0 JS errors, WCAG A/AA checks");
   await context.close();
  }
+ const cmsContext=await browser.newContext({viewport:{width:1280,height:820}});
+ const cmsPage=await cmsContext.newPage();
+ const cmsErrors=[];
+ cmsPage.on("pageerror",err=>cmsErrors.push(err.message));
+ const cmsResponse=await cmsPage.goto(base+"/tools/cms/",{waitUntil:"networkidle"});
+ assert.equal(cmsResponse.status(),200,"Narrative Studio HTML must load");
+ assert.match(await cmsPage.title(),/QBN Studio/);
+ await cmsPage.locator("#new-story").click();
+ await cmsPage.locator("#editor").waitFor({state:"visible"});
+ assert.deepEqual(cmsErrors,[],"Narrative Studio browser errors");
+ console.log("BROWSER PASS Narrative Studio · editor creates draft and loads without JavaScript errors");
+ await cmsContext.close();
 }finally{await browser.close();}
