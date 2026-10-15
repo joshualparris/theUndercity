@@ -1,7 +1,8 @@
 /* Supporting systems for The Undercity: no external dependencies. */
 (function(){
 "use strict";
-const slots=["hat","clothing","gloves","weapon","boots","companion","affiliation","home comfort","transport","spouse","club","ship","destiny","burden","tool","possession","menace","route"];
+// All twenty categories explicitly named in the design specification.
+const slots=["boon","hat","clothing","adornment","gloves","weapon","boots","luggage","companion","treasure","destiny","tools of the trade","affiliation","transport","home comfort","ship","crew","airship","spouse","club"];
 const gear={
 charcoal:["tool","observation",1],hook:["weapon","guile",1],silk:["gloves","persuasion",1],
 badge:["affiliation","resolve",1],lure:["companion","observation",1],map:["route","observation",1],
@@ -28,5 +29,8 @@ const living=[
  text:"A place has been prepared beside the Wardens' watch fires. The sealed letter is an invitation rather than a summons.",
  trigger:s=>s.clues>=4,effects:{relation:{wardens:2},coin:5}}
 ];
+for(const entry of Object.values(gear)){
+ const old=entry[0];entry[0]=({"tool":"tools of the trade","route":"luggage","possession":"adornment","burden":"luggage","menace":"boon"})[old]||old;
+}
 window.UndercitySystems={slots,gear,living};
 })();
