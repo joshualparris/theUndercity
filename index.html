@@ -91,12 +91,15 @@ if(!Rules)throw new Error("The Undercity rules engine did not load");
 const PENALTY_PLACES=new Set(Object.values(Rules.MENACE_PENALTY_HUBS));
 const OPPOSITES={merciful:["ruthless"],ruthless:["merciful","generous"],honest:["subtle"],subtle:["honest","proud"],generous:["ruthless"],proud:["subtle"],curious:["cautious"],cautious:["curious"],steadfast:["cautious"]};
 const QUALITY_DEFS={};
+// Registry of the fourteen authored quality categories is declared in content/world.js.
+
 for(const k of Object.keys(STATS))QUALITY_DEFS[k]={type:Rules.QualityType.PRIMARY_STAT,max:1000};
 for(const k of ["suspicion","notoriety","wounds","delirium"])QUALITY_DEFS[k]={type:Rules.QualityType.MENACE,max:30};
 QUALITY_DEFS.the_record={type:Rules.QualityType.METAQUALITY,max:7};
 for(const [item,gear] of Object.entries(GEAR))QUALITY_DEFS[item]={type:Rules.QualityType.ITEM,stat_bonuses:{[gear[1]]:gear[2]}};
 for(const item of Object.keys(ITEMS))QUALITY_DEFS["item:"+item]={type:Rules.QualityType.ITEM,max:10000};
 for(const faction of Object.keys(FACTIONS))QUALITY_DEFS["affiliation:"+faction]={type:Rules.QualityType.AFFILIATION,max:50};
+Object.assign(QUALITY_DEFS,EXT.qualityDefs||{});
 for(const q of EXT.quirks||[])QUALITY_DEFS[q.id]={type:Rules.QualityType.DISPOSITION,max:15,opposite:OPPOSITES[q.id]||[]};
 function qState(id,cp){cp=Math.max(0,Math.floor(Number(cp)||0));return {id,cp,level:Rules.cpToLevel(cp)};}
 function qualitySet(id,level){
@@ -219,7 +222,13 @@ function drawCard(){
  let list=CARDS.filter(eligibleCard);
  if(!list.length)return false;
  const urgent=list.filter(c=>c.urgency==="high"||c.high_urgency);
- if(urgent.length)list=urgent;
+ // High urgency bypasses *all* weighted draws, even weight: 0.
+ if(urgent.length){
+   const chosen=urgent[Math.floor(Math.random()*urgent.length)];
+   state.hand.push(chosen.id);
+   if(state.hand.length===6)state.lastCard=Date.now();
+   return true;
+ }
  const weight=list.reduce((a,c)=>a+cardWeight(c),0);
  if(weight<=0)return false;
  let r=Math.random()*weight;
