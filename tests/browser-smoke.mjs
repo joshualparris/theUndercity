@@ -36,6 +36,13 @@ try{
   assert.ok(receipt.top<receipt.viewport*.8,"result is visible without scrolling: "+JSON.stringify(receipt));
   await page.locator('[data-act="dismiss"]').first().click();
   assert.equal(await page.locator("#action-result").count(),0);
+  const preview=page.locator('details.story-preview[open]').first();
+  const beforeBrowse=await page.locator('#topstats').innerText();
+  await preview.locator('[data-act="back-stories"]').click();
+  assert.equal(await page.locator('details.story-preview[open]').count(),0,"free back returns to previews");
+  assert.equal(await page.locator('#topstats').innerText(),beforeBrowse,"browsing spends no actions or currency");
+  await page.locator('details.story-preview summary').first().click();
+  assert.equal(await page.locator('details.story-preview[open]').count(),1,"one story open at a time");
   const choices=page.locator('main button[data-act="choose"]:not([disabled])');
   assert.ok(await choices.count()>0,"starting district has playable story choices");
   const playedId=await choices.first().locator("xpath=ancestor::article").getAttribute("data-story-id");
