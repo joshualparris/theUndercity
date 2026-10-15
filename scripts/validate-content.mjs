@@ -14,6 +14,48 @@ const read=p=>fs.readFileSync(path.join(root,p),"utf8");
 const errors=[],warn=[],fail=(scope,message)=>errors.push(scope+": "+message);
 const parsed=p=>JSON.parse(read(p));
 const doc=parsed("content/storylets/ambitions/moth.json");
+const schema=parsed("content/schema/storylet.schema.json");
+/** Small built-in JSON Schema subset; cross-document checks below remain authoritative. */
+function validateSchema(value,rule,where){
+ if(rule.$ref){
+  const pointer=rule.$ref;
+  if(!pointer.startsWith("#/$defs/"))return fail(where,"unsupported schema ref "+pointer);
+  rule=schema.$defs[pointer.slice(8)];
+  if(!rule)return fail(where,"unknown schema ref "+pointer);
+ }
+ if(Object.hasOwn(rule,"const")&&value!==rule.const)fail(where,"expected constant "+JSON.stringify(rule.const));
+ if(rule.enum&&!rule.enum.includes(value))fail(where,"value not in enum");
+ const kind=value===null?"null":Array.isArray(value)?"array":typeof value;
+ if(rule.type&&!(Array.isArray(rule.type)?rule.type:[rule.type]).includes(kind==="number"&&Number.isInteger(value)?"integer":kind)){
+  // An integer is also a valid JSON Schema number.
+  if(!(kind==="number"&&Number.isInteger(value)&&rule.type==="number")){
+   fail(where,"invalid type "+kind);return;
+  }
+ }
+ if(kind==="string"){
+  if(rule.minLength!=null&&value.length<rule.minLength)fail(where,"string shorter than "+rule.minLength);
+  if(rule.pattern&&!new RegExp(rule.pattern).test(value))fail(where,"invalid string pattern");
+ }
+ if(kind==="number"){
+  if(rule.minimum!=null&&value<rule.minimum)fail(where,"number below minimum");
+ }
+ if(kind==="array"){
+  if(rule.minItems!=null&&value.length<rule.minItems)fail(where,"too few array items");
+  value.forEach((item,i)=>rule.items&&validateSchema(item,rule.items,where+"["+i+"]"));
+ }
+ if(kind==="object"){
+  for(const k of rule.required||[])if(!Object.hasOwn(value,k))fail(where,"missing required property "+k);
+  if(rule.minProperties!=null&&Object.keys(value).length<rule.minProperties)fail(where,"too few properties");
+  for(const [k,v] of Object.entries(value)){
+   if(rule.properties?.[k])validateSchema(v,rule.properties[k],where+"."+k);
+   else if(rule.additionalProperties===false)fail(where,"unexpected property "+k);
+   else if(rule.additionalProperties&&typeof rule.additionalProperties==="object")
+    validateSchema(v,rule.additionalProperties,where+"."+k);
+  }
+ }
+}
+
+validateSchema(doc,schema,"moth.json");
 const html=read("index.html");
 const main=html.match(/<script>\s*([\s\S]*?)<\/script>/)?.[1];
 if(!main)fail("index.html","inline game script is missing");
