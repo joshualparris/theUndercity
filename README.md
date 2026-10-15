@@ -22,7 +22,7 @@ The site is published from this repository on Vercel. No sign-in or payment is r
 - **20 destinies** (9 ordinary, 11 greater), with eligibility gates and permanent selection.
 - **9 character quirks**, **3 three-stage exceptional stories**, and **6 rotating seasonal events**.
 - More than **140 storylets** in the playable narrative corpus and **18 opportunity cards**.
-- **18 equipment slots**, inventory items and stat-boosting equipment. The number of equipped items depends on what you have found.
+- **20 equipment slots**, inventory items and stat-boosting equipment. The number of equipped items depends on what you have found.
 - Four **Living Stories**: letters/rewards delivered after real-time delays, even if you close the browser.
 - Ten-minute action regeneration with a starting cap of 10 and an unlockable cap of 20; four-minute opportunity-card regeneration with six-card hand limit. **Settings → Playtest mode** removes waiting/paid card-draw costs for testing.
 - Persistent consequences, a journal, delayed messages, recoverable injury/scandal/custody detours, a shop, local autosave, JSON import/export and adjustable reading size.
