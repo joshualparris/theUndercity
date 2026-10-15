@@ -12,7 +12,7 @@ test("the shipped global bundle is generated from the canonical ES module",()=>{
 });
 
 test("the CP pyramid is exact at its level-70 boundary and beyond",()=>{
- assert.deepEqual([0,1,2,3,69,70,71,72].map(R.levelToTotalCp),[0,1,3,6,2415,2485,2555,2625]);
+ assert.deepEqual([0,1,2,3,69,70,71,72].map(level=>R.levelToTotalCp(level)),[0,1,3,6,2415,2485,2555,2625]);
  for(const level of [0,1,2,3,69,70,71,200]){
   const cp=R.levelToTotalCp(level);
   assert.equal(R.cpToLevel(cp),level);
