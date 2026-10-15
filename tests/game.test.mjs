@@ -163,3 +163,88 @@ test("legacy menace values migrate to four named penalty hubs and recover safely
   assert.ok(returned.qualities[menace].level<8);
  }
 });
+
+
+test("moth ambition continues from eight to thirty-two chapters with a persistent finale",()=>{
+ const base={version:1,stage:"explore",tab:"story",place:"court",background:"scribe",faction:"ledger",
+  path:"moth",pathProgress:8,stats:{observation:1000,guile:1000,persuasion:1000,resolve:1000},
+  coin:40,clues:9,actions:10,lastTick:Date.now(),lastCard:Date.now(),
+  playtest:true,hand:[],items:{},done:{},flags:{},journal:[]};
+ const a=launch(base);
+ assert.match(a.nodes.get("main").innerHTML,/The Addresses Beneath the Lamp/);
+ a.act("choose","path-moth-9",0);
+ const progressed=JSON.parse(a.storage.getItem("the-undercity-v1"));
+ assert.equal(progressed.pathProgress,9);
+ assert.equal(progressed.pathEnding,"");
+ const last=launch({...base,pathProgress:31});
+ assert.match(last.nodes.get("main").innerHTML,/A New Oath in the Lamplight/);
+ last.act("choose","path-moth-32",0);
+ const ended=JSON.parse(last.storage.getItem("the-undercity-v1"));
+ assert.equal(ended.pathProgress,32);
+ assert.equal(ended.pathEnding,"moth:public-trust");
+ assert.equal(ended.items["moth-lance"],1);
+});
+test("fourteen quality categories include all requested additive and pyramidal kinds",()=>{
+ const a=launch(),types=a.window.UndercityExpansions.qualityTypes;
+ assert.equal(Object.keys(types).length,14);
+ for(const kind of ["status","circumstance","accomplishment","route","living_story","dream","metaquality"])
+  assert.ok(types[kind],"missing "+kind);
+ assert.equal(types.dream.pyramidal,true);
+ assert.equal(types.route.pyramidal,false);
+});
+test("Tier 3 promotion is earned in-story and Tier 4 is gated by prior office",()=>{
+ const base={version:1,stage:"explore",tab:"story",place:"court",background:"sentinel",
+  faction:"wardens",profession:"light-warden",playtest:true,
+  renown:{resolve:6,observation:0,guile:0,persuasion:0},
+  stats:{observation:250,guile:250,persuasion:250,resolve:250},
+  coin:20,clues:4,actions:10,lastTick:Date.now(),lastCard:Date.now(),hand:[],items:{},flags:{},done:{},journal:[]};
+ const a=launch(base);
+ a.act("profession","city-luminary");
+ assert.equal(JSON.parse(a.storage.getItem("the-undercity-v1")).profession,"light-warden","Tier 4 cannot be hired directly");
+ a.act("choose","profession-promotion-grand-light-warden",0);
+ const after=JSON.parse(a.storage.getItem("the-undercity-v1"));
+ assert.equal(after.profession,"grand-light-warden");
+ assert.equal(after.items["crown-of-beacons"],1);
+ assert.ok(after.coin>=25);
+});
+test("shop can buy, equip and sell gear without keeping a phantom bonus",()=>{
+ const base={version:1,stage:"explore",tab:"bazaar",place:"court",stats:{observation:10,guile:10,persuasion:10,resolve:10},
+  actions:10,coin:60,lastTick:Date.now(),lastCard:Date.now(),hand:[],items:{},done:{},flags:{},journal:[]};
+ const a=launch(base);
+ a.act("buy-item","promise-pendant");
+ let s=JSON.parse(a.storage.getItem("the-undercity-v1"));
+ assert.equal(s.coin,42);assert.equal(s.items["promise-pendant"],1);
+ a.act("equip","promise-pendant");
+ s=JSON.parse(a.storage.getItem("the-undercity-v1"));
+ assert.equal(s.equipment.adornment,"promise-pendant");
+ a.act("sell-item","promise-pendant");
+ s=JSON.parse(a.storage.getItem("the-undercity-v1"));
+ assert.equal(s.coin,51);
+ assert.equal(s.items["promise-pendant"],0);
+ assert.ok(!s.equipment.adornment);
+});
+test("Living Story queue persists trigger quality, delay, story link, and countdown",()=>{
+ const base={version:1,stage:"explore",tab:"messages",place:"court",
+ stats:{observation:10,guile:10,persuasion:10,resolve:10},actions:10,coin:8,ambition:1,
+ lastTick:Date.now(),lastCard:Date.now(),hand:[],items:{},done:{},flags:{},journal:[]};
+ const a=launch(base),s=JSON.parse(a.storage.getItem("the-undercity-v1"));
+ const queued=s.living_stories.find(x=>x.id==="clockmaker-post");
+ assert.ok(queued);assert.equal(queued.delay_hours,1);
+ assert.equal(queued.storylet_id,"ambition2");
+ assert.match(a.nodes.get("main").innerHTML,/Arrival in/);
+ assert.match(a.nodes.get("main").innerHTML,/Trigger:/);
+});
+test("accessible landmarks and reading preferences are saved",()=>{
+ assert.match(html,/class="skip-link" href="#main"/);
+ assert.match(html,/aria-label="Current game view"/);
+ assert.match(html,/prefers-reduced-motion/);
+ const a=launch();
+ a.act("colorblind");
+ a.act("font","larger");
+ const s=JSON.parse(a.storage.getItem("the-undercity-v1"));
+ assert.equal(s.colorblind,true);
+ assert.ok(s.readingSize>1);
+ const restored=launch(s),after=JSON.parse(restored.storage.getItem("the-undercity-v1"));
+ assert.equal(after.colorblind,true);
+ assert.equal(after.readingSize,s.readingSize);
+});
