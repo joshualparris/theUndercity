@@ -14,7 +14,7 @@ jobs:
         env:
           URL: https://undercity-playtest.parris-neathaustralia.workers.dev
         run: |
-          set -euo pipefail
+          set -euxo pipefail
           echo "Testing the recently updated shared Groq Studio release"
           curl -fsSL --retry 4 --retry-all-errors --retry-delay 4 --max-time 30 -D /tmp/undercity-headers -o /tmp/undercity-index "$URL/"
           grep -q 'The Undercity' /tmp/undercity-index
