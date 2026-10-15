@@ -21,7 +21,7 @@ The site is published from this repository on Vercel. No sign-in or payment is r
 - **34 professions** (10 Tier 1, eight Tier 2, eight Tier 3, eight Tier 4). Senior careers require in-world promotion storylets, relevant reputation and previous office; each has its own pay, shift stories and professional equipment.
 - **20 destinies** (9 ordinary, 11 greater), with eligibility gates and permanent selection.
 - **9 character quirks**, **3 three-stage exceptional stories**, and **6 rotating seasonal events**.
-- **286 storylets and 653 authored choice branches**, plus 18 opportunity cards, including multiple stat-gated and origin-dependent decisions. See the [full content tracker](docs/CONTENT_TRACKER.md).
+- **352 storylets and 851 authored choice branches**, plus 18 opportunity cards, including multiple stat-gated and origin-dependent decisions. See the [full content tracker](docs/CONTENT_TRACKER.md).
 - **20 equipment slots**, at least one purchasable item for each, additive skill bonuses, and a buy/sell Bazaar with 20 goods. Selling equipped gear removes its active bonus.
 - Four **Living Stories** using a persistent, author-defined event queue with quality triggers, hour delays, related story IDs, and visible countdowns in Messages.
 - Ten-minute action regeneration with a starting cap of 10 and an unlockable cap of 20; four-minute opportunity-card regeneration with six-card hand limit. **Settings → Playtest mode** removes waiting/paid card-draw costs for testing.
@@ -41,8 +41,8 @@ The UI includes semantic navigation landmarks, a keyboard skip link, adjustable 
 
 ## Narrative authoring and checks
 
-- The **JSON-authored** late Moth chapters live in `content/storylets/ambitions/moth.json`. The other three late arcs are currently in `content/late-ambitions.js` and are part of the gradual JSON migration.
-- `node scripts/build-content.mjs` compiles their browser bundle. Use `--check` to detect stale generated code.
+- The **JSON-authored** late Moth chapters live in `content/storylets/ambitions/moth.json`. The three other late arcs are in `content/late-ambitions.js`, with another 66 optional investigations authored as versioned JSON in `content/storylets/ambitions/second-acts.v1.json` and compiled via `scripts/build-second-acts.mjs`.
+- `node scripts/build-content.mjs` and `node scripts/build-second-acts.mjs` compile both JSON browser bundles. Use `--check` to detect stale generated code.
 - `node scripts/validate-content.mjs` validates story references, locations, challenge qualities, item effects and chain gates.
 - `node scripts/content-tracker.mjs` updates `docs/CONTENT_TRACKER.md` with every story, choice, card, location and profession; use `--check` to detect drift.
 - GitHub Actions runs the checks and game tests on each push. Vercel's project build command is configured to run all three validation steps as well.
