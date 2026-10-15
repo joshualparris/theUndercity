@@ -46,4 +46,10 @@ jobs:
           grep -q 'CMS_ACCESS_TOKEN' /tmp/undercity-groq-guide
           curl -fsSL --retry 4 --retry-all-errors --retry-delay 4 --max-time 30 -o /tmp/undercity-groq-health "https://qbn-studio-ai.parris-neathaustralia.workers.dev/health"
           grep -q '"online":true' /tmp/undercity-groq-health
-          echo "Confirmed playable Cloudflare game, action-result UI, Groq Studio module and gateway health."
+          curl -fsSL --retry 4 --retry-all-errors --retry-delay 4 --max-time 30 -o /tmp/undercity-auto "$URL/tools/cms/auto-repair.js"
+          grep -q 'fullAutoMerge' /tmp/undercity-auto
+          grep -q 'groq-fixall' /tmp/undercity-groq-ui
+          grep -q 'groq-qa-fix' /tmp/undercity-groq-ui
+          grep -q 'Undo autofix' /tmp/undercity-groq-ui
+          grep -q 'one-click autofill and repair' /tmp/undercity-groq-guide || grep -q 'One-click autofill and repair' /tmp/undercity-groq-guide
+          echo "Confirmed deployed one-tap Groq autofill, structural repair, QA shortcut and undo controls."
