@@ -168,16 +168,12 @@ try{
  await cmsPage.locator('[data-path="choices.0.label"]').fill("Publish the threatened neighbours' names");
  await cmsPage.locator('[data-path="choices.1.label"]').fill("Protect the neighbours and challenge the debt");
  assert.equal(await cmsPage.locator('[data-path="pitch"]').inputValue(),"");
- await cmsPage.locator("#go-next").click();
- await cmsPage.waitForFunction(()=>document.querySelector("#toast")?.textContent?.includes("pitch is empty"));
  assert.match(await cmsPage.locator("#qa-results").innerText(),/pitch/i,
-  "a missing pitch must now appear in Quality Gates");
- await cmsPage.locator("#groq-localfix").click();
- assert.match(await cmsPage.locator('[data-path="pitch"]').inputValue(),/Premise:/);
+  "a missing pitch must appear in Quality Gates before advancing");
  await cmsPage.locator("#go-next").click();
- await cmsPage.locator("#editor-subtitle").waitFor();
+ assert.match(await cmsPage.locator('[data-path="pitch"]').inputValue(),/Premise:/);
  assert.match(await cmsPage.locator("#editor-subtitle").innerText(),/midflight/);
- console.log("BROWSER PASS Pitch stage · empty pitch flagged, autofilled locally, Advance to Structure succeeds");
+ console.log("BROWSER PASS Pitch stage · Advance automatically fills empty pitch and opens Structure");
  console.log("BROWSER PASS Narrative Studio · editor creates draft and loads without JavaScript errors");
  await cmsContext.close();
 }finally{await browser.close();}
