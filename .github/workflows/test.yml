@@ -19,6 +19,8 @@ jobs:
         run: node scripts/build-second-acts.mjs --check
       - name: Verify complete main ambition JSON content
         run: node scripts/build-late-main.mjs --check
+      - name: Verify approved CMS publication bundle
+        run: node tools/cms/build.mjs --check && node --check tools/cms/app.js
       - name: Validate all authored stories and references
         run: node scripts/validate-content.mjs
       - name: Verify the content tracker
