@@ -1,52 +1,48 @@
 # The Undercity
 
-**A playable, original, gothic browser-narrative RPG prototype.**
+**A playable, original, gothic narrative RPG for your browser.**
 
-The Undercity is a subterranean metropolis lit by cultivated moss, oil lamps and rumours. You begin in the Bell-Cage prison; choose your past and faction, escape by one of four methods, and navigate connected districts to uncover who sealed the sky.
+In a city beneath a sealed stone sky, memories can be traded, lamps burn on peculiar fuel and official records erase people who are still alive. You start in the Bell-Cage, choose your past and faction, escape by one of four approaches, and decide who should learn the truth about the sky.
 
-## Play
+## Play now
 
-This project is plain HTML/CSS/JavaScript without external dependencies. Open index.html directly or deploy the repository as a static site on Vercel / GitHub Pages. Your story is saved locally in your browser.
+**https://the-undercity.vercel.app**
 
-## Current vertical slice
+The site is published from this repository on Vercel. No sign-in or payment is required. Saves are **local to the browser and device** you use, not synchronised across phones and computers. Export a JSON save from **Settings** before clearing browser data or switching devices.
 
-- Opening onboarding with four backgrounds, five faction alignments and four original escape routes
-- Eight visible, connected districts with a map and explicit travel guidance; later areas are gated by collected investigation leads
-- Four-part main ambition and 20+ additional authored storylets, multiple stat-checked choices
-- Four abilities (Observation, Guile, Persuasion, Resolve), pyramidal change points, challenges with visible odds
-- Health, Sanity, Suspicion and Notoriety; consequence-driven recovery detours rather than game-overs
-- Pennies, possessions, faction relations, journal, opportunity-card hand (8 cards)
-- Browser local save, manual JSON export/import, real-time action/card regeneration
-- **Playtest mode** in Settings to explore without waiting or consuming actions
-- Mobile-responsive, keyboard-operable controls, readable choice requirements and adjustable text size
+## What is playable
+
+- Story-driven onboarding: four backgrounds, five factions, four ability-based escape routes leading to distinct districts.
+- A connected city map with clear roads and unlock requirements. Collect **2 leads** for the Forgotten Stairs and **4 leads** for the Listening Edge.
+- A four-stage city investigation about the Council's sealed sky, with different world outcomes.
+- **Four original personal ambitions**, each with eight consecutive, fully playable chapters and competing endings.
+- **Four seven-stage Making Your Name reputations**, one for each ability, with distinct progress and end rewards.
+- The four abilities **Observation, Guile, Persuasion and Resolve**, with change points, broad-chance rolls and rewards even when a check fails.
+- **18 professions** (10 starter, 8 advanced), location-based work, recurring wages and qualifying reputation requirements.
+- **20 destinies** (9 ordinary, 11 greater), with eligibility gates and permanent selection.
+- **9 character quirks**, **3 three-stage exceptional stories**, and **6 rotating seasonal events**.
+- More than **140 storylets** in the playable narrative corpus and **18 opportunity cards**.
+- **18 equipment slots**, inventory items and stat-boosting equipment. The number of equipped items depends on what you have found.
+- Four **Living Stories**: letters/rewards delivered after real-time delays, even if you close the browser.
+- Ten-minute action regeneration with a starting cap of 10 and an unlockable cap of 20; four-minute opportunity-card regeneration with six-card hand limit. **Settings → Playtest mode** removes waiting/paid card-draw costs for testing.
+- Persistent consequences, a journal, delayed messages, recoverable injury/scandal/custody detours, a shop, local autosave, JSON import/export and adjustable reading size.
 
 ## How to playtest
 
-1. Start at the Bell-Cage and escape.
-2. Talk to the clockmaker in Lantern Court and take the main mission.
-3. Travel using **City map** or the sidebar's **Close destinations** links.
-4. Collect 2 leads to unlock the Forgotten Stairs, 4 to unlock the Listening Edge.
-5. Follow the four-step mission across Lantern Court → Inkward → Forgotten Stairs → Listening Edge.
-6. Test all four abilities, collect items, play chance cards and check what happens if a menace reaches its threshold.
-7. Enable playtest mode under Settings for a faster run.
+1. Begin at the Bell-Cage, choose an origin and faction, and take one of the four escape routes.
+2. Use **City map** for explicit connections. Lantern Court links to the main starting districts.
+3. At Lantern Court, speak to the clockmaker to begin the city-wide investigation, and choose a **personal ambition** using *A question no clerk can answer*.
+4. Open **Paths & callings** to see the next stage and district for your ambition, all four reputations, career options, quirks, exceptional stories and destiny requirements.
+5. Visit **Possessions** to equip owned gear, and **Messages** for delayed Living Stories.
+6. Test success and failure, a full opportunity hand and a menace-triggered recovery detour. Use **Settings → Playtest mode** if you want to inspect content without waiting.
+7. Export your save JSON before restarting or switching browsers.
 
-## Implementation notes
+## Repository and checks
 
-This is a focused vertical slice, **not** the full multi-thousand-storylet game envisioned by the supplied design research. Narrative and place names are independently authored, and do not reuse other games' text, art or characters. It uses no cookies, analytics, accounts, servers or payment mechanics. Local browser saves are not synchronised between devices.
+The game is dependency-free plain HTML/CSS/JavaScript. Narrative data is in `content/`. Tests in `tests/` run through GitHub Actions on each push. Run locally with `node --test tests/*.test.mjs` (Node 22+) and serve the repository with `python -m http.server 8000` if you want to test it on a local server.
 
-For development, no install or build is required. Serve this directory with \`python -m http.server 8000\` and open http://localhost:8000. In the browser console, inspect \`UndercityDiagnostics\` to see testable engine information.
+## Specification scope and remaining work
 
-Future improvements: external JSON storylet validation; better QBN gates and content indexing; more ambitions, faction consequences and hand-crafted art; automated browser E2E tests; cloud saves by opt-in; comprehensive automated content coverage.
+The supplied 64-page research PDF is a **much larger specification**, not merely a small initial build. This release implements an integrated playable game and a substantial content foundation. It **does not yet** contain 30–40 chapters for each personal ambition, thousands of unique scenes, full multiplayer social features, every tier of profession, a server-side account/cloud-save system, complete content authoring CMS, or every proposed economy/paid-Fate mechanic.
 
-## Engineering improvements — 15 October 2026
-
-Following the independent [Failbetter Games quality-based-narrative research](https://github.com/joshualparris/FailbetterGames/tree/main/fallen-london/build), The Undercity now has:
-
-- **Calculated city routes**: the map displays each intermediate district and lets you travel the next connected road, never teleporting through locked routes. The current investigation now includes directions.
-- **Neighbourhood-specific opportunity cards**: the eight original card encounters belong to plausible areas; already held cards remain playable after moving.
-- **More robust v1 saves**: deduplicated opportunity hand; validated item IDs, currency and skills; action-cap calculation no longer depends on an uninitialised global state.
-- **Automated regression checks**: `tests/logic.test.mjs` tests actual shipped inline code for route reachability, locked routes, save loading, card locations and syntax. GitHub Actions run these alongside the existing game tests.
-
-These improvements preserve the expanded four personal ambitions, careers, faction consequences and destiny systems added to the existing prototype. They do not import proprietary Fallen London source, stories or artwork.
-
-**Open limitations:** no online account/save synchronisation, no exhaustive multi-character playtest or external accessibility audit. The original game is a playable prototype, not yet a fully authored long-running online RPG.
+See [Specification coverage and roadmap](docs/SPEC_PROGRESS.md) for explicit implemented/partial/not-yet-built status and the next planned systems. The setting, characters and prose are independently authored rather than copied from other games.
