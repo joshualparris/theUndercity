@@ -10,6 +10,8 @@
     "storylets:publish": "node tools/storylet-generator.mjs publish",
     "storylets:check": "node tools/storylet-generator.mjs publish --check",
     "studio:validate": "node scripts/narrative-studio.mjs",
-    "studio:report": "node scripts/narrative-studio.mjs report"
+    "studio:report": "node scripts/narrative-studio.mjs report",
+    "cms:build": "node tools/cms/build.mjs",
+    "cms:check": "node tools/cms/build.mjs --check"
   }
 }
