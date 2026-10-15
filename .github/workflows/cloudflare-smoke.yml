@@ -28,4 +28,8 @@ jobs:
           curl -fsSL --retry 4 --retry-all-errors --retry-delay 4 --max-time 30 -o /tmp/undercity-late-json "$URL/content/storylets/ambitions/late-main.v1.json"
           grep -q 'ambition-main-collection' /tmp/undercity-late-json
           grep -qi 'x-undercity-revision' /tmp/undercity-headers
-          echo "Confirmed public HTML, rules engine, and updated coalition storyline JS/JSON."
+          curl -fsSL --retry 4 --retry-all-errors --retry-delay 4 --max-time 30 -o /tmp/undercity-cms "$URL/tools/cms/"
+          grep -q 'QBN Studio' /tmp/undercity-cms
+          curl -fsSL --retry 4 --retry-all-errors --retry-delay 4 --max-time 30 -o /tmp/undercity-cms-app "$URL/tools/cms/app.js"
+          grep -q 'studio-core.js' /tmp/undercity-cms-app
+          echo "Confirmed public game HTML, rules JS, late coalition JSON and browser Narrative CMS."
