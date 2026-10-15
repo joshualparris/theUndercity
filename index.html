@@ -36,7 +36,11 @@ stairs:{name:"The Forgotten Stairs",subtitle:"Beneath the foundations",desc:"The
 edge:{name:"The Listening Edge",subtitle:"Where the cavern listens back",desc:"Here the city gives way to a depth without a floor. Something within it breathes when you speak.",adj:["stairs"],locked:"Four leads in the Investigation",unlock:s=>s.clues>=4},
 watch:{name:"The Office of Second Chances",subtitle:"A custody ward",desc:"A kindly clerk explains that mercy is a procedure, not an inclination.",adj:[]},
 ward:{name:"The Quiet Ward",subtitle:"A hospital for mind and body",desc:"The physician offers you an inventory of your injuries, including several you do not remember receiving.",adj:[]},
-tribunal:{name:"The Unspoken Tribunal",subtitle:"A hearing conducted without speech",desc:"Your name is being argued over by people who have never met you.",adj:[]}
+tribunal:{name:"The Unspoken Tribunal",subtitle:"A hearing conducted without speech",desc:"Your name is being argued over by people who have never met you.",adj:[]},
+the_watch_house:{name:"The Watch House",subtitle:"A custody house",desc:"The clerks write each charge in indelible black ink. Your record follows you beyond these walls.",adj:[]},
+the_tribunal:{name:"The Tribunal",subtitle:"An uneasy public hearing",desc:"The murmurs of the gallery turn even minor gossip into a formal accusation.",adj:[]},
+the_ward:{name:"The Ward",subtitle:"An infirmary of costly remedies",desc:"A physician tends wounds that are sometimes older than their bearers.",adj:[]},
+the_pale_rooms:{name:"The Pale Rooms",subtitle:"A refuge from delirium",desc:"White curtains divide the waking world from that which is better dreamt.",adj:[]}
 };
 const ITEMS={brass:"A key without teeth",charcoal:"Charcoal rubbing",silk:"A ribbon of coded silk",hook:"Folded brass hook",badge:"Warden's broken badge",ticket:"An undated ferry ticket",glass:"A warm glass bead",ledger:"An unburnt page",moss:"Singing moss",lure:"A listening-stone",map:"The surveyor's map",relic:"A clock with no hands"};
 const CARDS=[
@@ -129,7 +133,7 @@ function ensureQualities(s){
  }
  if(!q.the_record){
   const level=Math.max(0,Math.min(7,Number(s.criminalRecord)||0));
-  q.the_record={id:"the_record",cp:level,level};
+  q.the_record={id:"the_record",cp:Rules.levelToTotalCp(level),level};
  }
  syncLegacy(s);return s;
 }
@@ -167,7 +171,9 @@ function normaliseSave(v){
  for(const stat of Object.keys(STATS))b.stats[stat]=Math.max(0,Math.min(1000000,Number(b.stats[stat])||0));
  b.items=Object.fromEntries(Object.entries(b.items).filter(([k,value])=>Object.hasOwn(ITEMS,k)&&Number.isFinite(Number(value))&&Number(value)>0).map(([k,value])=>[k,Math.min(10000,Math.floor(Number(value)))]));
  b.profession=PROFESSIONS.some(p=>p.id===v.profession)?v.profession:"";
- b.destiny=DESTINIES.some(d=>d.id===v.destiny)?v.destiny:"";return ensureQualities(b);
+ b.destiny=DESTINIES.some(d=>d.id===v.destiny)?v.destiny:"";
+ b.place=({watch:"the_watch_house",tribunal:"the_tribunal",ward:b.sanity<=b.health?"the_pale_rooms":"the_ward"})[b.place]||b.place;
+ return ensureQualities(b);
 }
 try{state=normaliseSave(JSON.parse(localStorage.getItem(SAVE)))}catch(e){state=fresh()}
 ensureQualities(state);
@@ -310,7 +316,7 @@ function choose(id,ix,card){
 function done(){save();render()}
 function save(){try{localStorage.setItem(SAVE,JSON.stringify(state))}catch(e){console.warn("Local save unavailable",e)}}
 function setTab(t){state.tab=t;state.result=null;state.selectedCard=null;done()}
-function travel(p){if(state.stage!=="explore"||PENALTY_PLACES.has(state.place)||!PLACES[p]||PENALTY_PLACES.has(p)||p==="cell")return;let current=PLACES[state.place];if(!current||!current.adj.includes(p))return;let to=PLACES[p];if(to.unlock&&!to.unlock(state))return;state.place=p;state.result={title:"You arrive at "+to.name,text:to.desc,note:"Travelling is free. You can return along the same route."};addJournal("Arrived at "+to.name);state.tab="story";done()}
+function travel(p){if(state.stage!=="explore"||PENALTY_PLACES.has(state.place)||!PLACES[p]||PENALTY_PLACES.has(p)||["cell","watch","ward","tribunal"].includes(p))return;let current=PLACES[state.place];if(!current||!current.adj.includes(p))return;let to=PLACES[p];if(to.unlock&&!to.unlock(state))return;state.place=p;state.result={title:"You arrive at "+to.name,text:to.desc,note:"Travelling is free. You can return along the same route."};addJournal("Arrived at "+to.name);state.tab="story";done()}
 // Named, traversable roads. Never teleports and never crosses a locked gate.
 function cityRoute(from,to,save=state){
  if(!PLACES[from]||!PLACES[to]||(PLACES[to].unlock&&!PLACES[to].unlock(save)))return null;
@@ -366,7 +372,7 @@ let personal=!state.path?'<div class="notice"><div class="eyebrow">Choose a pers
 const lead=["court","ink","stairs","edge"][state.ambition];
 return hero+'<div class="notice"><div class="eyebrow">The city-wide investigation</div>'+esc(guidance)+(lead?'<p class="small">'+esc(routeHint(lead))+'</p>':"")+' <button class="smallbtn" data-act="tab" data-target="map">See routes →</button></div>'+personal+'<div class="sectionhead"><h2 style="font-size:1.6rem">Stories here</h2><span class="small">'+stories.length+' available</span></div>'+amb.map(storyHTML).join("")+others.map(storyHTML).join("")+(!stories.length?'<div class="empty">You have heard the stories here for now. Travel to a neighbouring district, or draw an opportunity card.</div>':"")}
 function storyHTML(st){return '<article class="story"><div class="tag">'+(st.category?esc(st.category.replace(/-/g," ")):(st.id.startsWith("ambition")?"The long mystery":"A story of "+esc(PLACES[state.place].name)))+'</div><h2>'+esc(st.title)+'</h2><p>'+esc(st.description)+'</p>'+choiceHTML(st,false)+'</article>'}
-function renderMap(){return '<div class="hero"><div class="eyebrow">Cartography of the buried</div><h1>The city map</h1><p>Every ordinary district is visible. Distant destinations show a <strong>route of connected roads</strong>. Select the next road to travel one district at a time. Locked districts show the lead requirement. Travel is free.</p></div><div class="mapgrid">'+Object.entries(PLACES).filter(([k])=>k!=="cell"&&!PENALTY_PLACES.has(k)).map(([id,p])=>{let locked=p.unlock&&!p.unlock(state),here=id===state.place,route=cityRoute(state.place,id),near=route?.length===2,can=state.stage==="explore"&&!here&&!locked&&route?.length>1,next=can?route[1]:null;let path=locked?p.locked:here?"Your current district":route?.length>1?route.map(k=>PLACES[k].name).join(" → "):"Recover from your present location to resume travel.";return '<div class="maptile '+(here?"here":"")+'"><div class="eyebrow">'+(here?"✦ You are here":locked?"⛓ Not yet accessible":near?"↗ Direct road":"Roads to this district")+'</div><h3>'+esc(p.name)+'</h3><p>'+esc(p.subtitle)+'. '+esc(p.desc)+'</p><p class="mapnote">'+esc(path)+'</p>'+(!here?'<button class="btn outline tiny" data-act="travel" data-target="'+esc(next||id)+'" '+(!can?"disabled":"")+'>'+(locked?"Locked":can?(near?"Travel here →":"Next road: "+esc(PLACES[next].name)+" →"):"No open road")+'</button>':'<span class="sticker">Your location</span>')+'</div>'}).join("")+'</div>'}
+function renderMap(){return '<div class="hero"><div class="eyebrow">Cartography of the buried</div><h1>The city map</h1><p>Every ordinary district is visible. Distant destinations show a <strong>route of connected roads</strong>. Select the next road to travel one district at a time. Locked districts show the lead requirement. Travel is free.</p></div><div class="mapgrid">'+Object.entries(PLACES).filter(([k])=>!["cell","watch","ward","tribunal"].includes(k)&&!PENALTY_PLACES.has(k)).map(([id,p])=>{let locked=p.unlock&&!p.unlock(state),here=id===state.place,route=cityRoute(state.place,id),near=route?.length===2,can=state.stage==="explore"&&!here&&!locked&&route?.length>1,next=can?route[1]:null;let path=locked?p.locked:here?"Your current district":route?.length>1?route.map(k=>PLACES[k].name).join(" → "):"Recover from your present location to resume travel.";return '<div class="maptile '+(here?"here":"")+'"><div class="eyebrow">'+(here?"✦ You are here":locked?"⛓ Not yet accessible":near?"↗ Direct road":"Roads to this district")+'</div><h3>'+esc(p.name)+'</h3><p>'+esc(p.subtitle)+'. '+esc(p.desc)+'</p><p class="mapnote">'+esc(path)+'</p>'+(!here?'<button class="btn outline tiny" data-act="travel" data-target="'+esc(next||id)+'" '+(!can?"disabled":"")+'>'+(locked?"Locked":can?(near?"Travel here →":"Next road: "+esc(PLACES[next].name)+" →"):"No open road")+'</button>':'<span class="sticker">Your location</span>')+'</div>'}).join("")+'</div>'}
 function renderMyself(){return '<div class="hero"><div class="eyebrow">You, as the city understands you</div><h1>Myself</h1><p>Once '+esc(state.background||"unknown")+', now a citizen of the Undercity by accident. '+(state.faction?'Your first allegiance is to '+esc(FACTIONS[state.faction][0])+'.':'Your story has not yet begun.')+'</p></div><div class="two"><section class="story"><h2>Abilities</h2><p class="small">Levels grow from change points. Difficult choices train the abilities you use.</p>'+Object.entries(STATS).map(([k,v])=>'<div class="statline"><span>'+v+'</span><strong>'+lv(state.stats[k])+' <small>('+state.stats[k]+' CP)</small></strong></div>').join("")+'</section><section class="story"><h2>Faction relations</h2>'+Object.entries(FACTIONS).map(([k,v])=>'<div class="statline"><span>'+esc(v[0])+'</span><strong>'+state.relation[k]+'</strong></div>').join("")+'</section></div><section class="story"><h2>The main ambition</h2><p>Who sealed the city? Stage '+state.ambition+' of 4. Leads gathered: '+state.clues+'.</p><div class="meter"><b style="width:'+state.ambition*25+'%"></b></div>'+(state.flags.remember?box("World changed","You let the Undercity remember its buried history."):state.flags.silence?box("World changed","You chose to keep the oldest silence."):box("Unfinished business","Your choices shape the city's memory and your reputation."))+'</section>'}
 function renderPossessions(){
  const own=Object.entries(state.items).filter(([,v])=>v>0);
@@ -426,7 +432,7 @@ function renderPaths(){
 function hireProfession(id){
  const p=PROFESSIONS.find(x=>x.id===id),current=PROFESSIONS.find(x=>x.id===state.profession);
  if(!p||state.stage!=="explore"||(p.tier===1&&state.profession)||(p.tier===2&&(!current||current.tier!==1||(state.renown[p.stat]||0)<4)))return;
- state.profession=id;state.lastWage=Date.now();state.items[p.item]=(state.items[p.item]||0)+1;
+ state.profession=id;state.lastWage=Date.now();qualityAdd("item:"+p.item,1);state.items[p.item]=state.qualities["item:"+p.item]?.level??(state.items[p.item]||0)+1;
  state.relation[p.faction]=(state.relation[p.faction]||0)+1;
  state.result={title:"A new profession: "+p.name,text:"Your weekly pay is "+p.wage+" pennies. "+p.scene+" Find your repeatable work story in "+PLACES[p.place].name+".",note:"A lasting calling"};
  addJournal("Became "+p.name);state.tab="story";done();
