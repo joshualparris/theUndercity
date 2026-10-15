@@ -1,0 +1,26 @@
+name: Alternative playtest HTTP check
+on:
+  push:
+    branches: [main]
+    paths: [.github/workflows/cloudflare-smoke.yml]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  browser-assets:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check the Cloudflare Worker game entrypoint
+        env:
+          URL: https://undercity-playtest.parris-neathaustralia.workers.dev
+        run: |
+          set -euo pipefail
+          curl -fsSL --retry 4 --retry-all-errors --retry-delay 4 --max-time 30 -D /tmp/undercity-headers -o /tmp/undercity-index "$URL/"
+          grep -q 'The Undercity' /tmp/undercity-index
+          grep -q 'content/ambitions.js' /tmp/undercity-index
+          grep -qi 'text/html' /tmp/undercity-headers
+          curl -fsSL --retry 4 --retry-all-errors --retry-delay 4 --max-time 30 -o /tmp/undercity-ambitions "$URL/content/ambitions.js"
+          grep -q 'UndercityExpansions' /tmp/undercity-ambitions
+          curl -fsSL --retry 4 --retry-all-errors --retry-delay 4 --max-time 30 -o /tmp/undercity-rules "$URL/src/game/rules.global.js"
+          grep -q 'UndercityRules' /tmp/undercity-rules
+          echo "Confirmed public HTML, ambitions and rules engine."
