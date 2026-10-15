@@ -38,6 +38,7 @@ jobs:
           grep -q 'QBN Studio' /tmp/undercity-cms
           curl -fsSL --retry 4 --retry-all-errors --retry-delay 4 --max-time 30 -o /tmp/undercity-cms-app "$URL/tools/cms/app.js"
           grep -q 'studio-core.js' /tmp/undercity-cms-app
+          grep -Fq 'repairDraft(s,context())' /tmp/undercity-cms-app
           curl -fsSL --retry 4 --retry-all-errors --retry-delay 4 --max-time 30 -o /tmp/undercity-cms-core "$URL/tools/cms/studio-core.js"
           grep -q 'freshRequirement' /tmp/undercity-cms-core
           curl -fsSL --retry 4 --retry-all-errors --retry-delay 4 --max-time 30 -o /tmp/undercity-groq-ui "$URL/tools/cms/ai-assistant.js"
