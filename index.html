@@ -17,6 +17,7 @@ header{position:sticky;top:0;z-index:10;background:#10171deb;border-bottom:1px s
 <script src="./content/world.js?v=20261015a"></script>
 <script src="./content/callings.js?v=20261015a"></script>
 <script src="./content/systems.js?v=20261015a"></script>
+<script src="./src/game/rules.global.js?v=20261015b"></script>
 <script>
 "use strict";
 (function(){
@@ -80,7 +81,70 @@ Object.assign(ITEMS,EXT.items||{});STORIES.push(...(EXT.stories||[]));CARDS.push
 const PROFESSIONS=EXT.professions||[],DESTINIES=EXT.destinies||[],WEEK=604800000;
 const SYSTEMS=window.UndercitySystems||{slots:[],gear:{},living:[]};
 const SLOTS=SYSTEMS.slots,GEAR=SYSTEMS.gear,LIVING=SYSTEMS.living;
-function effectiveLevel(k){return lv(state.stats[k]||0)+Object.values(state.equipment||{}).reduce((v,item)=>v+(GEAR[item]?.[1]===k?GEAR[item][2]:0),0)+Number(state.destinyBonuses?.[k]||0)}
+const Rules=window.UndercityRules;
+if(!Rules)throw new Error("The Undercity rules engine did not load");
+const PENALTY_PLACES=new Set(Object.values(Rules.MENACE_PENALTY_HUBS));
+const OPPOSITES={merciful:["ruthless"],ruthless:["merciful","generous"],honest:["subtle"],subtle:["honest","proud"],generous:["ruthless"],proud:["subtle"],curious:["cautious"],cautious:["curious"],steadfast:["cautious"]};
+const QUALITY_DEFS={};
+for(const k of Object.keys(STATS))QUALITY_DEFS[k]={type:Rules.QualityType.PRIMARY_STAT,max:1000};
+for(const k of ["suspicion","notoriety","wounds","delirium"])QUALITY_DEFS[k]={type:Rules.QualityType.MENACE,max:30};
+QUALITY_DEFS.the_record={type:Rules.QualityType.METAQUALITY,max:7};
+for(const [item,gear] of Object.entries(GEAR))QUALITY_DEFS[item]={type:Rules.QualityType.ITEM,stat_bonuses:{[gear[1]]:gear[2]}};
+for(const item of Object.keys(ITEMS))QUALITY_DEFS["item:"+item]={type:Rules.QualityType.ITEM,max:10000};
+for(const faction of Object.keys(FACTIONS))QUALITY_DEFS["affiliation:"+faction]={type:Rules.QualityType.AFFILIATION,max:50};
+for(const q of EXT.quirks||[])QUALITY_DEFS[q.id]={type:Rules.QualityType.DISPOSITION,max:15,opposite:OPPOSITES[q.id]||[]};
+function qState(id,cp){cp=Math.max(0,Math.floor(Number(cp)||0));return {id,cp,level:Rules.cpToLevel(cp)};}
+function qualitySet(id,level){
+ Rules.applyEffect(state,{quality:id,set:level},QUALITY_DEFS);
+}
+function qualityAdd(id,cp){
+ if(cp)Rules.applyEffect(state,{quality:id,cp:Number(cp)},QUALITY_DEFS);
+}
+function ensureQualities(s){
+ if(!s.qualities||typeof s.qualities!=="object")s.qualities={};
+ const q=s.qualities;
+ for(const stat of Object.keys(STATS)){
+  if(!q[stat])q[stat]=qState(stat,s.stats?.[stat]??0);
+  else q[stat]=qState(stat,q[stat].cp);
+ }
+ for(const menace of ["suspicion","notoriety","wounds","delirium"]){
+  const old=menace==="wounds"?10-(s.health??10):menace==="delirium"?10-(s.sanity??10):s[menace]??0;
+  const level=Math.max(0,Math.min(30,Number(old)||0));
+  if(!q[menace])q[menace]={id:menace,cp:Rules.levelToTotalCp(level),level};
+  else q[menace]=qState(menace,q[menace].cp);
+ }
+ for(const trait of EXT.quirks||[]){
+  const id=trait.id,level=Math.max(0,Number(s.quirks?.[id])||0);
+  if(!q[id])q[id]={id,cp:Rules.levelToTotalCp(level),level};
+  else q[id]=qState(id,q[id].cp);
+ }
+ for(const faction of Object.keys(FACTIONS)){
+  const id="affiliation:"+faction,level=Math.max(0,Number(s.relation?.[faction])||0);
+  if(!q[id])q[id]={id,cp:Rules.levelToTotalCp(level),level};
+  else q[id]=qState(id,q[id].cp);
+ }
+ for(const item of Object.keys(ITEMS)){
+  const id="item:"+item;
+  if(!q[id])q[id]={id,cp:s.items?.[item]??0,level:s.items?.[item]??0};
+ }
+ if(!q.the_record){
+  const level=Math.max(0,Math.min(7,Number(s.criminalRecord)||0));
+  q.the_record={id:"the_record",cp:level,level};
+ }
+ syncLegacy(s);return s;
+}
+function syncLegacy(s){
+ for(const k of Object.keys(STATS))s.stats[k]=s.qualities[k]?.cp??0;
+ for(const k of ["suspicion","notoriety"])s[k]=s.qualities[k]?.level??0;
+ s.health=Math.max(0,10-(s.qualities.wounds?.level??0));
+ s.sanity=Math.max(0,10-(s.qualities.delirium?.level??0));
+ s.criminalRecord=s.qualities.the_record?.level??0;
+ for(const q of EXT.quirks||[])s.quirks[q.id]=s.qualities[q.id]?.level??0;
+ for(const f of Object.keys(FACTIONS))s.relation[f]=s.qualities["affiliation:"+f]?.level??0;
+}
+function effectiveLevel(k){
+ return Rules.getEffectiveStat({qualities:state.qualities,equipped:state.equipment,inventory:state.items},k,QUALITY_DEFS)+Number(state.destinyBonuses?.[k]||0);
+}
 function actionCap(character=state){return Object.values(character?.renown||{}).reduce((n,v)=>n+(Number(v)||0),0)>=14?20:MAXA;}
 function fresh(){return{version:1,stage:"welcome",tab:"story",name:"Stranger",background:"",faction:"",place:"cell",actions:MAXA,lastTick:Date.now(),lastCard:Date.now(),playtest:false,coin:8,stats:{observation:10,guile:10,persuasion:10,resolve:10},suspicion:0,notoriety:0,health:10,sanity:10,clues:0,ambition:0,items:{},relation:{ledger:0,wardens:0,choir:0,hands:0,dawn:0},flags:{},done:{},hand:["card_bell","card_courier"],journal:[],result:null,selectedCard:null,originChoice:"",path:"",pathProgress:0,pathEnding:"",equipment:{},living:{},messages:[],renown:{observation:0,guile:0,persuasion:0,resolve:0},quirks:{},extras:{},profession:"",lastWage:Date.now(),destiny:"",destinyBonuses:{},criminalRecord:0}}
 let state;
@@ -103,31 +167,26 @@ function normaliseSave(v){
  for(const stat of Object.keys(STATS))b.stats[stat]=Math.max(0,Math.min(1000000,Number(b.stats[stat])||0));
  b.items=Object.fromEntries(Object.entries(b.items).filter(([k,value])=>Object.hasOwn(ITEMS,k)&&Number.isFinite(Number(value))&&Number(value)>0).map(([k,value])=>[k,Math.min(10000,Math.floor(Number(value)))]));
  b.profession=PROFESSIONS.some(p=>p.id===v.profession)?v.profession:"";
- b.destiny=DESTINIES.some(d=>d.id===v.destiny)?v.destiny:"";return b;
+ b.destiny=DESTINIES.some(d=>d.id===v.destiny)?v.destiny:"";return ensureQualities(b);
 }
 try{state=normaliseSave(JSON.parse(localStorage.getItem(SAVE)))}catch(e){state=fresh()}
+ensureQualities(state);
 const $=id=>document.getElementById(id);
 function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,x=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[x]))}
-const CP_AT_70=2485;
-function lv(cp){
- cp=Math.max(0,Math.floor(Number(cp)||0));
- return cp<CP_AT_70 ? Math.floor((Math.sqrt(8*cp+1)-1)/2) : 70+Math.floor((cp-CP_AT_70)/70);
-}
-function cpForLevel(n){n=Math.max(0,Math.floor(n));return n<=70?n*(n+1)/2:CP_AT_70+(n-70)*70}
+function lv(cp){return Rules.cpToLevel(Math.max(0,Math.floor(Number(cp)||0)));}
+function cpForLevel(level){return Rules.levelToTotalCp(level);}
 const FREQUENCY={very_rare:.05,rare:.2,infrequent:.8,standard:1,frequent:2,abundant:5,ubiquitous:10,unique:1};
-const OPPOSITES={merciful:["ruthless"],ruthless:["merciful","generous"],honest:["subtle"],subtle:["honest","proud"],generous:["ruthless"],proud:["subtle"],curious:["cautious"],cautious:["curious"],steadfast:["cautious"]};
 function cardWeight(c){return Math.max(0,Number(c.weight??1))*10*(FREQUENCY[c.frequency??"standard"]??1)*Math.max(1,c.unlock_conditions?.length??1)}
 function eligibleCard(c){return !state.hand.includes(c.id)&&(!c.where||c.where.includes(state.place))&&(!c.unlock_conditions||c.unlock_conditions.every(test=>typeof test==="function"?test(state):test?.flag?Boolean(state.flags[test.flag]):true))}
 
-function odds(stat,d,scaler=.60){const v=effectiveLevel(stat);return d<=0?100:Math.min(100,Math.max(10,Math.floor(Number(scaler)*v/d*100)))}
+function odds(stat,d,scaler=.60){return Rules.broadChance(effectiveLevel(stat),d,scaler)}
 function labelStat(stat){return STATS[stat]||stat}
 function addJournal(t){state.journal.unshift({text:t,date:new Date().toISOString(),place:state.place});state.journal=state.journal.slice(0,80)}
 function tick(){
- const now=Date.now(),cap=actionCap();
- if(now<state.lastTick)state.lastTick=now;
- if(state.actions>=cap)state.lastTick=now;
- else {const n=Math.max(0,Math.floor((now-state.lastTick)/REGEN));
-   if(n>0){state.actions=Math.min(cap,state.actions+n);state.lastTick+=n*REGEN;}}
+ const now=Date.now(),holder={actions:state.actions,max_actions:actionCap(),last_action_tick:state.lastTick};
+ if(holder.last_action_tick>now)holder.last_action_tick=now;
+ Rules.regenerateActions(holder);
+ state.actions=holder.actions;state.lastTick=holder.last_action_tick;
  if(now<state.lastCard||state.hand.length>=6)state.lastCard=now;
  const draws=Math.max(0,Math.floor((now-state.lastCard)/CARDRATE));
  if(draws>0){state.lastCard+=draws*CARDRATE;for(let i=0;i<Math.min(6,draws)&&state.hand.length<6;i++)drawCard();}
@@ -162,41 +221,96 @@ function drawCard(){
  return true;
 }
 function apply(e){
- if(!e)return;if(e.coin)state.coin=Math.max(0,state.coin+Number(e.coin));
- for(const k of ["suspicion","notoriety","health","sanity","clues","ambition","pathProgress"])
-   if(e[k]!=null)state[k]=Math.max(0,(state[k]||0)+Number(e[k]));
- state.health=Math.min(10,state.health);state.sanity=Math.min(10,state.sanity);
- state.suspicion=Math.min(8,state.suspicion);state.notoriety=Math.min(8,state.notoriety);
- if(e.items)for(const k in e.items)state.items[k]=Math.max(0,(state.items[k]||0)+e.items[k]);
- if(e.relation)for(const k in e.relation)state.relation[k]=(state.relation[k]||0)+e.relation[k];
- if(e.renown)for(const k in e.renown)state.renown[k]=(state.renown[k]||0)+e.renown[k];
- if(e.quirks)for(const k in e.quirks){
-  const delta=Number(e.quirks[k])||0;
-  state.quirks[k]=Math.min(15,Math.max(0,(state.quirks[k]||0)+delta));
-  if(delta>0)for(const other of OPPOSITES[k]||[])state.quirks[other]=Math.max(0,(state.quirks[other]||0)-delta);
+ if(!e)return;
+ if(e.coin)state.coin=Math.max(0,state.coin+Number(e.coin));
+ for(const k of ["clues","ambition","pathProgress"])
+  if(e[k]!=null)state[k]=Math.max(0,(state[k]||0)+Number(e[k]));
+ for(const k of ["suspicion","notoriety"])if(e[k]!=null)qualityAdd(k,e[k]);
+ if(e.health!=null)qualityAdd("wounds",-e.health);
+ if(e.sanity!=null)qualityAdd("delirium",-e.sanity);
+ if(e.items)for(const [k,delta] of Object.entries(e.items)){
+  if(!QUALITY_DEFS["item:"+k])continue;
+  qualityAdd("item:"+k,delta);
+  state.items[k]=state.qualities["item:"+k]?.level??0;
  }
+ if(e.relation)for(const [k,delta] of Object.entries(e.relation))
+  if(QUALITY_DEFS["affiliation:"+k])qualityAdd("affiliation:"+k,delta);
+ if(e.renown)for(const k in e.renown)state.renown[k]=Math.max(0,(state.renown[k]||0)+e.renown[k]);
+ if(e.quirks)for(const [k,delta] of Object.entries(e.quirks))
+  if(QUALITY_DEFS[k])qualityAdd(k,delta);
  if(e.extras)for(const k in e.extras)state.extras[k]=(state.extras[k]||0)+e.extras[k];
  if(e.path&&!state.path)state.path=e.path;
  if(e.pathEnding)state.pathEnding=e.pathEnding;
  if(e.flag)state.flags[e.flag]=true;
+ syncLegacy(state);
 }
-function penalty(){if(["ward","watch","tribunal"].includes(state.place))return;if(state.suspicion>=8){state.recoveryFrom=state.place;state.place="watch";state.criminalRecord=Math.min(7,(state.criminalRecord||0)+1);addJournal("The night office has arrested you. Your criminal record increases.")}else if(state.notoriety>=8){state.recoveryFrom=state.place;state.place="tribunal";addJournal("The Unspoken Tribunal has summoned you.")}else if(state.health<=0||state.sanity<=0){state.recoveryFrom=state.place;state.place="ward";addJournal("You wake in the Quiet Ward. Recovery is possible, though it has a price.")}}
-function recover(which){if(!spend(1))return;let old=state.place;if(old==="watch"){state.suspicion=Math.max(0,state.suspicion-3);state.coin=Math.max(0,state.coin-1)}else if(old==="tribunal"){state.notoriety=Math.max(0,state.notoriety-3);state.coin=Math.max(0,state.coin-2)}else{state.health=Math.max(4,state.health);state.sanity=Math.max(4,state.sanity);state.coin=Math.max(0,state.coin-2)}state.place=PLACES[state.recoveryFrom]?state.recoveryFrom:"court";state.result={title:"A costly return",text:"You return to the streets. Your absence was noticed. No-one seems surprised.",note:"The ward was a detour, not a game over."};addJournal("Recovered from "+PLACES[old].name);done()}
-function spend(n){tick();if(!state.playtest&&state.actions<n)return false;if(!state.playtest)state.actions-=n;return true}
+function penalty(){
+ if(PENALTY_PLACES.has(state.place))return;
+ const hub=Rules.checkMenaceThreshold(state);
+ if(!hub)return;
+ const cause=Object.keys(Rules.MENACE_PENALTY_HUBS).find(k=>Rules.MENACE_PENALTY_HUBS[k]===hub);
+ state.recoveryFrom=state.place;
+ const holder={qualities:state.qualities,current_location:state.place};
+ Rules.sendToPenaltyHub(holder,cause);
+ state.place=holder.current_location;
+ syncLegacy(state);
+ addJournal("Your "+cause+" reached level 8. You were sent to "+PLACES[hub].name+(cause==="suspicion"?" and your Record increased.":"."));
+}
+function recover(){
+ const menace=Object.keys(Rules.MENACE_PENALTY_HUBS).find(k=>Rules.MENACE_PENALTY_HUBS[k]===state.place);
+ if(!menace||!spend(1))return;
+ const old=state.place;
+ const current=state.qualities[menace]?.level??8;
+ qualitySet(menace,Math.min(7,Math.max(0,current-3)));
+ state.coin=Math.max(0,state.coin-(menace==="suspicion"?1:2));
+ syncLegacy(state);
+ state.place=PLACES[state.recoveryFrom]&&!PENALTY_PLACES.has(state.recoveryFrom)?state.recoveryFrom:"court";
+ state.result={title:"A costly return",text:"You return to the streets. Your absence was noticed. "+PLACES[old].name+" has released you.",note:"Your "+menace+" is now below the penalty threshold."};
+ addJournal("Recovered from "+PLACES[old].name);done();
+}
+function spend(n){
+ tick();
+ if(state.playtest)return true;
+ const holder={actions:state.actions};
+ if(!Rules.spendActions(holder,n))return false;
+ state.actions=holder.actions;return true;
+}
 function completed(id){return !!state.done[id]}
 function isVisible(st){return st.where.includes(state.place)&&(!st.when||st.when(state))&&(!st.once||!completed(st.id))}
-function choose(id,ix,card){tick();let st=(card?CARDS:STORIES).find(s=>s.id===id);if(!st)return;if(card){if(!state.hand.includes(id)||state.stage!=="explore")return}else if(!isVisible(st))return;let c=st.choices[ix];if(!c||!canPlay(c))return;let cost=c.cost==null?1:c.cost;if(!spend(cost))return;let success=true,chance=null;if(c.stat){chance=odds(c.stat,c.difficulty,c.scaler??.60);success=Math.random()*100<chance;state.stats[c.stat]=(state.stats[c.stat]||0)+(success?(chance>=90?1:chance<40?4:chance<60?3:2):(chance<30?3:chance<40?2:1))}
- const rare=success&&c.rare&&Math.random()<Math.max(0,Math.min(1,Number(c.rare_success_chance??.04)));
- const effects=rare?c.rare:(success?c.effects:c.fail);
- apply(effects);if(card){state.hand=state.hand.filter(x=>x!==id);state.selectedCard=null}else if(success||!c.stat)state.done[id]=true;let outcome=rare
- ? (c.rare_success||"An extraordinary turn of fortune changes the result.")
- : success
-   ? (c.success||"The city accepts your choice, though not without recording it.")
-   : (c.failure||"The city will allow you to try again. It is less generous about the price.");state.result={title:st.title,text:outcome,note:(rare?"RARE SUCCESS":success?"SUCCESS":"SETBACK")+(chance!==null?" · "+chance+"% chance":"")+(c.stat?" · +experience in "+labelStat(c.stat):"")};addJournal(st.title+": "+outcome);penalty();state.tab="story";done()}
+function choose(id,ix,card){
+ tick();
+ const st=(card?CARDS:STORIES).find(s=>s.id===id);
+ if(!st||PENALTY_PLACES.has(state.place))return;
+ if(card){if(!state.hand.includes(id)||state.stage!=="explore")return;}
+ else if(!isVisible(st))return;
+ const c=st.choices[ix];if(!c||!canPlay(c))return;
+ const cost=c.cost==null?1:c.cost;if(!spend(cost))return;
+ const challenge=c.stat||c.narrow!==undefined;
+ const resolved=challenge?Rules.resolveChallenge({
+  difficulty:c.difficulty,scaler:c.scaler??.60,
+  ...(c.narrow!==undefined?{narrow:c.narrow}:{}),
+  rareChance:c.rare_success_chance??Rules.DEFAULT_RARE_SUCCESS_CHANCE
+ },c.stat?effectiveLevel(c.stat):0):null;
+ const success=!resolved||resolved.outcome!=="failure";
+ const chance=resolved?.chance??null;
+ const rare=resolved?.rare??false;
+ if(c.stat)qualityAdd(c.stat,resolved.cpAwarded);
+ const effects=rare&&c.rare?c.rare:success?c.effects:c.fail;
+ apply(effects);
+ syncLegacy(state);
+ if(card){state.hand=state.hand.filter(x=>x!==id);state.selectedCard=null;}
+ else if(success||!challenge)state.done[id]=true;
+ const outcome=rare?(c.rare_success||c.success||"An extraordinary turn of fortune changes the result.")
+  :success?(c.success||"The city accepts your choice, though not without recording it.")
+  :(c.failure||"The city will allow you to try again. It is less generous about the price.");
+ state.result={title:st.title,text:outcome,note:(rare?"RARE SUCCESS":success?"SUCCESS":"SETBACK")+
+ (chance!==null?" · "+chance+"% chance":"")+(c.stat?" · +"+resolved.cpAwarded+" CP in "+labelStat(c.stat):"")};
+ addJournal(st.title+": "+outcome);penalty();state.tab="story";done();
+}
 function done(){save();render()}
 function save(){try{localStorage.setItem(SAVE,JSON.stringify(state))}catch(e){console.warn("Local save unavailable",e)}}
 function setTab(t){state.tab=t;state.result=null;state.selectedCard=null;done()}
-function travel(p){if(state.stage!=="explore"||!PLACES[p]||["watch","ward","tribunal","cell"].includes(p))return;let current=PLACES[state.place];if(!current||!current.adj.includes(p))return;let to=PLACES[p];if(to.unlock&&!to.unlock(state))return;state.place=p;state.result={title:"You arrive at "+to.name,text:to.desc,note:"Travelling is free. You can return along the same route."};addJournal("Arrived at "+to.name);state.tab="story";done()}
+function travel(p){if(state.stage!=="explore"||PENALTY_PLACES.has(state.place)||!PLACES[p]||PENALTY_PLACES.has(p)||p==="cell")return;let current=PLACES[state.place];if(!current||!current.adj.includes(p))return;let to=PLACES[p];if(to.unlock&&!to.unlock(state))return;state.place=p;state.result={title:"You arrive at "+to.name,text:to.desc,note:"Travelling is free. You can return along the same route."};addJournal("Arrived at "+to.name);state.tab="story";done()}
 // Named, traversable roads. Never teleports and never crosses a locked gate.
 function cityRoute(from,to,save=state){
  if(!PLACES[from]||!PLACES[to]||(PLACES[to].unlock&&!PLACES[to].unlock(save)))return null;
@@ -217,25 +331,31 @@ function routeHint(to){
  if(route.length===1)return "You are already in the correct district.";
  return "Roads: "+route.map(id=>PLACES[id].name).join(" → ")+".";
 }
-function beginOrigin(bg){state.background=bg;let stat={scribe:"observation",runner:"guile",speaker:"persuasion",sentinel:"resolve"}[bg];state.stats[stat]+=5;state.stage="allegiance";done()}
+function beginOrigin(bg){state.background=bg;let stat={scribe:"observation",runner:"guile",speaker:"persuasion",sentinel:"resolve"}[bg];qualityAdd(stat,5);syncLegacy(state);state.stage="allegiance";done()}
 function beginFaction(f){if(!FACTIONS[f])return;state.faction=f;state.relation[f]=2;state.stage="escape";done()}
-function escapeCell(path){let info={observation:["charcoal","ink"],guile:["hook","quays"],persuasion:["silk","choir"],resolve:["badge","soot"]}[path];if(!info)return;state.stats[path]+=4;state.items[info[0]]=1;state.stage="explore";state.place=info[1];state.result={title:"Beyond the Bell-Cage",text:"You take your freedom through the city's high maintenance galleries and arrive in "+PLACES[info[1]].name+". The Bell-Cage sounds once behind you. Nobody looks up.\n\nLantern Court is one connected road away. Go there to meet the clockmaker and begin your main mystery. The City map shows every district, the connecting roads and what is locked."+(state.tutorial?"\n\nTIP: Story choices display their cost and success odds. You can travel for free, and Settings offers a faster playtest mode.":""),note:"Escape route: "+labelStat(path)+" · Starting item: "+ITEMS[info[0]]};addJournal("You escaped the Bell-Cage by "+labelStat(path).toLowerCase()+".");done()}
+function escapeCell(path){let info={observation:["charcoal","ink"],guile:["hook","quays"],persuasion:["silk","choir"],resolve:["badge","soot"]}[path];if(!info)return;qualityAdd(path,4);qualityAdd("item:"+info[0],1);state.items[info[0]]=1;syncLegacy(state);state.stage="explore";state.place=info[1];state.result={title:"Beyond the Bell-Cage",text:"You take your freedom through the city's high maintenance galleries and arrive in "+PLACES[info[1]].name+". The Bell-Cage sounds once behind you. Nobody looks up.\n\nLantern Court is one connected road away. Go there to meet the clockmaker and begin your main mystery. The City map shows every district, the connecting roads and what is locked."+(state.tutorial?"\n\nTIP: Story choices display their cost and success odds. You can travel for free, and Settings offers a faster playtest mode.":""),note:"Escape route: "+labelStat(path)+" · Starting item: "+ITEMS[info[0]]};addJournal("You escaped the Bell-Cage by "+labelStat(path).toLowerCase()+".");done()}
 function chooseCard(id){if(state.hand.includes(id)){state.selectedCard=id;state.result=null;state.tab="story";done()}}
 function buyDraw(){tick();if(state.hand.length>=6)return;if(!state.playtest&&state.coin<2)return;if(!state.playtest)state.coin-=2;drawCard();done()}
 function totalProgress(){return Math.min(100,Math.round(state.clues/4*100))}
 function box(title,text){return '<div class="notice"><b>'+esc(title)+'</b> '+esc(text)+'</div>'}
 function renderTop(){let cap=actionCap();let till=Math.max(0,REGEN-(Date.now()-state.lastTick));let min=String(Math.floor(till/60000)).padStart(2,"0"),sec=String(Math.floor(till%60000/1000)).padStart(2,"0");$("topstats").innerHTML='<span>✧ PENNIES <strong>'+state.coin+'</strong></span><span>◷ ACTIONS <strong>'+state.actions+'/'+cap+'</strong> '+(state.actions<cap?'<span id="countdown">+'+min+':'+sec+'</span>':'<span>Full</span>')+'</span><span>✦ LEADS <strong>'+state.clues+'</strong></span>'+(state.playtest?'<span class="sticker">PLAYTEST</span>':'')}
 function renderNav(){let tabs=[["story","Story"],["map","City map"],["myself","Myself"],["paths","Paths & callings"],["possessions","Possessions"],["journal","Journal"],["messages","Messages"],["bazaar","Bazaar"],["help","How to play"],["settings","Settings"]];$("navigation").innerHTML='<div class="nav">'+tabs.map(a=>'<button class="'+(state.tab===a[0]?"active":"")+'" data-act="tab" data-target="'+a[0]+'">'+a[1]+'</button>').join("")+'</div>';let pl=PLACES[state.place];$("nearby").innerHTML=state.stage==="explore"&&pl.adj.length?pl.adj.map(p=>{let x=PLACES[p],locked=x.unlock&&!x.unlock(state);return '<button '+(locked?'disabled title="'+esc(x.locked)+'"':"")+' data-act="travel" data-target="'+p+'">'+esc(x.name)+'<small>'+(locked?'Locked · '+esc(x.locked):esc(x.subtitle))+'</small></button>'}).join(""):'<span class="small">Your journey begins beyond the Bell-Cage.</span>'}
-function renderMenaces(){$("menaces").innerHTML=[["Health",state.health,10,false],["Sanity",state.sanity,10,false],["Suspicion",state.suspicion,8,true],["Notoriety",state.notoriety,8,true]].map(v=>'<div><span>'+v[0]+'</span><strong>'+v[1]+'/'+v[2]+'</strong></div><div class="meter '+(v[3]?'danger':'')+'"><b style="width:'+Math.round(v[1]/v[2]*100)+'%"></b></div>').join("")+'<small>High Suspicion or Notoriety (8), or Health/Sanity reaching zero, causes a recoverable detour.</small>'}
+function renderMenaces(){
+ $("menaces").innerHTML=["Suspicion","Notoriety","Wounds","Delirium"].map(name=>{
+  const level=state.qualities[name.toLowerCase()]?.level??0;
+  return '<div><span>'+name+'</span><strong>'+level+'/8</strong></div>'+
+   '<div class="meter danger"><b style="width:'+Math.min(100,level/8*100)+'%"></b></div>';
+ }).join("")+'<small>At level 8, a Menace sends you to a recovery location.</small>';
+}
 function renderHand(){let hand=state.hand.map(id=>CARDS.find(c=>c.id===id)).filter(Boolean);$("hand").innerHTML=state.stage==="explore"?(hand.length?hand.map(c=>'<div class="cardmini"><div class="eyebrow">Unexpected encounter</div><h3>'+esc(c.title)+'</h3><p>'+esc(c.desc)+'</p><button class="btn outline tiny" data-act="card" data-target="'+c.id+'">Read card →</button></div>').join(""):'<div class="empty">Your hand is empty. Cards return over time.</div>'):'<div class="empty">Your opportunity hand unlocks after the escape.</div>';$("handactions").innerHTML=state.stage==="explore"?'<button class="btn outline tiny" data-act="draw" '+(state.hand.length>=6?"disabled":"")+'>'+(state.playtest?"Draw a card (free playtest)":"Draw a card · 2 pennies")+'</button><div class="small" style="margin-top:7px">A free card arrives every 4 minutes. Max 6 cards.</div>':""}
 function sceneIntro(){if(state.stage==="welcome")return '<section class="intro"><div class="eyebrow">A narrative journey into the dark</div><h1>THE <span style="color:var(--gold)">UNDERCITY</span></h1><div class="ornament">✦ ✦ ✦</div><div class="skyline" aria-hidden="true"></div><p>They say there was once a sky. Nobody in this city has seen it. Beneath a mountain of darkness, thousands of lamps hold back a silence with teeth.</p><p>You have come by the long descent, and woken in a hanging prison with no memory of the crime.</p><div class="story"><div class="eyebrow">Before the bells</div><h2>How would you like to begin?</h2><button class="choice" data-act="intro"><b>Show me how this works</b><span class="detail">Start with brief explanations of choices, checks and travel.</span></button><button class="choice" data-act="skip"><b>Let me discover it myself</b><span class="detail">Begin the story without the tutorial note.</span></button></div></section>';
 if(state.stage==="origin")return '<div class="intro"><div class="eyebrow">Character · 1 of 3</div><h1>Who were you above?</h1><p>Perhaps the surface was real. Perhaps it was merely a story. Either way, you brought a habit of mind down with you.</p>'+box("Your background","Choose a strength. It grants starting experience and changes your approach to the city.")+'<div class="story">'+[["scribe","A keeper of records","Observation · You notice what others overlook."],["runner","A carrier of unsent letters","Guile · You know how to slip past a watchful eye."],["speaker","An advocate for lost causes","Persuasion · You can make a stranger hear you."],["sentinel","A guard who deserted","Resolve · You face what sensible people flee."]].map(a=>'<button class="choice" data-act="origin" data-target="'+a[0]+'"><b>'+a[1]+'</b><span class="detail">'+a[2]+'</span></button>').join("")+'</div></div>';
 if(state.stage==="allegiance")return '<div class="intro"><div class="eyebrow">Character · 2 of 3</div><h1>Who might shelter you?</h1><p>The Undercity has five great factions. None is wholly good, and none welcomes a stranger without a price.</p><div class="story">'+Object.entries(FACTIONS).map(([k,v])=>'<button class="choice" data-act="faction" data-target="'+k+'"><b>'+esc(v[0])+'</b><span class="detail">'+esc(v[1])+'</span></button>').join("")+'</div></div>';
 if(state.stage==="escape")return '<div class="intro"><div class="eyebrow">Character · 3 of 3</div><h1>The Bell-Cage</h1><div class="skyline" aria-hidden="true"></div><p>Your cell hangs like a rusted lantern from the cavern roof. Through its bars, you see the whole Undercity scattered below: blue moss, copper towers, and a distant depth that seems to watch you back.</p><p>The gaoler has left a single lamp burning. You must choose an escape, and discover what kind of person the city will think you are.</p><div class="story"><div class="eyebrow">The first choice · Free</div><h2>How will you reach the streets?</h2>'+[["observation","Study the bell's winding mechanism","Find a defect in the machinery and an overlooked service hatch."],["guile","Lift a key from the watch","Borrow the gaoler's shadow, then their tools."],["persuasion","Persuade the keeper to help","Convince the keeper that holding you here is a much greater risk."],["resolve","Climb the maintenance chains","Reach the lower platform by strength, nerve and a very long drop."]].map(a=>'<button class="choice" data-act="escape" data-target="'+a[0]+'"><b>'+a[1]+'</b><span class="detail">'+labelStat(a[0])+' · '+a[2]+'</span></button>').join("")+'</div></div>';
 return ""}
-function choiceHTML(st,card){return st.choices.map((c,i)=>{let success=c.stat?odds(c.stat,c.difficulty):null,can=canPlay(c),cost=c.cost==null?1:c.cost;let needs=c.need?(c.need.coin!=null?" · Requires "+c.need.coin+" pennies":c.need.item?" · Requires "+ITEMS[c.need.item]:""):"";return '<button class="choice" data-act="choose" data-target="'+st.id+'" data-index="'+i+'" data-card="'+(card?"1":"0")+'" '+(!can?"disabled":"")+'><b>'+esc(c.label)+'</b><span class="detail">'+(c.desc?esc(c.desc)+' · ':"")+(c.stat?'<span class="odds">'+labelStat(c.stat)+' · '+success+'% success</span> · ':'')+(cost===0?"Free":cost+" action")+(needs?esc(needs):"")+(can?"":" · Unavailable")+'</span></button>'}).join("")}
+function choiceHTML(st,card){return st.choices.map((c,i)=>{let success=c.narrow!==undefined?Math.max(0,Math.min(100,c.narrow)):c.stat?odds(c.stat,c.difficulty,c.scaler??.60):null,can=canPlay(c),cost=c.cost==null?1:c.cost;let needs=c.need?(c.need.coin!=null?" · Requires "+c.need.coin+" pennies":c.need.item?" · Requires "+ITEMS[c.need.item]:""):"";return '<button class="choice" data-act="choose" data-target="'+st.id+'" data-index="'+i+'" data-card="'+(card?"1":"0")+'" '+(!can?"disabled":"")+'><b>'+esc(c.label)+'</b><span class="detail">'+(c.desc?esc(c.desc)+' · ':"")+(success!==null?'<span class="odds">'+(c.stat?labelStat(c.stat):"Narrow check")+' · '+success+'% success</span> · ':'')+(cost===0?"Free":cost+" action")+(needs?esc(needs):"")+(can?"":" · Unavailable")+'</span></button>'}).join("")}
 function renderStory(){if(state.stage!=="explore")return sceneIntro();let p=PLACES[state.place];let hero='<div class="hero"><div class="eyebrow">The Undercity / '+esc(p.subtitle)+'</div><h1>'+esc(p.name)+'</h1><p>'+esc(p.desc)+'</p><button class="btn outline tiny" data-act="tab" data-target="map">Explore the city map ↗</button></div>';if(state.result){let r=state.result;return hero+'<article class="story" role="status"><div class="tag">'+esc(r.note||"A consequence")+'</div><h2>'+esc(r.title)+'</h2><p>'+esc(r.text)+'</p><button class="btn" data-act="dismiss">Continue exploring →</button></article>'}
-if(["ward","watch","tribunal"].includes(state.place))return hero+'<div class="story"><h2>Leave this place, changed</h2><p>You cannot explore other districts until you have endured the consequences. Recovery costs one action and some pennies. There is no permanent game over.</p><button class="choice" data-act="recover"><b>Accept your costly release</b><span class="detail">1 action · Reduce the menace and return to your previous district.</span></button></div>';
+if(PENALTY_PLACES.has(state.place))return hero+'<div class="story"><h2>Leave this place, changed</h2><p>You cannot explore other districts until you have endured the consequences. Recovery costs one action and some pennies. There is no permanent game over.</p><button class="choice" data-act="recover"><b>Accept your costly release</b><span class="detail">1 action · Reduce the menace and return to your previous district.</span></button></div>';
 if(state.selectedCard){let c=CARDS.find(x=>x.id===state.selectedCard);if(c)return hero+'<div class="story"><div class="tag">Opportunity card</div><h2>'+esc(c.title)+'</h2><p>'+esc(c.desc)+'</p>'+choiceHTML(c,true)+'<button class="smallbtn" data-act="dismiss">← Keep this card for later</button></div>'}
 let stories=STORIES.filter(isVisible),amb=stories.filter(x=>x.id.startsWith("ambition")),others=stories.filter(x=>!x.id.startsWith("ambition"));
 let guidance=state.ambition===0?"Begin at Lantern Court: speak to the clockmaker.":state.ambition===1?"Follow the handless clock to the Inkward.":state.ambition===2?"Investigate two leads to open the Forgotten Stairs.":state.ambition===3?"Find four leads and descend to the Listening Edge.":"Your first ambition has reached a conclusion. The city still has secrets.";
@@ -246,7 +366,7 @@ let personal=!state.path?'<div class="notice"><div class="eyebrow">Choose a pers
 const lead=["court","ink","stairs","edge"][state.ambition];
 return hero+'<div class="notice"><div class="eyebrow">The city-wide investigation</div>'+esc(guidance)+(lead?'<p class="small">'+esc(routeHint(lead))+'</p>':"")+' <button class="smallbtn" data-act="tab" data-target="map">See routes →</button></div>'+personal+'<div class="sectionhead"><h2 style="font-size:1.6rem">Stories here</h2><span class="small">'+stories.length+' available</span></div>'+amb.map(storyHTML).join("")+others.map(storyHTML).join("")+(!stories.length?'<div class="empty">You have heard the stories here for now. Travel to a neighbouring district, or draw an opportunity card.</div>':"")}
 function storyHTML(st){return '<article class="story"><div class="tag">'+(st.category?esc(st.category.replace(/-/g," ")):(st.id.startsWith("ambition")?"The long mystery":"A story of "+esc(PLACES[state.place].name)))+'</div><h2>'+esc(st.title)+'</h2><p>'+esc(st.description)+'</p>'+choiceHTML(st,false)+'</article>'}
-function renderMap(){return '<div class="hero"><div class="eyebrow">Cartography of the buried</div><h1>The city map</h1><p>Every ordinary district is visible. Distant destinations show a <strong>route of connected roads</strong>. Select the next road to travel one district at a time. Locked districts show the lead requirement. Travel is free.</p></div><div class="mapgrid">'+Object.entries(PLACES).filter(([k])=>!["cell","watch","ward","tribunal"].includes(k)).map(([id,p])=>{let locked=p.unlock&&!p.unlock(state),here=id===state.place,route=cityRoute(state.place,id),near=route?.length===2,can=state.stage==="explore"&&!here&&!locked&&route?.length>1,next=can?route[1]:null;let path=locked?p.locked:here?"Your current district":route?.length>1?route.map(k=>PLACES[k].name).join(" → "):"Recover from your present location to resume travel.";return '<div class="maptile '+(here?"here":"")+'"><div class="eyebrow">'+(here?"✦ You are here":locked?"⛓ Not yet accessible":near?"↗ Direct road":"Roads to this district")+'</div><h3>'+esc(p.name)+'</h3><p>'+esc(p.subtitle)+'. '+esc(p.desc)+'</p><p class="mapnote">'+esc(path)+'</p>'+(!here?'<button class="btn outline tiny" data-act="travel" data-target="'+esc(next||id)+'" '+(!can?"disabled":"")+'>'+(locked?"Locked":can?(near?"Travel here →":"Next road: "+esc(PLACES[next].name)+" →"):"No open road")+'</button>':'<span class="sticker">Your location</span>')+'</div>'}).join("")+'</div>'}
+function renderMap(){return '<div class="hero"><div class="eyebrow">Cartography of the buried</div><h1>The city map</h1><p>Every ordinary district is visible. Distant destinations show a <strong>route of connected roads</strong>. Select the next road to travel one district at a time. Locked districts show the lead requirement. Travel is free.</p></div><div class="mapgrid">'+Object.entries(PLACES).filter(([k])=>k!=="cell"&&!PENALTY_PLACES.has(k)).map(([id,p])=>{let locked=p.unlock&&!p.unlock(state),here=id===state.place,route=cityRoute(state.place,id),near=route?.length===2,can=state.stage==="explore"&&!here&&!locked&&route?.length>1,next=can?route[1]:null;let path=locked?p.locked:here?"Your current district":route?.length>1?route.map(k=>PLACES[k].name).join(" → "):"Recover from your present location to resume travel.";return '<div class="maptile '+(here?"here":"")+'"><div class="eyebrow">'+(here?"✦ You are here":locked?"⛓ Not yet accessible":near?"↗ Direct road":"Roads to this district")+'</div><h3>'+esc(p.name)+'</h3><p>'+esc(p.subtitle)+'. '+esc(p.desc)+'</p><p class="mapnote">'+esc(path)+'</p>'+(!here?'<button class="btn outline tiny" data-act="travel" data-target="'+esc(next||id)+'" '+(!can?"disabled":"")+'>'+(locked?"Locked":can?(near?"Travel here →":"Next road: "+esc(PLACES[next].name)+" →"):"No open road")+'</button>':'<span class="sticker">Your location</span>')+'</div>'}).join("")+'</div>'}
 function renderMyself(){return '<div class="hero"><div class="eyebrow">You, as the city understands you</div><h1>Myself</h1><p>Once '+esc(state.background||"unknown")+', now a citizen of the Undercity by accident. '+(state.faction?'Your first allegiance is to '+esc(FACTIONS[state.faction][0])+'.':'Your story has not yet begun.')+'</p></div><div class="two"><section class="story"><h2>Abilities</h2><p class="small">Levels grow from change points. Difficult choices train the abilities you use.</p>'+Object.entries(STATS).map(([k,v])=>'<div class="statline"><span>'+v+'</span><strong>'+lv(state.stats[k])+' <small>('+state.stats[k]+' CP)</small></strong></div>').join("")+'</section><section class="story"><h2>Faction relations</h2>'+Object.entries(FACTIONS).map(([k,v])=>'<div class="statline"><span>'+esc(v[0])+'</span><strong>'+state.relation[k]+'</strong></div>').join("")+'</section></div><section class="story"><h2>The main ambition</h2><p>Who sealed the city? Stage '+state.ambition+' of 4. Leads gathered: '+state.clues+'.</p><div class="meter"><b style="width:'+state.ambition*25+'%"></b></div>'+(state.flags.remember?box("World changed","You let the Undercity remember its buried history."):state.flags.silence?box("World changed","You chose to keep the oldest silence."):box("Unfinished business","Your choices shape the city's memory and your reputation."))+'</section>'}
 function renderPossessions(){
  const own=Object.entries(state.items).filter(([,v])=>v>0);
@@ -256,7 +376,7 @@ function renderPossessions(){
    (g?'<button class="btn outline tiny" data-act="equip" data-target="'+esc(id)+'">'+(chosen?'Unequip':'Equip')+
    ' · '+esc(g[0])+' · +'+g[2]+' '+esc(labelStat(g[1]))+'</button>':'<strong>× '+v+'</strong>')+'</div>';
  }).join('');
- const equipment='<details class="story"><summary><strong>Equipment · 18 slots</strong></summary>'+
+ const equipment='<details class="story"><summary><strong>Equipment · 20 slots</strong></summary>'+
  SLOTS.map(slot=>'<div class="statline"><span>'+esc(slot)+'</span><span>'+esc(ITEMS[state.equipment?.[slot]]||'Empty')+'</span></div>').join('')+'</details>';
  return '<div class="hero"><div class="eyebrow">Everything you can carry</div><h1>Possessions</h1>'+
  '<p>Equipped items improve your skill-check odds; they remain in your satchel. Changes are saved with your character.</p></div>'+
@@ -280,7 +400,7 @@ function renderMessages(){
 function renderJournal(){return '<div class="hero"><div class="eyebrow">The chronicle</div><h1>Your journal</h1><p>Choices have consequences, even when the city would prefer you to forget. Your most recent 80 entries are stored locally.</p></div>'+(state.journal.length?state.journal.map(l=>'<div class="log">'+esc(l.text)+'<small>'+esc(PLACES[l.place]?.name||"Undercity")+' · '+new Date(l.date).toLocaleString()+'</small></div>').join(""):'<div class="empty">No entries yet. Your first decision will be remembered.</div>')}
 function renderBazaar(){return '<div class="hero"><div class="eyebrow">The strange economy</div><h1>Bazaar</h1><p>Spend pennies for useful goods, or earn them through stories. There is no premium currency.</p></div><div class="story"><h2>The travelling stall</h2><p>You need not stand in the Glass Arcade to buy basics. More curious bargains await in its storylets.</p>'+[["A proper meal",3,"health",2],["A calming infusion",4,"sanity",2],["A discreet favour",6,"suspicion",-2],["A clean reputation",6,"notoriety",-2]].map((x,i)=>'<button class="choice" data-act="shop" data-index="'+i+'" '+(state.coin<x[1]?"disabled":"")+'><b>'+x[0]+' · '+x[1]+' pennies</b><span class="detail">'+(x[3]>0?"+":"")+x[3]+" "+x[2]+'</span></button>').join("")+'</div>'}
 function shop(i){let stuff=[["A proper meal",3,"health",2],["A calming infusion",4,"sanity",2],["A discreet favour",6,"suspicion",-2],["A clean reputation",6,"notoriety",-2]][i];if(!stuff||state.coin<stuff[1])return;state.coin-=stuff[1];apply({[stuff[2]]:stuff[3]});state.result={title:stuff[0],text:"The merchant exchanges a short nod with a less-than-short receipt.",note:"Purchased for "+stuff[1]+" pennies"};state.tab="story";addJournal("Bought "+stuff[0]);penalty();done()}
-function renderHelp(){return '<div class="hero"><div class="eyebrow">A traveller’s guide</div><h1>How to play</h1><p>Your first journey is about getting somewhere, finding things to do there, and understanding why the city has concealed its past.</p></div><section class="story"><h2>1. Find your way</h2><p>Use the city map to see every district and its connections. The sidebar shows roads leading directly from your current location. Lantern Court connects to five starting districts. The Forgotten Stairs unlock after two leads, and the Listening Edge after four.</p><h2>2. Make a choice</h2><p>Each story gives you several clear options. A choice usually costs one action. A challenge shows which skill it tests and your chance of success before you commit. Failure can hurt, but the story continues.</p><h2>3. Follow two kinds of story</h2><p>The city-wide mystery has four stages. Your separate personal ambition has eight chapters; four seven-stage Making Your Name arcs run alongside independent encounters; investigate them in any order to earn pennies, clues, items and allies.</p><h2>4. Use opportunity cards</h2><p>Cards offer unexpected stories. You begin with two, gain a free one every four minutes, and can hold up to six. You may also buy an extra draw.</p><h2>5. Watch your condition</h2><p>Health and Sanity start at ten and must stay above zero. Suspicion and Notoriety start at zero and become dangerous at eight. A setback sends you to a recovery location, never a permanent game over.</p><h2>6. Save your journey</h2><p>Progress saves automatically to your browser. Settings includes an export, import and optional playtest mode. No account is required.</p></section>'}
+function renderHelp(){return '<div class="hero"><div class="eyebrow">A traveller’s guide</div><h1>How to play</h1><p>Your first journey is about getting somewhere, finding things to do there, and understanding why the city has concealed its past.</p></div><section class="story"><h2>1. Find your way</h2><p>Use the city map to see every district and its connections. The sidebar shows roads leading directly from your current location. Lantern Court connects to five starting districts. The Forgotten Stairs unlock after two leads, and the Listening Edge after four.</p><h2>2. Make a choice</h2><p>Each story gives you several clear options. A choice usually costs one action. A challenge shows which skill it tests and your chance of success before you commit. Failure can hurt, but the story continues.</p><h2>3. Follow two kinds of story</h2><p>The city-wide mystery has four stages. Your separate personal ambition has eight chapters; four seven-stage Making Your Name arcs run alongside independent encounters; investigate them in any order to earn pennies, clues, items and allies.</p><h2>4. Use opportunity cards</h2><p>Cards offer unexpected stories. You begin with two, gain a free one every four minutes, and can hold up to six. You may also buy an extra draw.</p><h2>5. Watch your condition</h2><p>Suspicion, Notoriety, Wounds and Delirium rise through change points. Any one reaching level eight sends you to its own recovery location, never a permanent game over.</p><h2>6. Save your journey</h2><p>Progress saves automatically to your browser. Settings includes an export, import and optional playtest mode. No account is required.</p></section>'}
 function renderPaths(){
  const chosen=EXT.ambitions?.find(p=>p.id===state.path);
  let html='<div class="hero"><div class="eyebrow">Lives, careers and possible futures</div><h1>Paths & callings</h1><p>Four parallel reputations can grow, but only one personal ambition, profession and destiny may be held in a saved life.</p></div>';
