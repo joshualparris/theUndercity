@@ -1,0 +1,33 @@
+import assert from "node:assert/strict";
+import {chromium} from "playwright";
+import AxeBuilder from "@axe-core/playwright";
+
+const browser=await chromium.launch({headless:true});
+const base="http://127.0.0.1:8123";
+let failures=0;
+try{
+ for(const width of [390,1280]){
+  const page=await browser.newPage({viewport:{width,height:820},deviceScaleFactor:1});
+  const errors=[];
+  page.on("pageerror",err=>errors.push(err.message));
+  const response=await page.goto(base,{waitUntil:"networkidle"});
+  assert.equal(response.status(),200,"home page HTTP");
+  assert.match(await page.title(),/The Undercity/);
+  await page.locator('[data-act="intro"]').first().click();
+  await page.locator('[data-act="origin"]').first().click();
+  await page.locator('[data-act="faction"]').first().click();
+  await page.locator('[data-act="escape"]').first().click();
+  await page.locator("main h1").first().waitFor();
+  if(width===390){
+   const dims=await page.evaluate(()=>({w:document.documentElement.scrollWidth,viewport:innerWidth}));
+   assert.ok(dims.w<=dims.viewport+2,"mobile horizontal overflow: "+JSON.stringify(dims));
+  }
+  const axe=await new AxeBuilder({page}).withTags(["wcag2a","wcag2aa","wcag21a","wcag21aa"]).analyze();
+  const severe=axe.violations.filter(v=>v.impact==="critical"||v.impact==="serious");
+  for(const v of axe.violations)console.log("AXE "+width+"px "+v.impact+" "+v.id+" ("+v.nodes.length+" nodes): "+v.help);
+  assert.equal(severe.length,0,"serious accessibility violations at "+width+"px");
+  assert.deepEqual(errors,[],"runtime JavaScript errors at "+width+"px");
+  console.log("BROWSER PASS "+width+"px · title, onboarding, escape, 0 JS errors, WCAG A/AA checks");
+  await page.close();
+ }
+}finally{await browser.close();}
