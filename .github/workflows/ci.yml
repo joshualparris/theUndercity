@@ -22,5 +22,7 @@ jobs:
         run: node scripts/validate-content.mjs
       - name: Verify the content tracker
         run: node scripts/content-tracker.mjs --check
+      - name: Validate Narrative Studio packets and review sign-off
+        run: npm run studio:validate
       - name: Static and interactive engine tests
         run: node --test tests/*.test.mjs

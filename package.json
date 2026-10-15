@@ -8,6 +8,8 @@
     "storylets:validate": "node tools/storylet-generator.mjs validate",
     "storylets:approve": "node tools/storylet-generator.mjs approve",
     "storylets:publish": "node tools/storylet-generator.mjs publish",
-    "storylets:check": "node tools/storylet-generator.mjs publish --check"
+    "storylets:check": "node tools/storylet-generator.mjs publish --check",
+    "studio:validate": "node scripts/narrative-studio.mjs",
+    "studio:report": "node scripts/narrative-studio.mjs report"
   }
 }

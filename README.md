@@ -10,6 +10,10 @@ In a city beneath a sealed stone sky, memories can be traded, lamps burn on pecu
 
 The site is published from this repository on Vercel. No sign-in or payment is required. Saves are **local to the browser and device** you use, not synchronised across phones and computers. Export a JSON save from **Settings** before clearing browser data or switching devices.
 
+## Narrative production pipeline
+
+**[Narrative Studio](docs/narrative-studio/README.md)** defines our pitch → midflight skeleton → prose → four QA reviews → human approval process. Its 40-topic spoilers ledger tracks reveal depth and deliberately conflicting witness accounts. Use `npm run studio:validate` before releasing new storylets; editorial drafts are not loaded by the running game.
+
 ## What is playable
 
 - Story-driven onboarding: four backgrounds, five factions, four ability-based escape routes leading to distinct districts.
