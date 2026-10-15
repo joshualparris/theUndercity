@@ -23,4 +23,9 @@ jobs:
           grep -q 'UndercityExpansions' /tmp/undercity-ambitions
           curl -fsSL --retry 4 --retry-all-errors --retry-delay 4 --max-time 30 -o /tmp/undercity-rules "$URL/src/game/rules.global.js"
           grep -q 'UndercityRules' /tmp/undercity-rules
-          echo "Confirmed public HTML, ambitions and rules engine."
+          curl -fsSL --retry 4 --retry-all-errors --retry-delay 4 --max-time 30 -o /tmp/undercity-late "$URL/content/late-ambitions.js"
+          grep -q 'coalition' /tmp/undercity-late
+          curl -fsSL --retry 4 --retry-all-errors --retry-delay 4 --max-time 30 -o /tmp/undercity-late-json "$URL/content/storylets/ambitions/late-main.v1.json"
+          grep -q 'ambition-main-collection' /tmp/undercity-late-json
+          grep -q 'X-Undercity-Revision' /tmp/undercity-headers
+          echo "Confirmed public HTML, rules engine, and updated coalition storyline JS/JSON."
