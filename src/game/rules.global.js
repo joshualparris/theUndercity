@@ -10,11 +10,13 @@ const QualityType=Object.freeze({
  PRIMARY_STAT:"primary_stat",MENACE:"menace",DISPOSITION:"disposition",
  AFFILIATION:"affiliation",REVERIE:"reverie",STORY:"story",ITEM:"item",
  CONDITION:"condition",DEED:"deed",PASSAGE:"passage",
+ STATUS:"status",CIRCUMSTANCE:"circumstance",ACCOMPLISHMENT:"accomplishment",
+ ROUTE:"route",LIVING_STORY:"living_story",DREAM:"dream",QUIRK:"disposition",
  PENDING_EVENT:"pending_event",METAQUALITY:"metaquality",CIRCUMSTANCE:"circumstance",FATE_MARKER:"fate_marker"
 });
 const PYRAMIDAL=new Set([
  QualityType.PRIMARY_STAT,QualityType.MENACE,QualityType.DISPOSITION,
- QualityType.AFFILIATION,QualityType.REVERIE
+ QualityType.AFFILIATION,QualityType.REVERIE,QualityType.DREAM
 ]);
 function isPyramidal(type){return PYRAMIDAL.has(type);}
 const LEVEL_THRESHOLD=70;
@@ -117,8 +119,10 @@ function sendToPenaltyHub(player,menace){
  const hub=MENACE_PENALTY_HUBS[menace];if(!hub)return player;
  player.current_location=hub;
  if(menace==="suspicion"){
-  const record=player.qualities?.the_record??{id:"the_record",cp:0,level:0};
-  player.qualities.the_record=addCp(record,1,7);
+  player.qualities??={};
+  const prior=Math.max(0,Number(player.qualities.the_record?.level)||0);
+  const level=Math.min(7,prior+1);
+  player.qualities.the_record={id:"the_record",level,cp:level};
  }
  return player;
 }
