@@ -10,7 +10,7 @@ const html=read("index.html"),main=html.match(/<script>\s*([\s\S]*?)<\/script>/)
 if(!main)throw Error("Missing inline game");
 const ctx=vm.createContext({window:{},console});
 const sources=new Map(),cardSources=new Map();
-for(const p of ["content/ambitions.js","content/moth.generated.js","content/world.js","content/penalties.js","content/callings.js","content/systems.js"]){
+for(const p of ["content/ambitions.js","content/moth.generated.js","content/late-ambitions.js","content/world.js","content/penalties.js","content/callings.js","content/systems.js"]){
  const before=ctx.window.UndercityExpansions?.stories?.length||0;
  const cards=ctx.window.UndercityExpansions?.cards?.length||0;
  vm.runInContext(read(p),ctx,{timeout:5000,filename:p});
