@@ -87,7 +87,14 @@ test("all new story locations, choices, effects and gates are internally valid",
   assert.ok(story.id&&story.title&&story.description,story.id);
   assert.ok(!ids.has(story.id),"duplicate story id: "+story.id);ids.add(story.id);
   assert.ok(Array.isArray(story.where)&&story.where.every(p=>places.has(p)),story.id+" invalid place");
-  assert.ok(story.choices.length>=2,story.id+" needs genuine choice");
+  if(story.category==="penalty-arrival") {
+   assert.equal(story.autofire,true,story.id+" must fire on arrival");
+   assert.ok(story.choices.length>=1,story.id+" needs an acknowledgement");
+   assert.equal(story.choices[0].cost,0,story.id+" must cost no actions");
+  } else if(story.category==="penalty-recovery") {
+   // The three recovery options are separate selectable storylets in the same hub.
+   assert.ok(story.choices.length>=1,story.id+" needs a recovery branch");
+  } else assert.ok(story.choices.length>=2,story.id+" needs genuine choice");
   for(const c of story.choices){assert.ok(c.label&&c.success,story.id+" incomplete branch");
    if(c.stat)assert.ok(["observation","guile","persuasion","resolve"].includes(c.stat),story.id);
    for(const x of [c.effects,c.fail])for(const id of Object.keys(x?.items||{})){
