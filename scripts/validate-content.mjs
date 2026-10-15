@@ -60,7 +60,7 @@ const html=read("index.html");
 const main=html.match(/<script>\s*([\s\S]*?)<\/script>/)?.[1];
 if(!main)fail("index.html","inline game script is missing");
 const context=vm.createContext({window:{},console});
-for(const p of ["content/ambitions.js","content/moth.generated.js","content/late-ambitions.js","content/world.js","content/penalties.js","content/callings.js","content/systems.js"]){
+for(const p of ["content/ambitions.js","content/moth.generated.js","content/second-acts.generated.js","content/late-ambitions.js","content/world.js","content/penalties.js","content/callings.js","content/systems.js"]){
  try{vm.runInContext(read(p),context,{filename:p,timeout:4000})}
  catch(e){fail(p,e.message)}
 }
