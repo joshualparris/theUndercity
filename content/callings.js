@@ -70,4 +70,58 @@ e.destinies=[
  ...ordinary.map(([id,name,description,faction],i)=>({id,name,description,faction,tier:"ordinary",bonus:4,stat_bonus:{[["resolve","observation","persuasion","guile"][i%4]]:5}})),
  ...greater.map(([id,name,description,faction],i)=>({id,name,description,faction,tier:"greater",bonus:10,stat_bonus:{[["resolve","observation","persuasion","guile"][i%4]]:5,[["guile","resolve","observation","persuasion"][i%4]]:3}}))
 ];
+
+/** Full specialist career progression. Promotion scenes, not buttons, admit Tier 3/4. */
+const higher=[
+ ["grand-light-warden","Grand Light Warden","light-warden","resolve","wardens","court",38,"crown-of-beacons","Coordinate the street lamps in a district abandoned by official inspectors."],
+ ["keeper-of-black-archives","Keeper of the Black Archives","chief-archivist","observation","ledger","ink",37,"archive-coat","Restore an erased census without giving Council officers an address book of witnesses."],
+ ["dispatchmaster","Dispatchmaster of the Silent Roads","night-courier","guile","hands","quays",39,"sealed-dispatch","Protect courier routes when the city begins to watch its own shadows."],
+ ["high-chorister","High Chorister","master-chorister","persuasion","choir","choir",38,"chorister-adornment","Lead a performance that turns a disputed memory into a public song."],
+ ["engine-provost","Engine Provost","furnace-surveyor","observation","hands","soot",37,"furnace-license","Prove which machines can safely replace the furnace of stolen names."],
+ ["treaty-bearer","Treaty Bearer","veil-diplomat","persuasion","ledger","market",39,"diplomatic-luggage","Carry a treaty through a crowd whose interests are not aligned."],
+ ["watch-commandant","Watch Commandant","cavern-sentinel","resolve","wardens","stairs",38,"commandant-boon","Guard the last lit stair without abandoning those already beyond it."],
+ ["keeper-of-the-charter","Keeper of the Charter","charter-keeper","guile","dawn","court",40,"charter-club","Defend the city's oldest rights against an official rewriting of the law."],
+ ["city-luminary","City Luminary","grand-light-warden","resolve","wardens","court",66,"perpetual-lamp","Make the city's public light independent of any single monarch."],
+ ["first-witness","First Witness","keeper-of-black-archives","observation","ledger","ink",64,"witness-treasure","Ensure that no living family is erased by a clerk's careless pen."],
+ ["master-of-crossings","Master of Crossings","dispatchmaster","guile","hands","quays",68,"river-ship","Guarantee a passage for the last ferry of every night."],
+ ["voice-of-the-choir","Voice of the Choir","high-chorister","persuasion","choir","choir",65,"choir-companion","Give every forgotten citizen the right to answer the city's song."],
+ ["warden-of-the-engine","Warden of the Engine","engine-provost","observation","hands","soot",67,"engine-airship","Turn the dangerous engine into a museum whose flaws can be inspected."],
+ ["envoy-of-the-twelve","Envoy of the Twelve","treaty-bearer","persuasion","ledger","market",67,"envoy-hat","Secure peace without purchasing it with a stranger's silence."],
+ ["shield-of-the-edge","Shield of the Edge","watch-commandant","resolve","wardens","edge",69,"edge-crew","Protect travellers without keeping them ignorant of the abyss."],
+ ["architect-of-consent","Architect of Consent","keeper-of-the-charter","guile","dawn","court",70,"civic-home","Draft a charter that ordinary people can amend without fear."]
+];
+for(const [id,name,requires,stat,faction,place,wage,item,scene] of higher){
+ const tier=higher.findIndex(row=>row[0]===id)<8?3:4;
+ const career={id,name,requires,stat,faction,place,wage,item,scene,tier,renown:tier===3?6:7};
+ e.professions.push(career);
+ e.items[item]=name+"'s sign of office";
+ e.stories.push({id:"profession-promotion-"+id,where:[place],category:"profession-promotion",
+  title:"A promotion offered: "+name,
+  description:"Your employer has watched your work and the people you chose to protect. "+scene+" To be promoted, you must have the required Making Your Name reputation and the previous professional office.",
+  once:true,when:s=>s.profession===requires&&(s.renown?.[stat]||0)>=career.renown,
+  choices:[
+   {label:"Accept the responsibilities of "+name,stat,difficulty:tier===3?7:8,
+    effects:{profession:id,relation:{[faction]:2},coin:5},fail:{suspicion:1},
+    success:"You receive the new title and its equipment. Your wage rises with your responsibilities. "+scene,
+    failure:"The board requires more proof of your readiness. You keep your current office and may petition again."},
+   {label:"Demand a public charter of duties",stat:"persuasion",difficulty:tier===3?7:8,
+    effects:{profession:id,relation:{[faction]:3},coin:2},fail:{notoriety:1},
+    success:"Your terms become part of the official register. The promotion is yours, with witnesses who can hold you accountable.",
+    failure:"The board will not accept the terms yet. You can return with additional testimony."}
+  ]});
+ e.stories.push({id:"profession-work-"+id,where:[place],category:"profession",
+  title:"A specialist shift: "+name,description:scene,
+  when:s=>s.profession===id,
+  choices:[
+   {label:"Fulfil your office with care ("+stat+")",stat,difficulty:tier===3?7:8,
+    effects:{coin:tier===3?14:22,relation:{[faction]:1}},fail:{health:-1},
+    success:"Your specialist work is recognised in the city's public records, and the office pays you for the shift.",
+    failure:"A mistake under scrutiny costs your office dearly. Your regular position remains, but the shift yields no additional pay."},
+   {label:"Protect a junior colleague from the Council's pressure",stat:"persuasion",difficulty:tier===3?7:8,
+    effects:{coin:tier===3?10:16,quirks:{generous:1}},fail:{notoriety:1},
+    success:"The colleague keeps their name and their wage. Your office is respected for choosing to protect its people.",
+    failure:"You could not shelter them this time. The experience makes the next choice more urgent."}
+  ]});
+}
+
 })();
