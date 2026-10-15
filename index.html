@@ -77,7 +77,7 @@ const STORIES=[
 const EXT=window.UndercityExpansions||{stories:[],cards:[],items:{},professions:[],destinies:[]};
 Object.assign(ITEMS,EXT.items||{});STORIES.push(...(EXT.stories||[]));CARDS.push(...(EXT.cards||[]));
 const PROFESSIONS=EXT.professions||[],DESTINIES=EXT.destinies||[],WEEK=604800000;
-function actionCap(){return Object.values(state?.renown||{}).reduce((n,v)=>n+(Number(v)||0),0)>=14?20:MAXA;}
+function actionCap(character=state){return Object.values(character?.renown||{}).reduce((n,v)=>n+(Number(v)||0),0)>=14?20:MAXA;}
 function fresh(){return{version:1,stage:"welcome",tab:"story",name:"Stranger",background:"",faction:"",place:"cell",actions:MAXA,lastTick:Date.now(),lastCard:Date.now(),playtest:false,coin:8,stats:{observation:10,guile:10,persuasion:10,resolve:10},suspicion:0,notoriety:0,health:10,sanity:10,clues:0,ambition:0,items:{},relation:{ledger:0,wardens:0,choir:0,hands:0,dawn:0},flags:{},done:{},hand:["card_bell","card_courier"],journal:[],result:null,selectedCard:null,originChoice:"",path:"",pathProgress:0,pathEnding:"",renown:{observation:0,guile:0,persuasion:0,resolve:0},quirks:{},extras:{},profession:"",lastWage:Date.now(),destiny:""}}
 let state;
 function normaliseSave(v){
