@@ -21,7 +21,8 @@ jobs:
           # Confirm the public Worker serves the tested action-result experience.
           grep -Fq 'function focusGameView' /tmp/undercity-index
           grep -Fq 'id="action-result"' /tmp/undercity-index
-          grep -qi 'x-undercity-revision: 9064a49a2c1aa5e8f0efe92eadef488e4d01e118' /tmp/undercity-headers
+          grep -Fq 'id="open-storylet"' /tmp/undercity-index
+          grep -qi 'x-undercity-revision: 2ff199670a6454e03089e5cfd0305f1601cbec39' /tmp/undercity-headers
           grep -qi 'text/html' /tmp/undercity-headers
           curl -fsSL --retry 4 --retry-all-errors --retry-delay 4 --max-time 30 -o /tmp/undercity-ambitions "$URL/content/ambitions.js"
           grep -q 'UndercityExpansions' /tmp/undercity-ambitions
@@ -38,4 +39,4 @@ jobs:
           grep -q 'studio-core.js' /tmp/undercity-cms-app
           curl -fsSL --retry 4 --retry-all-errors --retry-delay 4 --max-time 30 -o /tmp/undercity-cms-core "$URL/tools/cms/studio-core.js"
           grep -q 'freshRequirement' /tmp/undercity-cms-core
-          echo "Confirmed the pinned 9064a49 playtest revision, outcome auto-focus UI, rules, late story content and browser CMS."
+          echo "Confirmed the pinned 2ff1996 playtest revision, direct outcome and opportunity-card views, rules, story content and CMS."
