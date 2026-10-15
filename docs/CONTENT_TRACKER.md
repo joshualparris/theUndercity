@@ -5,7 +5,7 @@ Generated from the game source. To refresh: `node scripts/content-tracker.mjs`. 
 ## Totals
 
 - Storylets: **352**
-- Choices: **851**
+- Choices: **854**
 - Opportunity cards: **18**
 - Professions: **34**
 - Equipment slots: **20**
@@ -86,69 +86,69 @@ Generated from the game source. To refresh: `node scripts/content-tracker.mjs`. 
 | name-resolve-6 | Making Your Name 6/7: The dark beyond the rail | edge | making-name | 2 | conditional | content/ambitions.js |  |
 | name-resolve-7 | Making Your Name 7/7: The night's last watch | court | making-name | 2 | conditional | content/ambitions.js |  |
 | path-ember-1 | 1. An invitation written in ash | court | ambition | 2 | conditional | content/ambitions.js |  |
-| path-ember-10 | 10. The Midnight Fuel Census | soot | ambition | 3 | conditional | content/late-ambitions.js |  |
-| path-ember-11 | 11. A Furnaceworker's Testimony | market | ambition | 3 | conditional | content/late-ambitions.js |  |
-| path-ember-12 | 12. The Lanternmaker's Daughter | ink | ambition | 3 | conditional | content/late-ambitions.js |  |
-| path-ember-13 | 13. The Foundry's Last Union Meeting | choir | ambition | 3 | conditional | content/late-ambitions.js |  |
-| path-ember-14 | 14. A Contract Written in Heat | quays | ambition | 3 | conditional | content/late-ambitions.js |  |
-| path-ember-15 | 15. The Market of Counterfeit Sunrises | court | ambition | 3 | conditional | content/late-ambitions.js |  |
-| path-ember-16 | 16. The Moss Choir's Experiment | stairs | ambition | 3 | conditional | content/late-ambitions.js |  |
-| path-ember-17 | 17. The Inspector's Red Seal | court | ambition | 3 | conditional | content/late-ambitions.js |  |
-| path-ember-18 | 18. An Appointment with the Ash Minister | soot | ambition | 3 | conditional | content/late-ambitions.js |  |
-| path-ember-19 | 19. The Oldest Maintenance Manual | market | ambition | 3 | conditional | content/late-ambitions.js |  |
+| path-ember-10 | 10. The Midnight Fuel Census | soot | ambition | 3 | conditional | content/late-ambitions.js | path-ember-11 |
+| path-ember-11 | 11. A Furnaceworker's Testimony | market | ambition | 3 | conditional | content/late-ambitions.js | path-ember-12 |
+| path-ember-12 | 12. The Lanternmaker's Daughter | ink | ambition | 3 | conditional | content/late-ambitions.js | path-ember-13 |
+| path-ember-13 | 13. The Foundry's Last Union Meeting | choir | ambition | 3 | conditional | content/late-ambitions.js | path-ember-14 |
+| path-ember-14 | 14. A Contract Written in Heat | quays | ambition | 3 | conditional | content/late-ambitions.js | path-ember-15 |
+| path-ember-15 | 15. The Market of Counterfeit Sunrises | court | ambition | 3 | conditional | content/late-ambitions.js | path-ember-16 |
+| path-ember-16 | 16. The Moss Choir's Experiment | stairs | ambition | 3 | conditional | content/late-ambitions.js | path-ember-17 |
+| path-ember-17 | 17. The Inspector's Red Seal | court | ambition | 3 | conditional | content/late-ambitions.js | path-ember-18 |
+| path-ember-18 | 18. An Appointment with the Ash Minister | soot | ambition | 3 | conditional | content/late-ambitions.js | path-ember-19 |
+| path-ember-19 | 19. The Oldest Maintenance Manual | market | ambition | 3 | conditional | content/late-ambitions.js | path-ember-20 |
 | path-ember-2 | 2. The wages of warmth | soot | ambition | 2 | conditional | content/ambitions.js |  |
-| path-ember-20 | 20. A Street Without Night | ink | ambition | 3 | conditional | content/late-ambitions.js |  |
-| path-ember-21 | 21. The Crew Below the Floor | choir | ambition | 3 | conditional | content/late-ambitions.js |  |
-| path-ember-22 | 22. A Quiet Strike | quays | ambition | 3 | conditional | content/late-ambitions.js |  |
-| path-ember-23 | 23. The Bank That Owns the Flame | court | ambition | 3 | conditional | content/late-ambitions.js |  |
-| path-ember-24 | 24. A Charter Read in Public | stairs | ambition | 3 | conditional | content/late-ambitions.js |  |
-| path-ember-25 | 25. The False Emergency | court | ambition | 3 | conditional | content/late-ambitions.js |  |
-| path-ember-26 | 26. The Demonstration at Lantern Court | soot | ambition | 3 | conditional | content/late-ambitions.js |  |
-| path-ember-27 | 27. The Council's Counteroffer | market | ambition | 3 | conditional | content/late-ambitions.js |  |
-| path-ember-28 | 28. The Engineer Who Stayed | ink | ambition | 3 | conditional | content/late-ambitions.js |  |
-| path-ember-29 | 29. The Night of Open Workshops | choir | ambition | 3 | conditional | content/late-ambitions.js |  |
+| path-ember-20 | 20. A Street Without Night | ink | ambition | 3 | conditional | content/late-ambitions.js | path-ember-21 |
+| path-ember-21 | 21. The Crew Below the Floor | choir | ambition | 3 | conditional | content/late-ambitions.js | path-ember-22 |
+| path-ember-22 | 22. A Quiet Strike | quays | ambition | 3 | conditional | content/late-ambitions.js | path-ember-23 |
+| path-ember-23 | 23. The Bank That Owns the Flame | court | ambition | 3 | conditional | content/late-ambitions.js | path-ember-24 |
+| path-ember-24 | 24. A Charter Read in Public | stairs | ambition | 3 | conditional | content/late-ambitions.js | path-ember-25 |
+| path-ember-25 | 25. The False Emergency | court | ambition | 3 | conditional | content/late-ambitions.js | path-ember-26 |
+| path-ember-26 | 26. The Demonstration at Lantern Court | soot | ambition | 3 | conditional | content/late-ambitions.js | path-ember-27 |
+| path-ember-27 | 27. The Council's Counteroffer | market | ambition | 3 | conditional | content/late-ambitions.js | path-ember-28 |
+| path-ember-28 | 28. The Engineer Who Stayed | ink | ambition | 3 | conditional | content/late-ambitions.js | path-ember-29 |
+| path-ember-29 | 29. The Night of Open Workshops | choir | ambition | 3 | conditional | content/late-ambitions.js | path-ember-30 |
 | path-ember-3 | 3. A fire sold as daylight | market | ambition | 2 | conditional | content/ambitions.js |  |
-| path-ember-30 | 30. A Vote About the Sky | quays | ambition | 3 | conditional | content/late-ambitions.js |  |
-| path-ember-31 | 31. The Last Furnace Shift | court | ambition | 3 | conditional | content/late-ambitions.js |  |
-| path-ember-32 | 32. When the Engine Falls Silent | edge | ambition | 3 | conditional | content/late-ambitions.js |  |
+| path-ember-30 | 30. A Vote About the Sky | quays | ambition | 3 | conditional | content/late-ambitions.js | path-ember-31 |
+| path-ember-31 | 31. The Last Furnace Shift | court | ambition | 3 | conditional | content/late-ambitions.js | path-ember-32 |
+| path-ember-32 | 32. When the Engine Falls Silent | edge | ambition | 4 | conditional | content/late-ambitions.js |  |
 | path-ember-4 | 4. The Council's red ledger | ink | ambition | 2 | conditional | content/ambitions.js |  |
 | path-ember-5 | 5. Flowers grown without consent | choir | ambition | 2 | conditional | content/ambitions.js |  |
 | path-ember-6 | 6. The cold bargemen | quays | ambition | 2 | conditional | content/ambitions.js |  |
 | path-ember-7 | 7. The chamber above the stairs | stairs | ambition | 2 | conditional | content/ambitions.js |  |
 | path-ember-8 | 8. When the furnace goes quiet | edge | ambition | 2 | conditional | content/ambitions.js |  |
-| path-ember-9 | 9. A Ledger of Unlit Houses | court | ambition | 3 | conditional | content/late-ambitions.js |  |
+| path-ember-9 | 9. A Ledger of Unlit Houses | court | ambition | 3 | conditional | content/late-ambitions.js | path-ember-10 |
 | path-mirror-1 | 1. The wrong photograph | court | ambition | 2 | conditional | content/ambitions.js |  |
-| path-mirror-10 | 10. The House of Two Front Doors | ink | ambition | 3 | conditional | content/late-ambitions.js |  |
-| path-mirror-11 | 11. The Clockwork Nurse | market | ambition | 3 | conditional | content/late-ambitions.js |  |
-| path-mirror-12 | 12. The Market of Borrowed Faces | choir | ambition | 3 | conditional | content/late-ambitions.js |  |
-| path-mirror-13 | 13. The School That Closed Yesterday | quays | ambition | 3 | conditional | content/late-ambitions.js |  |
-| path-mirror-14 | 14. A Blue Ribbon at the Quays | soot | ambition | 3 | conditional | content/late-ambitions.js |  |
-| path-mirror-15 | 15. The Glassmaker's Accident | stairs | ambition | 3 | conditional | content/late-ambitions.js |  |
-| path-mirror-16 | 16. The Shadow Without Its Owner | court | ambition | 3 | conditional | content/late-ambitions.js |  |
-| path-mirror-17 | 17. The Portrait Tribunal | court | ambition | 3 | conditional | content/late-ambitions.js |  |
-| path-mirror-18 | 18. A Letter from the Nursery | ink | ambition | 3 | conditional | content/late-ambitions.js |  |
-| path-mirror-19 | 19. The Archive of Faces | market | ambition | 3 | conditional | content/late-ambitions.js |  |
+| path-mirror-10 | 10. The House of Two Front Doors | ink | ambition | 3 | conditional | content/late-ambitions.js | path-mirror-11 |
+| path-mirror-11 | 11. The Clockwork Nurse | market | ambition | 3 | conditional | content/late-ambitions.js | path-mirror-12 |
+| path-mirror-12 | 12. The Market of Borrowed Faces | choir | ambition | 3 | conditional | content/late-ambitions.js | path-mirror-13 |
+| path-mirror-13 | 13. The School That Closed Yesterday | quays | ambition | 3 | conditional | content/late-ambitions.js | path-mirror-14 |
+| path-mirror-14 | 14. A Blue Ribbon at the Quays | soot | ambition | 3 | conditional | content/late-ambitions.js | path-mirror-15 |
+| path-mirror-15 | 15. The Glassmaker's Accident | stairs | ambition | 3 | conditional | content/late-ambitions.js | path-mirror-16 |
+| path-mirror-16 | 16. The Shadow Without Its Owner | court | ambition | 3 | conditional | content/late-ambitions.js | path-mirror-17 |
+| path-mirror-17 | 17. The Portrait Tribunal | court | ambition | 3 | conditional | content/late-ambitions.js | path-mirror-18 |
+| path-mirror-18 | 18. A Letter from the Nursery | ink | ambition | 3 | conditional | content/late-ambitions.js | path-mirror-19 |
+| path-mirror-19 | 19. The Archive of Faces | market | ambition | 3 | conditional | content/late-ambitions.js | path-mirror-20 |
 | path-mirror-2 | 2. Glass that remembers | market | ambition | 2 | conditional | content/ambitions.js |  |
-| path-mirror-20 | 20. The Man Who Paid for a Copy | choir | ambition | 3 | conditional | content/late-ambitions.js |  |
-| path-mirror-21 | 21. The Moth-eaten Certificate | quays | ambition | 3 | conditional | content/late-ambitions.js |  |
-| path-mirror-22 | 22. The Greenhouse Reflection | soot | ambition | 3 | conditional | content/late-ambitions.js |  |
-| path-mirror-23 | 23. The Borrowed Birthday | stairs | ambition | 3 | conditional | content/late-ambitions.js |  |
-| path-mirror-24 | 24. A False Rescue | court | ambition | 3 | conditional | content/late-ambitions.js |  |
-| path-mirror-25 | 25. The Other Girl | court | ambition | 3 | conditional | content/late-ambitions.js |  |
-| path-mirror-26 | 26. The Workshop of Quiet Copies | ink | ambition | 3 | conditional | content/late-ambitions.js |  |
-| path-mirror-27 | 27. An Unsent Apology | market | ambition | 3 | conditional | content/late-ambitions.js |  |
-| path-mirror-28 | 28. The Key in a Mother's Voice | choir | ambition | 3 | conditional | content/late-ambitions.js |  |
-| path-mirror-29 | 29. The Choir of Witnesses | quays | ambition | 3 | conditional | content/late-ambitions.js |  |
+| path-mirror-20 | 20. The Man Who Paid for a Copy | choir | ambition | 3 | conditional | content/late-ambitions.js | path-mirror-21 |
+| path-mirror-21 | 21. The Moth-eaten Certificate | quays | ambition | 3 | conditional | content/late-ambitions.js | path-mirror-22 |
+| path-mirror-22 | 22. The Greenhouse Reflection | soot | ambition | 3 | conditional | content/late-ambitions.js | path-mirror-23 |
+| path-mirror-23 | 23. The Borrowed Birthday | stairs | ambition | 3 | conditional | content/late-ambitions.js | path-mirror-24 |
+| path-mirror-24 | 24. A False Rescue | court | ambition | 3 | conditional | content/late-ambitions.js | path-mirror-25 |
+| path-mirror-25 | 25. The Other Girl | court | ambition | 3 | conditional | content/late-ambitions.js | path-mirror-26 |
+| path-mirror-26 | 26. The Workshop of Quiet Copies | ink | ambition | 3 | conditional | content/late-ambitions.js | path-mirror-27 |
+| path-mirror-27 | 27. An Unsent Apology | market | ambition | 3 | conditional | content/late-ambitions.js | path-mirror-28 |
+| path-mirror-28 | 28. The Key in a Mother's Voice | choir | ambition | 3 | conditional | content/late-ambitions.js | path-mirror-29 |
+| path-mirror-29 | 29. The Choir of Witnesses | quays | ambition | 3 | conditional | content/late-ambitions.js | path-mirror-30 |
 | path-mirror-3 | 3. The nursery of borrowed voices | choir | ambition | 2 | conditional | content/ambitions.js |  |
-| path-mirror-30 | 30. A Chamber Without Reflections | soot | ambition | 3 | conditional | content/late-ambitions.js |  |
-| path-mirror-31 | 31. The Choice of Two Lives | stairs | ambition | 3 | conditional | content/late-ambitions.js |  |
-| path-mirror-32 | 32. The Glass Door Opens | edge | ambition | 3 | conditional | content/late-ambitions.js |  |
+| path-mirror-30 | 30. A Chamber Without Reflections | soot | ambition | 3 | conditional | content/late-ambitions.js | path-mirror-31 |
+| path-mirror-31 | 31. The Choice of Two Lives | stairs | ambition | 3 | conditional | content/late-ambitions.js | path-mirror-32 |
+| path-mirror-32 | 32. The Glass Door Opens | edge | ambition | 4 | conditional | content/late-ambitions.js |  |
 | path-mirror-4 | 4. An index of first memories | ink | ambition | 2 | conditional | content/ambitions.js |  |
 | path-mirror-5 | 5. Cargo marked fragile | quays | ambition | 2 | conditional | content/ambitions.js |  |
 | path-mirror-6 | 6. The furnace of lost faces | soot | ambition | 2 | conditional | content/ambitions.js |  |
 | path-mirror-7 | 7. The twelfth reflection | stairs | ambition | 2 | conditional | content/ambitions.js |  |
 | path-mirror-8 | 8. A face you must choose | edge | ambition | 2 | conditional | content/ambitions.js |  |
-| path-mirror-9 | 9. An Unclaimed Photograph | court | ambition | 3 | conditional | content/late-ambitions.js |  |
+| path-mirror-9 | 9. An Unclaimed Photograph | court | ambition | 3 | conditional | content/late-ambitions.js | path-mirror-10 |
 | path-moth-1 | 1. A crown of scorched wings | court | ambition | 2 | conditional | content/ambitions.js |  |
 | path-moth-10 | The Missing Clause | ink | ambition | 3 | conditional | content/moth.generated.js | path-moth-11 |
 | path-moth-11 | The Foreman's Empty Chair | soot | ambition | 3 | conditional | content/moth.generated.js | path-moth-12 |
@@ -182,37 +182,37 @@ Generated from the game source. To refresh: `node scripts/content-tracker.mjs`. 
 | path-moth-8 | 8. A sovereign without a throne | edge | ambition | 2 | conditional | content/ambitions.js |  |
 | path-moth-9 | The Addresses Beneath the Lamp | court | ambition | 3 | conditional | content/moth.generated.js | path-moth-10 |
 | path-tide-1 | 1. The drowned solicitor | court | ambition | 2 | conditional | content/ambitions.js |  |
-| path-tide-10 | 10. The Night Ferryman's Ledger | quays | ambition | 3 | conditional | content/late-ambitions.js |  |
-| path-tide-11 | 11. The Tax Paid in Silence | ink | ambition | 3 | conditional | content/late-ambitions.js |  |
-| path-tide-12 | 12. The Quayside Witness | market | ambition | 3 | conditional | content/late-ambitions.js |  |
-| path-tide-13 | 13. The Court of Wet Ink | soot | ambition | 3 | conditional | content/late-ambitions.js |  |
-| path-tide-14 | 14. The Canal of Vanishing Names | choir | ambition | 3 | conditional | content/late-ambitions.js |  |
-| path-tide-15 | 15. The Choir's Tide Hymn | quays | ambition | 3 | conditional | content/late-ambitions.js |  |
-| path-tide-16 | 16. The Hollow Harbour | stairs | ambition | 3 | conditional | content/late-ambitions.js |  |
-| path-tide-17 | 17. The Keeper of Watermarks | court | ambition | 3 | conditional | content/late-ambitions.js |  |
-| path-tide-18 | 18. A Hostile Appraisal | quays | ambition | 3 | conditional | content/late-ambitions.js |  |
-| path-tide-19 | 19. The Ferry That Waited | ink | ambition | 3 | conditional | content/late-ambitions.js |  |
+| path-tide-10 | 10. The Night Ferryman's Ledger | quays | ambition | 3 | conditional | content/late-ambitions.js | path-tide-11 |
+| path-tide-11 | 11. The Tax Paid in Silence | ink | ambition | 3 | conditional | content/late-ambitions.js | path-tide-12 |
+| path-tide-12 | 12. The Quayside Witness | market | ambition | 3 | conditional | content/late-ambitions.js | path-tide-13 |
+| path-tide-13 | 13. The Court of Wet Ink | soot | ambition | 3 | conditional | content/late-ambitions.js | path-tide-14 |
+| path-tide-14 | 14. The Canal of Vanishing Names | choir | ambition | 3 | conditional | content/late-ambitions.js | path-tide-15 |
+| path-tide-15 | 15. The Choir's Tide Hymn | quays | ambition | 3 | conditional | content/late-ambitions.js | path-tide-16 |
+| path-tide-16 | 16. The Hollow Harbour | stairs | ambition | 3 | conditional | content/late-ambitions.js | path-tide-17 |
+| path-tide-17 | 17. The Keeper of Watermarks | court | ambition | 3 | conditional | content/late-ambitions.js | path-tide-18 |
+| path-tide-18 | 18. A Hostile Appraisal | quays | ambition | 3 | conditional | content/late-ambitions.js | path-tide-19 |
+| path-tide-19 | 19. The Ferry That Waited | ink | ambition | 3 | conditional | content/late-ambitions.js | path-tide-20 |
 | path-tide-2 | 2. A ferry without an oarsman | quays | ambition | 2 | conditional | content/ambitions.js |  |
-| path-tide-20 | 20. The Foundry's Hidden Levy | market | ambition | 3 | conditional | content/late-ambitions.js |  |
-| path-tide-21 | 21. A Map Written in Rain | soot | ambition | 3 | conditional | content/late-ambitions.js |  |
-| path-tide-22 | 22. A Witness in Exile | choir | ambition | 3 | conditional | content/late-ambitions.js |  |
-| path-tide-23 | 23. The Bridge Without Tolls | quays | ambition | 3 | conditional | content/late-ambitions.js |  |
-| path-tide-24 | 24. The Beneficiaries Assemble | stairs | ambition | 3 | conditional | content/late-ambitions.js |  |
-| path-tide-25 | 25. The Crown of River Salt | court | ambition | 3 | conditional | content/late-ambitions.js |  |
-| path-tide-26 | 26. The Advocate's Confession | quays | ambition | 3 | conditional | content/late-ambitions.js |  |
-| path-tide-27 | 27. A Town Beneath the Weir | ink | ambition | 3 | conditional | content/late-ambitions.js |  |
-| path-tide-28 | 28. The River's Missing Clause | market | ambition | 3 | conditional | content/late-ambitions.js |  |
-| path-tide-29 | 29. The Price of Restitution | soot | ambition | 3 | conditional | content/late-ambitions.js |  |
+| path-tide-20 | 20. The Foundry's Hidden Levy | market | ambition | 3 | conditional | content/late-ambitions.js | path-tide-21 |
+| path-tide-21 | 21. A Map Written in Rain | soot | ambition | 3 | conditional | content/late-ambitions.js | path-tide-22 |
+| path-tide-22 | 22. A Witness in Exile | choir | ambition | 3 | conditional | content/late-ambitions.js | path-tide-23 |
+| path-tide-23 | 23. The Bridge Without Tolls | quays | ambition | 3 | conditional | content/late-ambitions.js | path-tide-24 |
+| path-tide-24 | 24. The Beneficiaries Assemble | stairs | ambition | 3 | conditional | content/late-ambitions.js | path-tide-25 |
+| path-tide-25 | 25. The Crown of River Salt | court | ambition | 3 | conditional | content/late-ambitions.js | path-tide-26 |
+| path-tide-26 | 26. The Advocate's Confession | quays | ambition | 3 | conditional | content/late-ambitions.js | path-tide-27 |
+| path-tide-27 | 27. A Town Beneath the Weir | ink | ambition | 3 | conditional | content/late-ambitions.js | path-tide-28 |
+| path-tide-28 | 28. The River's Missing Clause | market | ambition | 3 | conditional | content/late-ambitions.js | path-tide-29 |
+| path-tide-29 | 29. The Price of Restitution | soot | ambition | 3 | conditional | content/late-ambitions.js | path-tide-30 |
 | path-tide-3 | 3. The filed impossibility | ink | ambition | 2 | conditional | content/ambitions.js |  |
-| path-tide-30 | 30. The Hearing Before Dawn | choir | ambition | 3 | conditional | content/late-ambitions.js |  |
-| path-tide-31 | 31. A Passage for the Living | quays | ambition | 3 | conditional | content/late-ambitions.js |  |
-| path-tide-32 | 32. The Testament Read Aloud | edge | ambition | 3 | conditional | content/late-ambitions.js |  |
+| path-tide-30 | 30. The Hearing Before Dawn | choir | ambition | 3 | conditional | content/late-ambitions.js | path-tide-31 |
+| path-tide-31 | 31. A Passage for the Living | quays | ambition | 3 | conditional | content/late-ambitions.js | path-tide-32 |
+| path-tide-32 | 32. The Testament Read Aloud | edge | ambition | 4 | conditional | content/late-ambitions.js |  |
 | path-tide-4 | 4. Auction of absent land | market | ambition | 2 | conditional | content/ambitions.js |  |
 | path-tide-5 | 5. The flood tax | soot | ambition | 2 | conditional | content/ambitions.js |  |
 | path-tide-6 | 6. The songs of a dry sea | choir | ambition | 2 | conditional | content/ambitions.js |  |
 | path-tide-7 | 7. A stair under the current | stairs | ambition | 2 | conditional | content/ambitions.js |  |
 | path-tide-8 | 8. The will's last beneficiary | edge | ambition | 2 | conditional | content/ambitions.js |  |
-| path-tide-9 | 9. The Second Shore Petition | court | ambition | 3 | conditional | content/late-ambitions.js |  |
+| path-tide-9 | 9. The Second Shore Petition | court | ambition | 3 | conditional | content/late-ambitions.js | path-tide-10 |
 | penalty-arrival-delirium | The Pale Rooms: Arrival | the_pale_rooms | penalty-arrival | 1 | AUTOFIRE | content/penalties.js |  |
 | penalty-arrival-notoriety | The Unspoken Tribunal: Arrival | the_tribunal | penalty-arrival | 1 | AUTOFIRE | content/penalties.js |  |
 | penalty-arrival-suspicion | The Watch House: Arrival | the_watch_house | penalty-arrival | 1 | AUTOFIRE | content/penalties.js |  |
