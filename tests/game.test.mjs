@@ -38,7 +38,7 @@ test("the original UI starts, and full content is accessible to the same engine"
  assert.ok(d,"runtime diagnostics are installed");
  assert.ok(d.storyCount>=125,"expected full expansion content");
  assert.ok(d.cardCount>=16);
- assert.equal(d.professionCount,18);
+ assert.equal(d.professionCount,34);
  assert.equal(d.destinyCount,20);
  assert.equal(d.equipmentSlots,20);
  assert.equal(d.livingStoryCount,4);
