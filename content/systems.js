@@ -16,16 +16,16 @@ badge:["affiliation","resolve",1],lure:["companion","observation",1],map:["lugga
 "new-charter":["treasure","persuasion",2]
 };
 const living=[
- {id:"clockmaker-post",delay:3600000,title:"A note from the clockmaker",
+ {id:"clockmaker-post",trigger_quality:"ambition >= 1",delay_hours:1,storylet_id:"ambition2",delay:3600000,title:"A note from the clockmaker",
  text:"Eda found a fingerprint inside the handless clock that belongs to nobody on the city register. She encloses three pennies for your investigation.",
  trigger:s=>s.ambition>=1,effects:{coin:3,clues:1}},
- {id:"personal-warning",delay:14400000,title:"A warning for your private undertaking",
+ {id:"personal-warning",trigger_quality:"pathProgress >= 2",delay_hours:4,storylet_id:"court_market",delay:14400000,title:"A warning for your private undertaking",
  text:"A stranger has written down the cause you chose. The signature is missing, but the warning is clear: the Council is listening.",
  trigger:s=>s.pathProgress>=2,effects:{coin:4}},
- {id:"choir-reply",delay:86400000,title:"The Choir remembers",
+ {id:"choir-reply",trigger_quality:"choir renown >= 2 or relation >= 4",delay_hours:24,storylet_id:"quirk-generous",delay:86400000,title:"The Choir remembers",
  text:"The Moss Choir has composed a verse for somebody you helped. They invite you back to hear it among the flowers.",
  trigger:s=>(s.renown?.persuasion||0)>=2||(s.relation?.choir||0)>=4,effects:{relation:{choir:1},sanity:1}},
- {id:"watch-response",delay:604800000,title:"A letter from the Ash Wardens",
+ {id:"watch-response",trigger_quality:"clues >= 4",delay_hours:168,storylet_id:"stairs_echowell",delay:604800000,title:"A letter from the Ash Wardens",
  text:"A place has been prepared beside the Wardens' watch fires. The sealed letter is an invitation rather than a summons.",
  trigger:s=>s.clues>=4,effects:{relation:{wardens:2},coin:5}}
 ];
