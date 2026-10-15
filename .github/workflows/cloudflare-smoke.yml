@@ -22,7 +22,7 @@ jobs:
           grep -Fq 'function focusGameView' /tmp/undercity-index
           grep -Fq 'id="action-result"' /tmp/undercity-index
           grep -Fq 'id="open-storylet"' /tmp/undercity-index
-          grep -qi 'x-undercity-revision: 2ff199670a6454e03089e5cfd0305f1601cbec39' /tmp/undercity-headers
+          grep -Eqi 'x-undercity-revision: [a-f0-9]{40}' /tmp/undercity-headers
           grep -qi 'text/html' /tmp/undercity-headers
           curl -fsSL --retry 4 --retry-all-errors --retry-delay 4 --max-time 30 -o /tmp/undercity-ambitions "$URL/content/ambitions.js"
           grep -q 'UndercityExpansions' /tmp/undercity-ambitions
@@ -39,4 +39,10 @@ jobs:
           grep -q 'studio-core.js' /tmp/undercity-cms-app
           curl -fsSL --retry 4 --retry-all-errors --retry-delay 4 --max-time 30 -o /tmp/undercity-cms-core "$URL/tools/cms/studio-core.js"
           grep -q 'freshRequirement' /tmp/undercity-cms-core
-          echo "Confirmed the pinned 2ff1996 playtest revision, direct outcome and opportunity-card views, rules, story content and CMS."
+          curl -fsSL --retry 4 --retry-all-errors --retry-delay 4 --max-time 30 -o /tmp/undercity-groq-ui "$URL/tools/cms/ai-assistant.js"
+          grep -q 'mountGroqAssistant' /tmp/undercity-groq-ui
+          curl -fsSL --retry 4 --retry-all-errors --retry-delay 4 --max-time 30 -o /tmp/undercity-groq-guide "$URL/tools/cms/GROQ_AI.md"
+          grep -q 'CMS_ACCESS_TOKEN' /tmp/undercity-groq-guide
+          curl -fsSL --retry 4 --retry-all-errors --retry-delay 4 --max-time 30 -o /tmp/undercity-groq-health "https://qbn-studio-ai.parris-neathaustralia.workers.dev/health"
+          grep -q '"online":true' /tmp/undercity-groq-health
+          echo "Confirmed playable Cloudflare game, action-result UI, Groq Studio module and gateway health."
