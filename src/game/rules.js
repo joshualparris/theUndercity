@@ -3,14 +3,21 @@
  * Canonical ES module. rules.global.js is the generated classic-script build.
  * The formulas and game terminology follow the supplied Undercity specification.
  */
-export const QualityType=Object.freeze({
- PRIMARY_STAT:"primary_stat",MENACE:"menace",DISPOSITION:"disposition",
- AFFILIATION:"affiliation",REVERIE:"reverie",STORY:"story",ITEM:"item",
- CONDITION:"condition",DEED:"deed",PASSAGE:"passage",
- STATUS:"status",CIRCUMSTANCE:"circumstance",ACCOMPLISHMENT:"accomplishment",
- ROUTE:"route",LIVING_STORY:"living_story",DREAM:"dream",QUIRK:"disposition",
- PENDING_EVENT:"pending_event",METAQUALITY:"metaquality",CIRCUMSTANCE:"circumstance",FATE_MARKER:"fate_marker"
+// Fourteen enumerable quality categories; legacy synonyms remain available as
+// non-enumerable aliases so older authored stories remain compatible.
+const qualityTypes={
+ PRIMARY_STAT:"primary_stat", MENACE:"menace", DISPOSITION:"disposition",
+ AFFILIATION:"affiliation", REVERIE:"reverie", STORY:"story",
+ ITEM:"item", CONDITION:"condition", DEED:"deed", PASSAGE:"passage",
+ STATUS:"status", CIRCUMSTANCE:"circumstance",
+ ACCOMPLISHMENT:"accomplishment", FATE_MARKER:"fate_marker"
+};
+Object.defineProperties(qualityTypes,{
+ ROUTE:{value:"passage"},LIVING_STORY:{value:"pending_event"},
+ DREAM:{value:"reverie"},QUIRK:{value:"disposition"},
+ PENDING_EVENT:{value:"pending_event"},METAQUALITY:{value:"status"}
 });
+export const QualityType=Object.freeze(qualityTypes);
 const PYRAMIDAL=new Set([
  QualityType.PRIMARY_STAT,QualityType.MENACE,QualityType.DISPOSITION,
  QualityType.AFFILIATION,QualityType.REVERIE,QualityType.DREAM
