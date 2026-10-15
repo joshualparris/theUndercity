@@ -188,7 +188,11 @@ function isVisible(st){return st.where.includes(state.place)&&(!st.when||st.when
 function choose(id,ix,card){tick();let st=(card?CARDS:STORIES).find(s=>s.id===id);if(!st)return;if(card){if(!state.hand.includes(id)||state.stage!=="explore")return}else if(!isVisible(st))return;let c=st.choices[ix];if(!c||!canPlay(c))return;let cost=c.cost==null?1:c.cost;if(!spend(cost))return;let success=true,chance=null;if(c.stat){chance=odds(c.stat,c.difficulty,c.scaler??.60);success=Math.random()*100<chance;state.stats[c.stat]=(state.stats[c.stat]||0)+(success?(chance>=90?1:chance<40?4:chance<60?3:2):(chance<30?3:chance<40?2:1))}
  const rare=success&&c.rare&&Math.random()<Math.max(0,Math.min(1,Number(c.rare_success_chance??.04)));
  const effects=rare?c.rare:(success?c.effects:c.fail);
- apply(effects);if(card){state.hand=state.hand.filter(x=>x!==id);state.selectedCard=null}else if(success||!c.stat)state.done[id]=true;let outcome=rare?(c.rare_success||"An extraordinary turn of fortune changes the result."):(success?(c.success||"The city accepts your choice, though not without recording it.")):(c.failure||"The city will allow you to try again. It is less generous about the price.");state.result={title:st.title,text:outcome,note:(rare?"RARE SUCCESS":success?"SUCCESS":"SETBACK")+(chance!==null?" · "+chance+"% chance":"")+(c.stat?" · +experience in "+labelStat(c.stat):"")};addJournal(st.title+": "+outcome);penalty();state.tab="story";done()}
+ apply(effects);if(card){state.hand=state.hand.filter(x=>x!==id);state.selectedCard=null}else if(success||!c.stat)state.done[id]=true;let outcome=rare
+ ? (c.rare_success||"An extraordinary turn of fortune changes the result.")
+ : success
+   ? (c.success||"The city accepts your choice, though not without recording it.")
+   : (c.failure||"The city will allow you to try again. It is less generous about the price.");state.result={title:st.title,text:outcome,note:(rare?"RARE SUCCESS":success?"SUCCESS":"SETBACK")+(chance!==null?" · "+chance+"% chance":"")+(c.stat?" · +experience in "+labelStat(c.stat):"")};addJournal(st.title+": "+outcome);penalty();state.tab="story";done()}
 function done(){save();render()}
 function save(){try{localStorage.setItem(SAVE,JSON.stringify(state))}catch(e){console.warn("Local save unavailable",e)}}
 function setTab(t){state.tab=t;state.result=null;state.selectedCard=null;done()}
