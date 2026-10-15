@@ -4,16 +4,16 @@
 // All twenty categories explicitly named in the design specification.
 const slots=["boon","hat","clothing","adornment","gloves","weapon","boots","luggage","companion","treasure","destiny","tools of the trade","affiliation","transport","home comfort","ship","crew","airship","spouse","club"];
 const gear={
-charcoal:["tool","observation",1],hook:["weapon","guile",1],silk:["gloves","persuasion",1],
-badge:["affiliation","resolve",1],lure:["companion","observation",1],map:["route","observation",1],
-"moth-lance":["weapon","resolve",4],"quiet-bell":["tool","observation",3],
-"mirror-key":["possession","guile",3],"ember-crown":["hat","persuasion",3],
+charcoal:["tools of the trade","observation",1],hook:["weapon","guile",1],silk:["gloves","persuasion",1],
+badge:["affiliation","resolve",1],lure:["companion","observation",1],map:["luggage","observation",1],
+"moth-lance":["weapon","resolve",4],"quiet-bell":["tools of the trade","observation",3],
+"mirror-key":["treasure","guile",3],"ember-crown":["hat","persuasion",3],
 "reader-lens":["hat","observation",4],"runner-token":["transport","guile",4],
 "warden-scar":["clothing","resolve",4],"speaker-song":["affiliation","persuasion",4],
-"silver-flame":["tool","resolve",1],"margin-pen":["tool","observation",1],
-"runner-boots":["boots","guile",1],"songbook":["possession","persuasion",1],
-"roof-whistle":["tool","resolve",1],"surveyor-lens":["hat","observation",2],
-"new-charter":["possession","persuasion",2]
+"silver-flame":["tools of the trade","resolve",1],"margin-pen":["tools of the trade","observation",1],
+"runner-boots":["boots","guile",1],"songbook":["treasure","persuasion",1],
+"roof-whistle":["tools of the trade","resolve",1],"surveyor-lens":["hat","observation",2],
+"new-charter":["treasure","persuasion",2]
 };
 const living=[
  {id:"clockmaker-post",delay:3600000,title:"A note from the clockmaker",
