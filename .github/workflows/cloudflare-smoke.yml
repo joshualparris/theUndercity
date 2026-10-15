@@ -53,6 +53,10 @@ jobs:
           grep -q 'Missing story pitch' /tmp/undercity-cms-core
           grep -q 'Your story pitch is empty' /tmp/undercity-cms-core
           grep -q 'groq-fixall' /tmp/undercity-groq-ui
+          grep -q 'groq-fasttrack' /tmp/undercity-groq-ui
+          grep -q 'solo-approve' /tmp/undercity-cms-app
+          grep -q 'creatorApprove' /tmp/undercity-cms-core
+          grep -q 'creator_approval' /tmp/undercity-cms-core
           grep -q 'groq-qa-fix' /tmp/undercity-groq-ui
           grep -q 'Undo autofix' /tmp/undercity-groq-ui
           grep -q 'one-click autofill and repair' /tmp/undercity-groq-guide || grep -q 'One-click autofill and repair' /tmp/undercity-groq-guide
